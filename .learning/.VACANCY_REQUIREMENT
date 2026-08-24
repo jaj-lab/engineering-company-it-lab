@@ -1,0 +1,98 @@
+VACANCY REQUIREMENT
+        |
+        v
+============================================================
+
+IT infrastructure
+    -> QEMU/KVM
+    -> Windows Server
+    -> Linux
+    -> networking
+    -> AD
+    -> cloud
+
+
+Remote technical support
+    -> Windows Client
+    -> RDP
+    -> troubleshooting scenarios
+    -> ITSM tickets
+
+
+Microsoft 365
+    -> Entra ID
+    -> Exchange
+    -> SharePoint
+    -> licensing
+    -> security
+
+
+Software deployment
+    -> Windows administration
+    -> PowerShell
+    -> software catalog
+
+
+Engineering licenses
+    -> Revit
+    -> Bluebeam
+    -> Revizto
+    -> etc.
+    -> license workflow
+
+
+Network security
+    -> DNS
+    -> DHCP
+    -> firewall
+    -> segmentation
+    -> VPN
+
+
+User permissions
+    -> AD groups
+    -> GPO
+    -> NTFS ACL
+    -> IAM
+
+
+ITSM
+    -> tickets
+    -> incidents
+    -> assets
+    -> documentation
+
+
+Virtualization
+    -> QEMU/KVM
+    -> libvirt
+
+
+Cloud
+    -> Floci / AWS
+    -> IAM
+    -> S3
+    -> SQS
+    -> Lambda
+    -> RDS
+
+
+Automation
+    -> PowerShell
+    -> Bash
+    -> Terraform
+    -> GitHub Actions
+
+
+Monitoring
+    -> Windows Event Logs
+    -> Linux logs
+    -> Prometheus
+    -> Grafana
+
+
+Documentation
+    -> architecture
+    -> SOP
+    -> incidents
+    -> runbooks

@@ -1,0 +1,17 @@
+<network>
+  <name>engineering-lab</name>
+  <bridge name="engineering-lab"/>
+
+  <forward mode="nat"/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
+      <dhcp>
+          <range start='192.168.100.50' end='192.168.100.100'/>
+
+          <host
+                  mac="52:54:00:c1:bb:a8"
+                  name="MINT01"
+                  ip="192.168.100.10"/>
+      </dhcp>
+  </ip>
+
+</network>

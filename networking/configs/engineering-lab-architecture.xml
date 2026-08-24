@@ -1,0 +1,15 @@
+engineering-lab.xml
+        │
+        ├── <network>
+        │
+        ├── <name>
+        │
+        ├── <forward>
+        │
+        ├── <bridge>
+        │
+        └── <ip>
+             ├── address
+             ├── netmask
+             └── <dhcp>
+                    └── <range>

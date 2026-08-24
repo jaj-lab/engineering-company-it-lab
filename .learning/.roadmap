@@ -1,0 +1,47 @@
+PHASE 0
+LAB FOUNDATION
+    ↓
+PHASE 1
+NETWORKING
+    ↓
+PHASE 2
+CLOUD LAB — FLOCI
+    ↓
+PHASE 3
+CLOUD APPLICATION
+    ↓
+PHASE 4
+TERRAFORM
+    ↓
+PHASE 5
+WINDOWS SERVER
+    ↓
+PHASE 6
+WINDOWS CLIENT
+    ↓
+PHASE 7
+FILE SERVICES / PERMISSIONS
+    ↓
+PHASE 8
+REMOTE IT SUPPORT
+    ↓
+PHASE 9
+ITSM
+    ↓
+PHASE 10
+CORE ARCHITECTURE COMPLETION
+    ↓
+────────────────────────────────
+        CORE PROJECT DONE
+────────────────────────────────
+    ↓
+TODO
+    ├── Monitoring
+    ├── VPN
+    ├── advanced networking
+    ├── additional Windows VMs
+    ├── Prometheus / Grafana
+    ├── advanced ITSM
+    ├── additional cloud services
+    ├── advanced security
+    └── automation extensions
