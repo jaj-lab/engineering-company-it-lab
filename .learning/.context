@@ -1596,6 +1596,10 @@ docs/
 |
 +-- incidents/
 |    |
+|    +-- troubleshooting/
+|         |
+|         +-- TRB-001.md
+|         +-- ...
 |    +-- INC-001.md
 |    +-- INC-002.md
 |    +-- ...
@@ -2566,121 +2570,6 @@ an interview as evidence of practical learning.
 
 
 ================================================================================
-CURRENT PROJECT STATE
-================================================================================
-
-Project:
-
-
-    ENGINEERING COMPANY IT LAB
-
-
-Current host:
-
-
-    Arch Linux
-
-
-Current virtualization stack:
-
-
-    QEMU/KVM
-    libvirt
-    virt-manager
-
-
-Current known resources:
-
-
-    Linux Mint ISO
-    Windows 11 ISO
-    VirtIO Windows drivers ISO
-
-
-Current planned required resources:
-
-
-    Windows Server ISO
-
-
-Current planned VMs:
-
-
-    MINT01
-        Linux Mint
-        IT Administration Workstation
-
-
-    DC01
-        Windows Server
-        Active Directory / DNS / DHCP
-
-
-    WIN01
-        Windows 10/11
-        Domain-joined Employee Workstation
-
-
-Current planned network:
-
-
-    engineering-lab
-    192.168.100.0/24
-
-
-Current architecture status:
-
-
-    ARCHITECTURE
-        APPROVED
-
-
-    VM TOPOLOGY
-        APPROVED
-
-
-    NETWORK DESIGN
-        APPROVED
-
-
-    CLOUD DIRECTION
-        FLOCI
-
-
-    ITSM DIRECTION
-        OPEN-SOURCE
-
-
-    MICROSOFT 365
-        REMOVED FROM CURRENT PROJECT SCOPE
-
-
-    GIT REPOSITORY
-        CREATED AS PART OF PHASE 0
-
-
-    DOCUMENTATION
-        DESIGNED AS PART OF PHASE 0
-
-
-    TODO SYSTEM
-        PART OF PROJECT STRUCTURE
-
-
-Current phase:
-
-
-    PHASE 0 — LAB FOUNDATION
-
-
-Current phase status:
-
-
-    DESIGN COMPLETE
-    IMPLEMENTATION NOT STARTED
-
-
-================================================================================
 PHASE 0 — IMMEDIATE OBJECTIVES
 ================================================================================
 
@@ -2918,10 +2807,6 @@ The student prefers a static learning flow:
     CURRENT STAGE
         ↓
     EXPLANATION
-        ↓
-    QUESTIONS
-        ↓
-    STUDENT ANSWERS
         ↓
     DISCUSSION
         ↓

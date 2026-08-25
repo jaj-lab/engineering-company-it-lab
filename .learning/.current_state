@@ -1,0 +1,802 @@
+================================================================================
+CURRENT PROJECT STATE
+================================================================================
+
+Project:
+
+    ENGINEERING COMPANY IT LAB
+
+
+================================================================================
+HOST / VIRTUALIZATION
+================================================================================
+
+Host:
+
+    Arch Linux
+
+
+Virtualization stack:
+
+    QEMU/KVM
+    libvirt
+    virt-manager
+
+
+libvirt management model:
+
+    qemu:///system
+
+
+VMs are managed through the system libvirt instance.
+
+
+Virtualization status:
+
+    [x] Hardware virtualization
+    [x] QEMU/KVM
+    [x] libvirt
+    [x] qemu:///system
+    [x] virt-manager
+    [x] VM creation
+    [x] VM lifecycle management
+    [x] VM snapshots
+
+
+================================================================================
+LIBVIRT NETWORK
+================================================================================
+
+Network:
+
+    engineering-lab
+
+
+Type:
+
+    NAT
+
+
+Subnet:
+
+    192.168.100.0/24
+
+
+Gateway:
+
+    192.168.100.1
+
+
+DHCP range:
+
+    192.168.100.50 - 192.168.100.100
+
+
+DHCP reservations:
+
+    MINT01
+        52:54:00:c1:bb:a8
+        192.168.100.10
+
+    DC01
+        52:54:00:17:7d:e5
+        192.168.100.20
+
+    WIN01
+        52:54:00:cd:78:97
+        192.168.100.30
+
+
+Network definition:
+
+    networking/configs/engineering-lab.xml
+
+
+Network status:
+
+    [x] engineering-lab created
+    [x] NAT configured
+    [x] 192.168.100.0/24
+    [x] Gateway
+    [x] DHCP
+    [x] MINT01 reservation
+    [x] DC01 reservation
+    [x] WIN01 reservation
+    [x] All three VMs connected
+    [x] Gateway connectivity
+    [x] MINT01 connectivity
+    [x] DC01 connectivity
+    [x] WIN01 connectivity
+    [x] VM-to-VM connectivity verified
+
+
+Current topology:
+
+
+                         engineering-lab
+                         192.168.100.0/24
+                                |
+              +-----------------+-----------------+
+              |                 |                 |
+              v                 v                 v
+           MINT01             DC01              WIN01
+        192.168.100.10    192.168.100.20    192.168.100.30
+              |                 |                 |
+        Admin Workstation   Windows Server    Windows Client
+
+
+================================================================================
+VIRTUAL MACHINES
+================================================================================
+
+MINT01
+------
+
+OS:
+
+    Linux Mint
+
+
+Role:
+
+    IT Administration Workstation
+
+
+IP:
+
+    192.168.100.10
+
+
+Status:
+
+    RUNNING / READY
+
+
+Configured:
+
+    [x] VM created
+    [x] Linux Mint installed
+    [x] Host configuration
+    [x] engineering-lab networking
+    [x] DHCP reservation
+    [x] Network connectivity
+    [x] Administrative tooling
+
+
+Purpose:
+
+    administration
+    Git
+    networking
+    infrastructure management
+    troubleshooting
+    documentation
+    future Terraform / cloud tooling
+
+
+--------------------------------------------------------------------------------
+
+DC01
+----
+
+OS:
+
+    Windows Server 2025 Standard
+
+
+Role:
+
+    Future Domain Controller
+
+
+Hostname:
+
+    DC01
+
+
+IP:
+
+    192.168.100.20
+
+
+Gateway:
+
+    192.168.100.1
+
+
+Current DNS:
+
+    192.168.100.1
+
+
+Status:
+
+    INSTALLED / BASELINE READY
+
+
+Verified:
+
+    [x] Windows Server installation
+    [x] Windows Server version
+    [x] Hostname
+    [x] Network configuration
+    [x] IP address
+    [x] Gateway
+    [x] DHCP reservation
+    [x] Gateway connectivity
+    [x] MINT01 connectivity
+    [x] WIN01 connectivity
+    [x] Baseline state
+
+
+Not yet configured:
+
+    [ ] Active Directory Domain Services
+    [ ] DNS Server role
+    [ ] DHCP Server role
+    [ ] Domain
+    [ ] Organizational Units
+    [ ] Users
+    [ ] Groups
+    [ ] Group Policy
+
+
+Snapshot:
+
+    [x] DC01 baseline snapshot
+
+
+Important:
+
+    DC01 is currently a Windows Server installation.
+
+    It is NOT yet a Domain Controller.
+
+
+--------------------------------------------------------------------------------
+
+WIN01
+-----
+
+OS:
+
+    Windows 10/11
+
+
+Role:
+
+    Employee Workstation
+
+
+Hostname:
+
+    WIN01
+
+
+IP:
+
+    192.168.100.30
+
+
+Status:
+
+    INSTALLED / NETWORK READY
+
+
+Verified:
+
+    [x] VM created
+    [x] Windows installed
+    [x] Hostname = WIN01
+    [x] engineering-lab networking
+    [x] DHCP reservation
+    [x] Correct subnet
+    [x] Correct gateway
+    [x] Gateway connectivity
+    [x] MINT01 connectivity
+    [x] DC01 connectivity
+    [x] VM-to-VM connectivity
+    [x] ICMP troubleshooting
+    [x] ICMP allowed through Windows Firewall
+
+
+Snapshot:
+
+    [x] WIN01 baseline snapshot
+
+
+Current Windows network profile:
+
+    Public
+
+
+Current firewall state:
+
+    ICMP echo explicitly allowed
+
+
+Important:
+
+    WIN01 is currently a standalone Windows client.
+
+    It has NOT been domain-joined.
+
+    Domain Join will happen only after AD DS is
+    configured on DC01.
+
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Troubleshooting is treated as part of implementation,
+not as a separate activity.
+
+Current troubleshooting cases:
+
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+
+
+TRB-003:
+
+    Windows machines could reach the gateway and MINT01,
+    but DC01 and WIN01 could not ping each other.
+
+    Root cause:
+
+        Windows Firewall did not allow ICMP echo requests
+        on the active network profile.
+
+    Resolution:
+
+        ICMP echo was explicitly allowed on both machines.
+
+    Verification:
+
+        [x] DC01 -> WIN01
+        [x] WIN01 -> DC01
+
+
+Troubleshooting documentation location:
+
+    docs/incidents/troubleshooting/
+
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Repository:
+
+    engineering-company-it-lab
+
+
+Documentation model:
+
+    architecture
+        =
+    what the system is and why it is designed this way
+
+
+    infrastructure
+        =
+    what is actually deployed
+
+
+    procedures
+        =
+    how to perform administrative tasks
+
+
+    incidents / troubleshooting
+        =
+    failures, investigation, root cause and resolution
+
+
+    software
+        =
+    software inventory and licensing
+
+
+    cloud
+        =
+    cloud-specific implementation
+
+
+    security
+        =
+    security controls and practices
+
+
+    disaster-recovery
+        =
+    backup and recovery
+
+
+Documentation plan:
+
+    docs/documentation-plan.md
+
+
+Documentation is updated at the end of each phase.
+
+The documentation plan is reviewed against the actual
+implementation before the next phase begins.
+
+Planned documentation is not treated as completed
+documentation.
+
+
+--------------------------------------------------------------------------------
+CURRENT DOCUMENTATION STATUS
+--------------------------------------------------------------------------------
+
+Architecture:
+
+    [x] architecture/overview.md
+    [x] architecture/virtualization.md
+    [ ] architecture/network.md
+    [ ] architecture/active-directory.md
+    [ ] architecture/cloud.md
+
+
+Infrastructure:
+
+    [x] infrastructure/vms.md
+    [ ] infrastructure/networking.md
+    [ ] infrastructure/services.md
+
+
+Procedures:
+
+    [ ] create-user.md
+    [ ] disable-user.md
+    [ ] domain-join.md
+    [ ] troubleshoot-dns.md
+    [ ] reset-password.md
+    [ ] software-installation.md
+
+
+Incidents / Troubleshooting:
+
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+
+
+Software:
+
+    [ ] catalog.md
+    [ ] licensing.md
+
+
+Cloud:
+
+    [ ] iam.md
+    [ ] s3.md
+    [ ] lambda.md
+    [ ] rds.md
+
+
+Security:
+
+    [ ] baseline.md
+    [ ] permissions.md
+    [ ] incident-response.md
+
+
+Disaster Recovery:
+
+    [ ] backup.md
+    [ ] restore.md
+
+
+Current documentation priority:
+
+    Finish Phase 0 documentation.
+
+    Phase 1 networking documentation will be created
+    or substantially updated after Phase 1 implementation.
+
+
+================================================================================
+REPOSITORY
+================================================================================
+
+Repository:
+
+    engineering-company-it-lab
+
+
+Git:
+
+    [x] Repository created
+    [x] Initial structure
+    [x] Documentation structure
+    [x] Git tracking
+    [x] Remote repository
+
+
+Important implementation files:
+
+    networking/configs/engineering-lab.xml
+
+
+Current working tree contains changes related to:
+
+    .learning/.context
+    .learning/.current_state
+    docs/architecture/overview.md
+    docs/infrastructure/vms.md
+    networking/configs/engineering-lab.xml
+
+
+New documentation:
+
+    docs/architecture/virtualization.md
+    docs/incidents/troubleshooting/TRB-003-windows-icmp-firewall.md
+
+
+Git commit status:
+
+    Check with:
+
+        git status
+
+    before committing the current Phase 0 documentation.
+
+
+================================================================================
+PHASE 0 — LAB FOUNDATION
+================================================================================
+
+PHASE 0 STATUS:
+
+    IN PROGRESS
+
+
+ARCHITECTURE
+    [x] Project architecture
+    [x] Architecture overview
+    [x] Repository
+    [x] Repository structure
+    [x] Documentation structure
+    [x] Documentation planning
+
+
+VIRTUALIZATION
+    [x] Arch Linux
+    [x] QEMU/KVM
+    [x] libvirt
+    [x] qemu:///system
+    [x] virt-manager
+    [x] VM creation
+    [x] VM lifecycle
+    [x] Snapshots
+    [x] Resource allocation
+
+
+NETWORK
+    [x] engineering-lab
+    [x] NAT
+    [x] 192.168.100.0/24
+    [x] Gateway
+    [x] DHCP
+    [x] MINT01 reservation
+    [x] DC01 reservation
+    [x] WIN01 reservation
+    [x] VM networking
+    [x] Gateway connectivity
+    [x] VM-to-VM connectivity
+
+
+VMS
+    [x] MINT01
+    [x] DC01
+    [x] WIN01
+
+
+MINT01
+    [x] Installed
+    [x] Networked
+    [x] DHCP reservation
+    [x] Connectivity verified
+
+
+DC01
+    [x] Installed
+    [x] Hostname
+    [x] Networked
+    [x] DHCP reservation
+    [x] Connectivity verified
+    [x] Baseline verified
+    [x] Baseline snapshot
+
+
+WIN01
+    [x] VM created
+    [x] Windows installed
+    [x] Hostname = WIN01
+    [x] DHCP reservation
+    [x] Correct subnet
+    [x] Correct gateway
+    [x] Gateway connectivity
+    [x] MINT01 connectivity
+    [x] DC01 connectivity
+    [x] VM-to-VM connectivity
+    [x] Windows firewall troubleshooting
+    [x] Baseline snapshot
+
+
+TROUBLESHOOTING
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+
+
+DOCUMENTATION
+    [x] architecture/overview.md
+    [x] architecture/virtualization.md
+    [x] infrastructure/vms.md
+    [x] troubleshooting documentation
+    [x] Phase 0 documentation review
+    [x] Phase 0 documentation completion
+
+
+PHASE 0 REVIEW
+    [x] Verify documentation against actual state
+    [x] Identify missing Phase 0 documentation
+    [x] Reconcile documentation-plan.md
+    [ ] Review Git changes
+    [ ] Commit Phase 0
+    [ ] Mark Phase 0 COMPLETE
+
+
+================================================================================
+CURRENT POSITION
+================================================================================
+
+Current phase:
+
+    PHASE 0 — LAB FOUNDATION
+
+
+Current stage:
+
+    PHASE 0 REVIEW
+
+
+Implementation status:
+
+    LAB FOUNDATION COMPLETE
+
+
+Documentation status:
+
+    COMPLETE per Phase 0 with docs-plan.md
+
+
+Current objective:
+
+    Finish and verify Phase 0 Review.
+
+
+Next implementation phase:
+
+    PHASE 1 — NETWORKING
+
+
+Important:
+
+    Do NOT begin Active Directory yet.
+
+    Do NOT domain-join WIN01 yet.
+
+    Phase 1 should establish the networking concepts and
+    documentation before the Windows Server phase introduces
+    AD DS, DNS and DHCP as server roles.
+
+
+================================================================================
+NEXT STEP
+================================================================================
+
+1. Finish Phase 0 documentation.
+
+2. Verify:
+
+       architecture/overview.md
+       architecture/virtualization.md
+       infrastructure/vms.md
+       troubleshooting documentation
+
+3. Create/update:
+
+       docs/documentation-plan.md
+
+4. Review the actual repository state.
+
+5. Commit the completed Phase 0 documentation.
+
+6. Update the project roadmap/state.
+
+7. Begin:
+
+       PHASE 1 — NETWORKING
+
+
+================================================================================
+ARCHITECTURAL STATE
+================================================================================
+
+
+                         ARCH LINUX HOST
+                              |
+                           QEMU/KVM
+                              |
+                           libvirt
+                              |
+                     engineering-lab
+                     192.168.100.0/24
+                              |
+             +----------------+----------------+
+             |                |                |
+             v                v                v
+          MINT01            DC01             WIN01
+       192.168.100.10    192.168.100.20    192.168.100.30
+             |                |                |
+       Admin Workstation   Windows Server    Windows Client
+                              |
+                         future AD/DNS/DHCP
+
+
+Current architectural reality:
+
+    Virtualization
+        DONE
+
+    Base laboratory networking
+        DONE
+
+    MINT01
+        READY
+
+    DC01
+        READY FOR WINDOWS INFRASTRUCTURE CONFIGURATION
+
+    WIN01
+        READY AS STANDALONE CLIENT
+
+    VM-to-VM connectivity
+        VERIFIED
+
+    Active Directory
+        NOT YET IMPLEMENTED
+
+    Domain Join
+        NOT YET IMPLEMENTED
+
+    ITSM
+        NOT YET IMPLEMENTED
+
+    Cloud / Floci
+        NOT YET IMPLEMENTED
+
+    Terraform
+        NOT YET IMPLEMENTED
+
+    Automation
+        NOT YET IMPLEMENTED
+
+    CI/CD
+        NOT YET IMPLEMENTED
+
+    Monitoring
+        NOT YET IMPLEMENTED
+
+
+================================================================================
+END OF CURRENT PROJECT STATE
+================================================================================
