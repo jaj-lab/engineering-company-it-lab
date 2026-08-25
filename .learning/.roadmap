@@ -45,3 +45,123 @@ TODO
     ├── additional cloud services
     ├── advanced security
     └── automation extensions
+
+
+
+================================================================================
+ENGINEERING COMPANY IT LAB — ROADMAP
+================================================================================
+
+PHASE 0 — LAB FOUNDATION
+    [x] Design laboratory architecture
+    [x] Create repository
+    [x] Build virtualization foundation
+    [x] Create VMs
+    [x] Create libvirt network
+    [x] Establish baseline connectivity
+    [x] Troubleshoot initial networking issue
+    [x] Document implementation
+    [x] Review documentation
+    [x] Commit
+
+    STATUS: COMPLETE
+
+
+PHASE 1 — NETWORKING
+    [x] Define network architecture
+    [x] Formalize IP address allocation
+    [x] Formalize DHCP strategy
+    [x] Formalize DNS strategy
+    [x] Document routing/NAT architecture
+    [x] Implement required network configuration
+    [x] Implement network verification
+    [x] Document final network state
+    [x] Review
+    [x] Commit
+
+    STATUS: COMPLETE
+
+
+PHASE 2 — CLOUD
+    [ ] Cloud architecture
+    [ ] IAM
+    [ ] Storage
+    [ ] Compute/serverless
+    [ ] Database
+    [ ] Networking
+    [ ] Security
+    [ ] Monitoring
+    [ ] Documentation
+    [ ] Review
+    [ ] Commit
+
+    STATUS: NEXT
+
+PHASE 3 — WINDOWS INFRASTRUCTURE / ACTIVE DIRECTORY
+    [ ] Configure DC01 as Domain Controller
+    [ ] Install AD DS
+    [ ] Configure internal DNS
+    [ ] Configure domain
+    [ ] Design OU structure
+    [ ] Create users/groups
+    [ ] Configure DHCP
+    [ ] Configure GPO baseline
+    [ ] Domain-join WIN01
+    [ ] Verify domain environment
+    [ ] Document
+    [ ] Review
+    [ ] Commit
+
+
+PHASE 4 — IT OPERATIONS
+    [ ] Define service inventory
+    [ ] Implement operational services
+    [ ] User administration procedures
+    [ ] Software management
+    [ ] Backup/recovery procedures
+    [ ] Incident procedures
+    [ ] Operational documentation
+    [ ] Review
+    [ ] Commit
+
+
+PHASE 5 — AUTOMATION / INFRASTRUCTURE AS CODE
+    [ ] Terraform
+    [ ] Configuration management
+    [ ] Infrastructure automation
+    [ ] Secrets/configuration management
+    [ ] Repeatable provisioning
+    [ ] Documentation
+    [ ] Review
+    [ ] Commit
+
+
+PHASE 6 — ITSM / OPERATIONS
+    [ ] ITSM platform
+    [ ] Asset management
+    [ ] Service catalog
+    [ ] Incident management
+    [ ] Change management
+    [ ] Knowledge base
+    [ ] Documentation
+
+
+PHASE 7 — MONITORING / OBSERVABILITY
+    [ ] Monitoring
+    [ ] Metrics
+    [ ] Logs
+    [ ] Alerts
+    [ ] Dashboards
+    [ ] Incident integration
+
+
+PHASE 8 — FINAL INTEGRATION
+    [ ] Integrate infrastructure
+    [ ] Integrate cloud
+    [ ] Integrate automation
+    [ ] Integrate ITSM
+    [ ] Integrate monitoring
+    [ ] Test operational scenarios
+    [ ] Disaster/recovery scenarios
+    [ ] Final architecture documentation
+    [ ] Final project review

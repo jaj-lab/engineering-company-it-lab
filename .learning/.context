@@ -5,241 +5,372 @@ ENGINEERING COMPANY IT LAB
 
 VERSION
 
-    Architecture Baseline: v1.1
+    Architecture Baseline: v1.3
     Status: APPROVED
-    Purpose: Master context for the entire learning project
+    Purpose: Master context for the entire project
 
 
 ================================================================================
-PURPOSE
+PROJECT PURPOSE
 ================================================================================
 
 Build a realistic IT infrastructure laboratory representing
 a small international engineering company.
 
-The project is designed specifically to practice skills required
-for an IT Administrator / Infrastructure / Cloud-oriented position.
+The lab is a HANDS-ON INFRASTRUCTURE PROJECT.
 
-The lab combines:
+Primary goal:
+
+    DESIGN
+        ↓
+    IMPLEMENT
+        ↓
+    VERIFY
+        ↓
+    TROUBLESHOOT
+        ↓
+    DOCUMENT
+        ↓
+    REVIEW
+        ↓
+    PROCEED
+
+
+The project is intended to provide practical experience with:
+
 
     IT Administration
-        +
     Virtualization
-        +
     Networking
-        +
     Cloud
-        +
     Windows / Active Directory
-        +
-    ITSM / Help Desk
-        +
-    Infrastructure as Code
-        +
+    IT Operations
     Automation
-        +
+    Infrastructure as Code
+    ITSM
+    Monitoring
     Security
-        +
     Troubleshooting
-        +
     Documentation
 
 
-The project is a HANDS-ON ADMINISTRATION LAB.
+The goal is NOT to reproduce an enterprise environment perfectly.
 
-The goal is not to reproduce an enterprise environment perfectly.
-
-The goal is to build a coherent environment where the student can:
-
-    - administer users and computers
-    - understand virtualization
-    - understand networking
-    - build and administer Windows infrastructure
-    - practice Active Directory
-    - troubleshoot incidents
-    - manage permissions
-    - work with ITSM workflows
-    - practice AWS-style cloud concepts locally
-    - use Infrastructure as Code
-    - automate repetitive administrative tasks
-    - understand cloud identity and permissions
-    - investigate failures
-    - apply security principles
-    - document infrastructure and procedures
-    - explain design decisions
+The goal is to build a coherent, realistic and maintainable
+engineering-company environment where infrastructure components
+actually interact with each other.
 
 
 ================================================================================
-IMPORTANT LEARNING PRINCIPLE
+PRIMARY PROJECT PRINCIPLE
 ================================================================================
 
-The student should NOT simply follow commands.
+THIS IS AN IMPLEMENTATION PROJECT, NOT A COURSE.
 
-Every major component should be understood through:
+The project should NOT proceed as:
+
+    lecture
+        ↓
+    theory
+        ↓
+    quiz
+        ↓
+    implementation
 
 
-    CONCEPT
-        ↓
-    WHY IT EXISTS
-        ↓
-    HOW IT WORKS
-        ↓
-    ALTERNATIVES
-        ↓
-    REAL-WORLD USE CASES
-        ↓
+Instead, the default workflow is:
+
+
     ARCHITECTURE
         ↓
     IMPLEMENTATION
         ↓
-    FAILURE SCENARIO
+    VERIFICATION
         ↓
     TROUBLESHOOTING
         ↓
     DOCUMENTATION
+        ↓
+    REVIEW
+        ↓
+    NEXT STAGE
 
 
-The project should prefer realistic scenarios over isolated
-technology demonstrations.
+The student learns concepts WHEN THEY BECOME NECESSARY
+FOR IMPLEMENTATION.
+
+
+Example:
+
+
+    Need to configure DNS
+        ↓
+    Encounter an unfamiliar DNS concept
+        ↓
+    Explain only the required concept
+        ↓
+    Implement it
+        ↓
+    Verify it
+        ↓
+    Continue
+
+
+Do NOT introduce large theoretical lessons unrelated
+to the current implementation task.
+
+
+================================================================================
+HOW THE PROJECT SHOULD BE TAUGHT
+================================================================================
+
+The student prefers:
+
+    REAL PROJECT WORK
+        over
+    STANDALONE LESSONS
+
+
+Therefore:
+
+    1. Define what needs to be built.
+
+    2. Explain the minimum architecture required.
+
+    3. Identify what we need to implement.
+
+    4. Implement it together.
+
+    5. If an unfamiliar concept appears,
+       explain it when needed.
+
+    6. Verify the result.
+
+    7. Intentionally troubleshoot important failures
+       when useful.
+
+    8. Document what was actually implemented.
+
+    9. Update project state.
+
+    10. Move to the next implementation task.
+
+
+The student may ask questions at any point.
+
+Questions should be answered in the context of
+the current implementation.
+
+
+IMPORTANT:
+
+Do NOT stop project progress merely because every
+underlying concept has not been formally studied.
+
+
+Understanding develops through implementation.
 
 
 ================================================================================
 PROJECT FLOW
 ================================================================================
 
-The project follows this high-level progression:
+The approved project order is:
 
 
+    PHASE 0
     LAB FOUNDATION
         ↓
+    PHASE 1
     NETWORKING
         ↓
-    CLOUD LAB
+    PHASE 2
+    CLOUD
         ↓
-    CLOUD APPLICATION
+    PHASE 3
+    WINDOWS / ACTIVE DIRECTORY
         ↓
-    TERRAFORM
+    PHASE 4
+    IT OPERATIONS
         ↓
-    WINDOWS INFRASTRUCTURE
+    PHASE 5
+    AUTOMATION / INFRASTRUCTURE AS CODE
         ↓
-    WINDOWS CLIENT
-        ↓
-    FILE SERVICES / PERMISSIONS
-        ↓
-    REMOTE IT SUPPORT
-        ↓
+    PHASE 6
     ITSM
         ↓
-    ARCHITECTURE COMPLETION
+    PHASE 7
+    MONITORING
         ↓
-    TODO / FUTURE SERVICES
+    PHASE 8
+    FINAL INTEGRATION
 
 
 This order is intentional.
 
 
-The project first establishes the underlying infrastructure
-and cloud concepts.
+Networking establishes the base infrastructure.
 
-Windows is introduced after the initial infrastructure
-and cloud foundations are understood.
+Cloud is implemented before the Windows environment.
 
-The Windows section then becomes the main
-on-premises administration environment.
+Windows / Active Directory then becomes the primary
+on-premises company infrastructure.
 
+IT Operations builds realistic administration and
+support workflows around the infrastructure.
 
-After the core environment is complete, the project
-moves from the mandatory architecture into the
-remaining TODO items.
+Automation / IaC formalizes repetitive administration
+and infrastructure management.
 
+ITSM models the operational support process.
 
-IMPORTANT:
+Monitoring is introduced after there is a real
+infrastructure to monitor.
 
-Not every technology in the final vision is a mandatory
-core phase.
-
-Some technologies are intentionally deferred until
-there is a real architectural or learning reason
-to introduce them.
+Final Integration connects the entire environment
+into one coherent company architecture.
 
 
 ================================================================================
-RELATIONSHIP WITH ACQUISITIONS PROJECT
+AUTOMATION / IAC PRINCIPLE
 ================================================================================
 
-The student already has a separate learning project:
+Automation is NOT isolated from the rest of the project.
 
-    ACQUISITIONS
+The dedicated:
 
+    PHASE 5 — AUTOMATION / INFRASTRUCTURE AS CODE
 
-Acquisitions focuses primarily on:
+exists to consolidate and formalize automation.
 
-    Application
-        ↓
-    Node.js
-        ↓
-    Express
-        ↓
-    Docker
-        ↓
-    Docker Compose
-        ↓
-    CI/CD
-        ↓
-    Kubernetes
-        ↓
-    Observability
+However, automation may be introduced EARLIER whenever
+the current implementation creates a realistic need.
 
 
-This project focuses primarily on:
-
-    Infrastructure
-        ↓
-    Virtualization
-        ↓
-    Networking
-        ↓
-    Cloud
-        ↓
-    Infrastructure as Code
-        ↓
-    Windows
-        ↓
-    Active Directory
-        ↓
-    ITSM
-        ↓
-    Automation
-        ↓
-    Security
-        ↓
-    Troubleshooting
-        ↓
-    Documentation
+Example:
 
 
-The projects complement each other.
-
-Together they create a broader practical stack:
-
-    IT Administration
-        +
-    Infrastructure
-        +
-    Cloud
-        +
-    DevOps
-        +
-    Automation
+    Manual task
+        ↓
+    repeated several times
+        ↓
+    identify repetition
+        ↓
+    automate where useful
 
 
-The Acquisitions project should NOT be rebuilt inside this lab.
+Therefore:
 
-Concepts and tools learned there may be reused where appropriate.
+    Automation may appear during:
+
+        Networking
+        Cloud
+        Windows
+        IT Operations
+        ITSM
+        Monitoring
+
+
+The same applies to Infrastructure as Code where
+the architecture provides a meaningful opportunity.
+
+
+The project should NOT artificially postpone useful
+automation until Phase 5.
+
+
+Phase 5 exists to turn accumulated manual work
+into structured, reproducible automation and IaC.
 
 
 ================================================================================
-FINAL ARCHITECTURE
+DOCUMENTATION PRINCIPLE
+================================================================================
+
+Documentation is produced AS PART OF IMPLEMENTATION.
+
+The project should NOT:
+
+    implement everything
+        ↓
+    document everything at the end
+
+
+Instead:
+
+
+    implement stage
+        ↓
+    verify stage
+        ↓
+    document stage
+        ↓
+    review actual state
+        ↓
+    continue
+
+
+Documentation must describe ACTUAL implementation.
+
+Planned components are NOT considered completed
+documentation.
+
+
+For every significant implementation stage,
+capture where appropriate:
+
+
+    WHAT was implemented
+    WHY it exists
+    HOW it is configured
+    HOW it was verified
+    IMPORTANT commands / configuration
+    TROUBLESHOOTING encountered
+    DESIGN decisions
+    IMPORTANT alternatives
+
+
+The conspect is a record of what was actually learned
+through implementation.
+
+
+================================================================================
+TROUBLESHOOTING PRINCIPLE
+================================================================================
+
+Troubleshooting is part of implementation.
+
+It is NOT a separate learning phase.
+
+
+When something fails:
+
+
+    OBSERVE
+        ↓
+    FORM HYPOTHESIS
+        ↓
+    CHECK
+        ↓
+    IDENTIFY ROOT CAUSE
+        ↓
+    FIX
+        ↓
+    VERIFY
+        ↓
+    DOCUMENT
+
+
+Non-trivial failures should become troubleshooting
+documentation when they provide useful infrastructure
+knowledge.
+
+
+Not every typo requires an incident document.
+
+
+================================================================================
+PROJECT ARCHITECTURE
 ================================================================================
 
 
@@ -248,57 +379,52 @@ FINAL ARCHITECTURE
           +-----------------------+-----------------------+
           |                       |                       |
           v                       v                       v
-      SYSADMIN                  ITSM                    CLOUD
+      ON-PREMISES              ITSM                    CLOUD
           |                       |                       |
-      Windows                Open-source ITSM          Floci
-      Active Directory       Tickets                   IAM
-      DNS                    Incidents                 S3
-      DHCP                   Assets                    SQS
-      GPO                    Software                  Lambda
-      File Services          Licenses                  RDS
-      Permissions            Knowledge Base            Secrets
+      Windows                Tickets                  Floci
+      Active Directory       Incidents                IAM
+      DNS                    Assets                   S3
+      DHCP                   Software                 SQS
+      GPO                    Licenses                 Lambda
+      File Services          Knowledge Base           RDS
+      Permissions                                      Secrets
           |                       |                       |
           +-----------------------+-----------------------+
                                   |
                                   v
-                         INFRASTRUCTURE AS CODE
+                        AUTOMATION / IaC
                                   |
-                              Terraform
-                                  |
-                                  v
-                              AUTOMATION
-                                  |
-                    +-------------+-------------+
-                    |             |             |
-                PowerShell      Bash         Python
-                                  |
-                                  v
-                              CI/CD
-                                  |
-                           GitHub Actions
-                                  |
-                                  v
-                              SECURITY
-                                  |
-                                  v
-                         TROUBLESHOOTING
-                                  |
-                                  v
-                           DOCUMENTATION
+                         +--------+--------+
+                         |                 |
+                     Terraform         Scripts
+                                           |
+                              +------------+------------+
+                              |            |            |
+                         PowerShell       Bash        Python
+                                           |
+                                           v
+                                      GitHub Actions
+                                           |
+                                           v
+                                      MONITORING
+                                           |
+                                           v
+                                      SECURITY
+                                           |
+                                           v
+                                  TROUBLESHOOTING
+                                           |
+                                           v
+                                    DOCUMENTATION
 
 
-IMPORTANT:
+This is a target architecture.
 
-Monitoring, VPN, advanced networking, additional servers
-and other secondary infrastructure are NOT required
-components of the initial architecture.
-
-They belong to the TODO / future implementation layer
-and are introduced only when justified.
+Components are implemented progressively.
 
 
 ================================================================================
-HOST / VIRTUALIZATION ARCHITECTURE
+HOST / VIRTUALIZATION
 ================================================================================
 
 Physical environment:
@@ -312,7 +438,7 @@ HOST
             │
             └── libvirt
                   │
-                  ├── engineering-lab network
+                  ├── engineering-lab
                   │
                   ├── MINT01
                   │
@@ -325,174 +451,269 @@ HOST
 
 Management:
 
+
     virt-manager
 
 
-The host machine is NOT part of the simulated company infrastructure.
+The Arch Linux host is NOT part of the simulated
+company infrastructure.
 
-Arch Linux acts as:
+It acts as:
 
-    hypervisor host
+
+    hypervisor
+    virtualization host
     management environment
-    virtualization platform
 
 
-The simulated company infrastructure exists inside the VMs.
+The simulated company exists inside the VMs.
 
 
 ================================================================================
-LIBVIRT NETWORK ARCHITECTURE
+CURRENT LAB FOUNDATION
 ================================================================================
 
-The primary VM network is:
+Host:
+
+
+    Arch Linux
+
+
+Virtualization:
+
+
+    QEMU/KVM
+    libvirt
+    qemu:///system
+    virt-manager
+
+
+Primary network:
 
 
     engineering-lab
 
 
-Conceptual topology:
+Network:
 
 
-                         ARCH HOST
-                             │
-                          QEMU/KVM
-                             │
-                          libvirt
-                             │
-                   engineering-lab
-                             │
-             +---------------+---------------+
-             │               │               │
-             ▼               ▼               ▼
-          MINT01           DC01            WIN01
-             │               │               │
-          Admin          AD / DNS /       Domain
-        Workstation         DHCP          Client
-
-
-The network is designed as a reusable internal laboratory network.
-
-It should NOT be designed around exactly three VMs.
-
-Future VMs may be connected to the same network without
-redesigning the base topology.
-
-
-================================================================================
-NETWORKING DESIGN PRINCIPLE
-================================================================================
-
-The initial network should remain SIMPLE.
-
-Initial target:
-
-
-    engineering-lab
     192.168.100.0/24
 
 
-Example addressing:
+Gateway:
+
+
+    192.168.100.1
+
+
+DHCP:
+
+
+    192.168.100.50 - 192.168.100.100
+
+
+NAT:
+
+
+    ENABLED
+
+
+Current VMs:
 
 
     MINT01
-        192.168.100.10
+        192.168.100.10/24
 
 
     DC01
-        192.168.100.20
+        192.168.100.20/24
 
 
     WIN01
-        192.168.100.30
+        192.168.100.30/24
 
 
-The exact addresses may change during implementation.
-
-The architecture must support:
+Current state:
 
 
-    VM-to-VM communication
-    DNS
-    DHCP
-    routing
-    firewalling
-    service discovery
-    troubleshooting
+    Virtualization
+        COMPLETE
 
 
-IMPORTANT:
-
-Do not introduce VLANs, multiple subnets, firewall appliances,
-VPNs or complex routing at the beginning.
-
-Those are future learning topics and belong in TODO
-until the architecture requires them.
+    Base networking
+        COMPLETE
 
 
-================================================================================
-VIRTUAL MACHINES
-================================================================================
+    Phase 1 networking
+        COMPLETE
 
 
-VM 1
-----
+    VM creation
+        COMPLETE
 
-Name:
+
+    VM lifecycle
+        COMPLETE
+
+
+    Snapshots
+        COMPLETE
+
 
     MINT01
+        READY
 
 
-Operating System:
+    DC01
+        WINDOWS SERVER BASELINE READY
+
+
+    WIN01
+        STANDALONE WINDOWS CLIENT READY
+
+
+    Active Directory
+        NOT IMPLEMENTED
+
+
+    Domain Join
+        NOT IMPLEMENTED
+
+
+    Cloud
+        NOT IMPLEMENTED
+
+
+    Terraform
+        NOT IMPLEMENTED
+
+
+    IT Operations
+        NOT IMPLEMENTED
+
+
+    ITSM
+        NOT IMPLEMENTED
+
+
+    Monitoring
+        NOT IMPLEMENTED
+
+
+    Final Integration
+        NOT IMPLEMENTED
+
+
+================================================================================
+MINT01
+================================================================================
+
+OS:
+
 
     Linux Mint
 
 
 Role:
 
+
     IT Administration Workstation
+
+
+IP:
+
+
+    192.168.100.10/24
+
+
+Addressing:
+
+
+    DHCP reservation
 
 
 Purpose:
 
 
-    - administration
-    - SSH
-    - PowerShell
-    - Bash
-    - Git
-    - GitHub CLI
-    - Terraform
-    - Floci CLI / API tooling where applicable
-    - network troubleshooting
-    - infrastructure management
-    - documentation
-    - repository management
+    administration
+    Git
+    networking
+    infrastructure management
+    troubleshooting
+    documentation
+    future Terraform
+    future cloud tooling
+    future automation
 
 
-MINT01 represents the IT administrator's workstation.
+Verified:
 
 
---------------------------------------------------------------------------------
+    DHCP reservation works
+    DHCP renewal works after interface disconnect/reconnect
+    external DNS resolution works through 192.168.100.1
+    external connectivity works
+    connectivity to DC01 works
+    connectivity to WIN01 works
 
-VM 2
-----
 
-Name:
+MINT01 is the primary administrative workstation
+inside the simulated environment.
+
+
+================================================================================
+DC01
+================================================================================
+
+OS:
+
+
+    Windows Server 2025 Standard
+
+
+Hostname:
+
 
     DC01
 
 
-Operating System:
-
-    Windows Server
+IP:
 
 
-Role:
+    192.168.100.20/24
+
+
+Gateway:
+
+
+    192.168.100.1
+
+
+Current DNS:
+
+
+    192.168.100.1
+
+
+Addressing:
+
+
+    DHCP reservation
+
+
+Current role:
+
+
+    Windows Server baseline
+
+
+Future role:
+
 
     Domain Controller
 
 
-Primary services:
+Planned services:
 
 
     Active Directory Domain Services
@@ -500,1296 +721,471 @@ Primary services:
     DHCP
 
 
-Possible future services:
+Current state:
 
 
-    File Services
-    IIS
-    other Windows infrastructure
+    Windows Server installed
+    network configured
+    baseline verified
+    snapshot created
+    connectivity verified
 
 
-DC01 represents the core on-premises identity infrastructure.
+Verified:
 
 
---------------------------------------------------------------------------------
-
-VM 3
-----
-
-Name:
-
-    WIN01
+    MINT01 ↔ DC01
+    WIN01 ↔ DC01
 
 
-Operating System:
+NOT YET IMPLEMENTED:
+
+
+    AD DS
+    DNS Server
+    DHCP Server
+    domain
+    OUs
+    users
+    groups
+    GPO
+
+
+Important:
+
+
+    DC01 is currently NOT a Domain Controller.
+
+
+================================================================================
+WIN01
+================================================================================
+
+OS:
+
 
     Windows 10/11
 
 
-Role:
-
-    Domain-joined employee workstation
-
-
-Purpose:
-
-
-    - domain login
-    - Group Policy testing
-    - software installation
-    - permissions testing
-    - network troubleshooting
-    - remote support practice
-    - Windows administration
-    - incident simulation
-
-
-WIN01 represents an employee workstation.
-
-
-================================================================================
-FUTURE OPTIONAL VMS
-================================================================================
-
-Additional VMs are NOT part of the initial environment.
-
-They are introduced only when they solve a real
-learning or architectural problem.
-
-
-Possible future machines:
-
-
-    FILE01
-        dedicated Windows file server
-
-
-    MON01
-        monitoring server
-
-
-    VPN01
-        VPN / routing / firewall appliance
-
-
-    LNX01
-        generic Linux server
-
-
-    WIN02
-        second Windows client
-
-
-    DC02
-        secondary Domain Controller
-
-
-IMPORTANT:
-
-Do NOT create these VMs at the beginning merely for complexity.
-
-A VM is introduced only when:
-
-    architecture requires it
-        OR
-    a learning scenario requires it
-        OR
-    troubleshooting requires it
-
-
-Otherwise it remains in TODO.
-
-
-================================================================================
-ACTIVE DIRECTORY
-================================================================================
-
-Domain:
-
-
-    company.local
-
-
-Domain Controller:
-
-
-    DC01
-
-
-Core services:
-
-
-    AD DS
-    DNS
-    DHCP
-
-
-Conceptual structure:
-
-
-company.local
-|
-+-- OU=Users
-|    |
-|    +-- Engineering
-|    +-- IT
-|    +-- Finance
-|    +-- Management
-|
-+-- OU=Computers
-|    |
-|    +-- Engineering
-|    +-- IT
-|
-+-- OU=Groups
-|
-+-- OU=Servers
-|
-└-- OU=ServiceAccounts
-
-
-Example groups:
-
-
-GG-Engineering
-GG-IT
-GG-Finance
-GG-Management
-
-SG-Engineering-Share-RW
-SG-Engineering-Share-RO
-SG-IT-Admins
-SG-VPN-Users
-
-
-Topics:
-
-
-    Users
-    Groups
-    OUs
-    Security Groups
-    Group Policy
-    Authentication
-    Authorization
-    NTFS permissions
-    Share permissions
-    ACLs
-    Service Accounts
-    Least Privilege
-    Password Policies
-    Account Lockout
-    Domain Join
-
-
-VPN-RELATED GROUPS MAY EXIST CONCEPTUALLY,
-but VPN infrastructure itself is deferred to TODO.
-
-
-================================================================================
-WINDOWS CLIENT ADMINISTRATION
-================================================================================
-
-WIN01 represents an employee workstation.
-
-
-Primary learning areas:
-
-
-    Windows 10/11 administration
-    PowerShell
-    Services
-    Event Viewer
-    Task Scheduler
-    Device Manager
-    Windows Update
-    Windows Defender
-    Windows Firewall
-    Registry
-    Local Users
-    Local Groups
-    Network Configuration
-    DNS troubleshooting
-    RDP
-    Software installation
-    Domain Join
-    Group Policy
-
-
-Example employee:
-
-
-    Alice
-
-
-Department:
-
-
-    Engineering
-
-
-Example workstation:
+Hostname:
 
 
     WIN01
 
 
-Owner:
+IP:
 
 
-    Alice
+    192.168.100.30/24
 
 
-The workstation should be used for realistic support scenarios.
+Role:
 
 
-================================================================================
-FILE SERVICES AND PERMISSIONS
-================================================================================
-
-The lab should eventually provide department shares.
+    Future domain-joined employee workstation
 
 
-Example:
+Addressing:
 
 
-Engineering Share
-|
-+-- Projects
-+-- Documentation
-+-- Standards
-└-- Shared
+    DHCP reservation
 
 
-Finance Share
-|
-+-- Documents
-└-- Reports
+Current state:
 
 
-IT Share
-|
-+-- Scripts
-+-- Documentation
-└-- Software
+    Windows installed
+    hostname configured
+    networking configured
+    connectivity verified
+    firewall troubleshooting completed
+    baseline snapshot created
 
 
-Access should be controlled through security groups.
+Verified:
 
 
-Topics:
+    MINT01 ↔ WIN01
+    DC01 ↔ WIN01
 
 
-    SMB
-    NTFS permissions
-    Share permissions
-    ACL
-    inheritance
-    effective permissions
-    group-based access
-    least privilege
+Important:
 
 
-A dedicated FILE01 is NOT required initially.
+    WIN01 is currently standalone.
 
-File Services may begin on DC01 if appropriate.
 
-A dedicated FILE01 becomes a TODO item if the architecture
-later benefits from separation of roles.
+    Domain Join will occur during:
+
+        PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 
 
 ================================================================================
-REMOTE IT SUPPORT
+NETWORKING
 ================================================================================
 
-The lab should simulate an internal IT Help Desk.
+PHASE 1 — NETWORKING
 
+STATUS:
 
-Example incidents:
 
+    COMPLETE
 
-INC-001
-    User cannot log in
 
+Implementation scope:
 
-INC-002
-    User cannot access Engineering share
 
+    engineering-lab networking
+    IP configuration
+    subnet
+    DHCP
+    DNS
+    routing
+    NAT
+    firewalling
+    connectivity
+    troubleshooting
 
-INC-003
-    DNS resolution failure
 
+Final verified network state:
 
-INC-004
-    DHCP problem
 
+    Network:
 
-INC-005
-    Application does not start
+        engineering-lab
 
 
-INC-006
-    User lacks required permission
+    Network status:
 
+        ACTIVE
 
-INC-007
-    Windows Update failure
 
+    Bridge:
 
-INC-008
-    High CPU / memory usage
+        libvirt virtual network bridge
 
 
-INC-009
-    Network connectivity failure
+    Subnet:
 
+        192.168.100.0/24
 
-INC-010
-    Account locked
 
+    Mask:
 
-INC-011
-    Software license unavailable
+        255.255.255.0
 
 
-INC-012
-    Cloud authentication / permission problem
+    Gateway:
 
+        192.168.100.1
 
-INC-013
-    Cloud application failure
 
+    DHCP range:
 
-INC-014
-    Suspicious login / account security issue
+        192.168.100.50 - 192.168.100.100
 
 
-Every incident should follow:
+    NAT:
 
+        ENABLED
 
-    SYMPTOM
-        ↓
-    INITIAL INVESTIGATION
-        ↓
-    HYPOTHESIS
-        ↓
-    DIAGNOSTICS
-        ↓
-    ROOT CAUSE
-        ↓
-    FIX
-        ↓
-    VERIFICATION
-        ↓
-    DOCUMENTATION
 
+    Reservations:
 
-The student should learn to reason from symptoms
-instead of blindly executing commands.
 
+        MINT01
+            192.168.100.10
 
-================================================================================
-ITSM
-================================================================================
 
-ITSM is part of the CORE COMPANY ENVIRONMENT.
+        DC01
+            192.168.100.20
 
-It is introduced after the main Windows administration
-and support concepts are understood.
 
+        WIN01
+            192.168.100.30
 
-Technology principle:
 
+    Current DNS behavior:
 
-    OPEN-SOURCE ITSM
+        MINT01 resolves external DNS through
+        192.168.100.1.
 
+        DC01 currently uses 192.168.100.1.
 
-The exact ITSM platform will be selected during
-the ITSM stage based on:
+        WIN01 currently uses the lab gateway /
+        current network-provided DNS.
 
-    functionality
-    ease of deployment
-    learning value
-    documentation
-    licensing
-    resource consumption
 
+Verification:
 
-The project should avoid unnecessary dependence
-on a proprietary ITSM platform.
 
+    [x] MINT01 receives reserved address through DHCP
+    [x] DHCP renewal verified through interface reconnect
+    [x] MINT01 external DNS resolution verified
+    [x] MINT01 external connectivity verified
+    [x] MINT01 ↔ DC01 connectivity verified
+    [x] MINT01 ↔ WIN01 connectivity verified
+    [x] DC01 ↔ WIN01 connectivity verified
+    [x] Gateway connectivity verified
+    [x] VM-to-VM connectivity verified
+    [x] NAT verified
 
-Core learning scope:
 
+Network documentation:
 
-ITSM
-|
-+-- Users
-|
-+-- Tickets
-|    |
-|    +-- Incidents
-|    +-- Service Requests
-|    +-- Changes
-|
-+-- Assets
-|
-+-- Software
-|
-+-- Licenses
-|
-+-- Knowledge Base
-|
-+-- Departments
-|
-└-- Audit History
 
+    [x] architecture/network.md
+    [x] infrastructure/networking.md
+    [x] Phase 1 documentation review
 
-Advanced ITSM functionality is deferred to TODO.
 
+Procedures:
 
-================================================================================
-ENGINEERING SOFTWARE / LICENSE MANAGEMENT
-================================================================================
 
-Engineering software catalog:
+    NOT REQUIRED
 
 
-    Autodesk Revit
-    Bluebeam
-    Revizto
-    ElumTools
-    SKM
-    Dialux
-    Tekla
+Reason:
 
 
-The lab should model a realistic software request workflow:
+    The implemented networking configuration did not
+    introduce a sufficiently meaningful repeatable
+    administrative workflow requiring a standalone
+    networking procedure.
 
 
-    Employee
-        ↓
-    Software Request
-        ↓
-    Manager Approval
-        ↓
-    IT Approval
-        ↓
-    License Availability Check
-        ↓
-    License Assignment
-        ↓
-    Software Installation
-        ↓
-    Verification
-        ↓
-    Asset Update
-        ↓
-    Ticket Resolution
+Incidents:
 
 
-The workflow should also cover:
+    NOT REQUIRED
 
 
-    unavailable license
-    expired license
-    renewal request
-    license reassignment
-    user leaving company
-    software removal
+Reason:
 
 
-Paid engineering software is NOT required for the core lab.
+    No significant networking incident remained after
+    verification.
 
 
-The primary learning objective is:
+Important:
 
 
-    software management
-        +
-    licensing
-        +
-    ITSM workflow
-        +
-    asset management
+    Phase 1 is COMPLETE.
 
+    The networking foundation is now considered stable
+    for the next project phase.
 
-not learning every engineering application itself.
+    Future networking changes should be driven by
+    architectural requirements rather than adding
+    complexity for its own sake.
 
 
 ================================================================================
-CLOUD LAB
+PHASE 1 TROUBLESHOOTING
 ================================================================================
 
-Cloud environment:
+Troubleshooting remains part of implementation.
 
+Completed troubleshooting cases from the lab foundation:
 
-    FLOCI
 
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
 
-Purpose:
 
+TRB-003:
 
-    Practice AWS-style cloud concepts locally
-    without making the project dependent on
-    a paid production AWS environment.
 
+    Windows machines could reach the gateway and MINT01,
+    but DC01 and WIN01 could not ping each other.
 
-Floci is the project's primary local cloud laboratory.
 
+Root cause:
 
-The cloud section should cover, where supported and useful:
 
+    Windows Firewall did not allow ICMP echo requests
+    on the active network profile.
 
-    IAM
-    S3
-    SQS
-    Lambda
-    RDS
-    Secrets
-    cloud networking where useful
-    logging where useful
 
+Resolution:
 
-IMPORTANT:
 
-The project is NOT a real AWS project.
+    ICMP echo was explicitly allowed on both machines.
 
-The primary cloud environment is:
 
+Verification:
 
-    FLOCI
 
+    [x] DC01 -> WIN01
+    [x] WIN01 -> DC01
 
-AWS terminology may be used because the cloud model
-and APIs are AWS-oriented, but the implementation
-should remain local.
 
+Troubleshooting documentation:
 
-Do NOT create cloud services merely because they exist.
 
-Every service must have a scenario-driven reason to exist.
+    docs/incidents/troubleshooting/
 
 
-================================================================================
-CLOUD BUSINESS WORKFLOW
-================================================================================
-
-Primary example:
-
-
-Engineering Document Workflow
-
-
-Employee
-    |
-    v
-Application / upload process
-    |
-    v
-S3
-    |
-    v
-SQS
-    |
-    v
-Lambda
-    |
-    +-------------> process metadata
-    |
-    +-------------> RDS
-    |
-    +-------------> logging
-    |
-    v
-Result
-
-
-This scenario provides a reason to learn:
-
-
-    S3
-    SQS
-    Lambda
-    RDS
-    IAM
-    Secrets
-    Logging
-
-
-The workflow should be implemented before adding
-unrelated cloud services.
-
-
-================================================================================
-CLOUD IAM
-================================================================================
-
-IAM should be designed around least privilege.
-
-
-Example:
-
-
-engineering-user
-
-    permissions:
-        limited engineering access
-
-
-it-admin
-
-    permissions:
-        administrative operations
-
-
-application-role
-
-    permissions:
-        application-specific operations
-
-
-lambda-role
-
-    permissions:
-        S3 read
-        SQS consume
-        RDS access
-
-    no:
-        IAM administration
-
-
-The student should intentionally create and troubleshoot
-permission failures.
-
-
-Topics:
-
-
-    IAM Users
-    IAM Groups
-    IAM Roles
-    IAM Policies
-    Resource Policies
-    Least Privilege
-    Permission Evaluation
-    Access Denied troubleshooting
-
-
-================================================================================
-SECRETS MANAGEMENT
-================================================================================
-
-Secrets should not be stored directly in:
-
-
-    Git
-    source code
-    Terraform files
-    Dockerfiles
-    plain-text documentation
-
-
-Conceptual flow:
-
-
-Application
-    |
-    v
-Secrets Manager / equivalent Floci mechanism
-    |
-    +-- database credentials
-    +-- API keys
-    +-- application secrets
-    +-- service credentials
-
-
-This should later connect with:
-
-
-    Terraform
-    GitHub Actions
-    Lambda
-    RDS
-
-
-The exact implementation depends on Floci capabilities.
-
-
-================================================================================
-TERRAFORM
-================================================================================
-
-Terraform is the Infrastructure as Code layer.
-
-Terraform is introduced AFTER the initial cloud
-resources and architecture are understood manually.
-
-
-Target architecture:
-
-
-Terraform
-    |
-    +-- IAM
-    +-- S3
-    +-- SQS
-    +-- Lambda
-    +-- RDS
-    +-- Secrets
-    +-- other required infrastructure
-
-
-The provider / implementation must be compatible
-with the chosen Floci environment.
-
-
-Learning progression:
-
-
-    Terraform basics
-        ↓
-    Provider
-        ↓
-    Resources
-        ↓
-    Variables
-        ↓
-    Outputs
-        ↓
-    State
-        ↓
-    Plan
-        ↓
-    Apply
-        ↓
-    Destroy
-        ↓
-    Modules
-        ↓
-    Environment management
-        ↓
-    Drift
-
-
-Important concepts:
-
-
-    declarative configuration
-    desired state
-    actual state
-    Terraform state
-    dependency graph
-    drift
-    plan
-    apply
-    destroy
-    idempotency
-
-
-The student should understand WHY Terraform is useful,
-not merely learn Terraform syntax.
-
-
-================================================================================
-AUTOMATION
-================================================================================
-
-Automation is introduced AFTER the manual administration
-workflows are understood.
-
-
-Primary tools:
-
-
-    PowerShell
-    Bash
-    Python
-    Terraform
-    GitHub Actions
-
-
-Possible automation:
-
-
-    create user
-    disable user
-    reset account
-    provision workstation configuration
-    check DNS
-    check service health
-    collect system information
-    create ITSM records
-    update assets
-    validate infrastructure
-    deploy cloud infrastructure
-    run health checks
-
-
-Automation should always begin with understanding
-the manual process first.
-
-
-Manual Process
-    ↓
-Understand
-    ↓
-Identify repetition
-    ↓
-Automate
-    ↓
-Validate
-    ↓
-Document
-
-
-================================================================================
-GITHUB ACTIONS / CI/CD
-================================================================================
-
-GitHub Actions should automate repository and
-infrastructure-related workflows.
-
-
-Possible workflow:
-
-
-git push
-    |
-    v
-GitHub Actions
-    |
-    +-- lint
-    +-- tests
-    +-- Terraform fmt
-    +-- Terraform validate
-    +-- Terraform plan
-    |
-    v
-deployment / approval
-    |
-    v
-Terraform apply
-
-
-CI/CD is introduced only after Terraform
-and the underlying infrastructure are understood.
-
-
-Security:
-
-
-    GitHub Secrets
-    environment protection
-    least privilege
-    deployment permissions
-
-
-================================================================================
-MONITORING / OBSERVABILITY
-================================================================================
-
-Monitoring is NOT a mandatory standalone core phase.
-
-The project should first use native diagnostic tools:
-
-
-Windows:
-
-
-    Event Viewer
-    Performance Monitor
-    Event Logs
-    Services
-
-
-Linux:
-
-
-    journalctl
-    systemd
-    top
-    ps
-    free
-    df
-    ss
-    ip
-
-
-Network:
-
-
-    ping
-    ip
-    ss
-    nslookup
-    dig
-    traceroute
-    curl
-
-
-Prometheus, Grafana, centralized logging
-and other observability infrastructure belong to TODO.
-
-
-They should be introduced only when:
-
-    the current infrastructure needs monitoring
-        OR
-    a monitoring-specific learning scenario is selected.
-
-
-Mental model:
-
-
-    Logs
-        =
-    What happened?
-
-
-    Metrics
-        =
-    How is the system behaving?
-
-
-    Traces
-        =
-    How did a request move through the system?
-
-
-================================================================================
-SECURITY
-================================================================================
-
-Security is NOT a separate final phase only.
-
-Security should be considered throughout the project.
-
-
-Core principles:
-
-
-    Least Privilege
-    Authentication
-    Authorization
-    MFA where applicable
-    Password Policies
-    Account Lockout
-    GPO Security
-    Windows Firewall
-    IAM Policies
-    Secrets Management
-    Audit Logs
-    Patch Management
-    Backups
-    Access Reviews
-
-
-Advanced security infrastructure such as:
-
-    VPN
-    network segmentation
-    advanced firewalling
-    centralized security tooling
-
-is deferred to TODO until justified.
-
-
-Security should be taught through practical failures.
-
-
-================================================================================
-INCIDENT SIMULATION
-================================================================================
-
-A major goal of the project is troubleshooting.
-
-
-The environment should intentionally contain
-controlled failures.
-
-
-Possible scenarios:
-
-
-    DNS failure
-    DHCP failure
-    AD authentication failure
-    account lockout
-    incorrect GPO
-    incorrect NTFS permissions
-    incorrect share permissions
-    broken service
-    unavailable network
-    incorrect firewall rule
-    expired software license
-    missing software
-    broken Windows update
-    high resource usage
-    cloud permission failure
-    unavailable S3 resource
-    Lambda failure
-    database connectivity failure
-    expired secret
-    Terraform drift
-
-
-Each scenario should be investigated like a real IT incident.
+No new networking incident documentation was required
+during the Phase 1 review.
 
 
 ================================================================================
 DOCUMENTATION
 ================================================================================
 
-Documentation is a first-class part of the project.
+Documentation model:
 
 
-Documentation design begins during:
+    architecture
+        =
+    what the system is and why it is designed this way
 
 
-    PHASE 0 — LAB FOUNDATION
+    infrastructure
+        =
+    what is actually deployed
 
 
-The repository and documentation structure are designed
-before substantial infrastructure implementation begins.
+    procedures
+        =
+    how to perform administrative tasks
 
 
-Documentation should explain:
+    incidents / troubleshooting
+        =
+    failures, investigation, root cause and resolution
 
 
-    What exists
-    Why it exists
-    How it works
-    How to administer it
-    How to troubleshoot it
-    How to recover it
+    software
+        =
+    software inventory and licensing
 
 
-Initial documentation structure:
+    cloud
+        =
+    cloud-specific implementation
 
 
-docs/
-|
-+-- architecture/
-|    |
-|    +-- overview.md
-|    +-- virtualization.md
-|    +-- network.md
-|    +-- active-directory.md
-|    +-- cloud.md
-|
-+-- infrastructure/
-|    |
-|    +-- vms.md
-|    +-- networking.md
-|    +-- services.md
-|
-+-- procedures/
-|    |
-|    +-- create-user.md
-|    +-- disable-user.md
-|    +-- domain-join.md
-|    +-- troubleshoot-dns.md
-|    +-- reset-password.md
-|    +-- software-installation.md
-|
-+-- incidents/
-|    |
-|    +-- troubleshooting/
-|         |
-|         +-- TRB-001.md
-|         +-- ...
-|    +-- INC-001.md
-|    +-- INC-002.md
-|    +-- ...
-|
-+-- software/
-|    |
-|    +-- catalog.md
-|    +-- licensing.md
-|
-+-- cloud/
-|    |
-|    +-- iam.md
-|    +-- s3.md
-|    +-- lambda.md
-|    +-- rds.md
-|
-+-- security/
-|    |
-|    +-- baseline.md
-|    +-- permissions.md
-|    +-- incident-response.md
-|
-+-- disaster-recovery/
-|    |
-|    +-- backup.md
-|    +-- restore.md
-|
-└-- todo.md
+    security
+        =
+    security controls and practices
 
 
-The exact structure may evolve.
+    disaster-recovery
+        =
+    backup and recovery
+
+
+Documentation principle:
+
+
+    Documentation follows implementation.
+
+    Planned documentation is not treated as completed
+    documentation.
+
+    Each phase is documented after the implemented state
+    has been verified.
+
+
+--------------------------------------------------------------------------------
+CURRENT DOCUMENTATION STATUS
+--------------------------------------------------------------------------------
+
+Architecture:
+
+
+    [x] architecture/overview.md
+    [x] architecture/virtualization.md
+    [x] architecture/network.md
+    [ ] architecture/active-directory.md
+    [ ] architecture/cloud.md
+
+
+Infrastructure:
+
+
+    [x] infrastructure/vms.md
+    [x] infrastructure/networking.md
+    [ ] infrastructure/services.md
+
+
+Procedures:
+
+
+    [ ] create-user.md
+    [ ] disable-user.md
+    [ ] domain-join.md
+    [ ] troubleshoot-dns.md
+    [ ] reset-password.md
+    [ ] software-installation.md
+
+
+Incidents / Troubleshooting:
+
+
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+
+
+Software:
+
+
+    [ ] catalog.md
+    [ ] licensing.md
+
+
+Cloud:
+
+
+    [ ] iam.md
+    [ ] s3.md
+    [ ] lambda.md
+    [ ] rds.md
+
+
+Security:
+
+
+    [ ] baseline.md
+    [ ] permissions.md
+    [ ] incident-response.md
+
+
+Disaster Recovery:
+
+
+    [ ] backup.md
+    [ ] restore.md
+
+
+Phase 1 documentation status:
+
+
+    COMPLETE
+
+
+Phase 1 documentation review:
+
+
+    COMPLETE
+
+
+No networking procedure was created because
+no standalone networking procedure was justified.
+
+
+No networking incident document was created during
+the Phase 1 review because no significant incident
+remained after verification.
 
 
 ================================================================================
-TODO / FUTURE IMPLEMENTATIONS
+REPOSITORY
 ================================================================================
-
-The project uses a central TODO list for features
-that are intentionally NOT implemented immediately.
-
-
-The TODO list is an active extension layer of the project.
-
-It contains infrastructure and services that may be introduced
-after the core architecture is complete.
-
-
-The TODO list should contain:
-
-
-    FEATURE
-        ↓
-    WHY IT MAY BE NEEDED
-        ↓
-    PREREQUISITES
-        ↓
-    FUTURE STAGE
-        ↓
-    TUTORIAL / IMPLEMENTATION
-        ↓
-    STATUS
-
-
-Examples:
-
-
-NETWORKING
-----------
-
-    VPN
-    Firewall Appliance
-    Network Segmentation
-    Multiple Subnets
-    Advanced Routing
-    NAT
-    Advanced libvirt networking
-
-
-WINDOWS
--------
-
-    FILE01
-    DFS
-    Advanced GPO
-    Windows Deployment
-    Additional Domain Controller
-    Windows infrastructure services
-
-
-ITSM
-----
-
-    Advanced workflows
-    SLA
-    Asset discovery
-    Software deployment integration
-    Advanced automation
-
-
-LICENSING
----------
-
-    License expiration workflow
-    Renewal workflow
-    License reassignment
-    Automated license reporting
-
-
-MONITORING
-----------
-
-    MON01
-    Prometheus
-    Grafana
-    Alerting
-    Centralized logs
-    Loki
-    OpenSearch / ELK
-
-
-SECURITY
---------
-
-    MFA
-    VPN
-    Network segmentation
-    Advanced auditing
-    Security baselines
-    Access reviews
-
-
-CLOUD
------
-
-    Additional Floci services
-    Advanced IAM
-    Cloud networking
-    Additional Lambda workflows
-    Advanced secrets management
-
-
-AUTOMATION
-----------
-
-    User provisioning
-    Asset synchronization
-    Health checks
-    ITSM automation
-    Infrastructure automation
-
-
-IMPORTANT:
-
-The TODO list is NOT a dumping ground.
-
-Every significant TODO item should eventually receive:
-
-    reason
-    prerequisites
-    learning objective
-    focused implementation/tutorial
-
-
-The master context should contain only:
-
-    - what the feature is
-    - why it exists
-    - where it belongs
-    - current status
-
-
-Detailed implementation belongs in:
-
-
-    tutorial
-    conspect
-    documentation
-    implementation task
-
-
-This prevents the main context from becoming unnecessarily huge.
-
-
-================================================================================
-PROJECT REPOSITORY
-================================================================================
-
-A Git repository is created BEFORE moving beyond
-the Lab Foundation phase.
-
 
 Repository:
 
@@ -1797,17 +1193,632 @@ Repository:
     engineering-company-it-lab
 
 
-The repository is part of the project infrastructure,
-not something added at the end.
+The repository is the source of truth for
+implementation and documentation.
 
 
-Initial repository setup belongs to:
+Important implementation files:
 
 
-    PHASE 0 — LAB FOUNDATION
+    networking/configs/engineering-lab.xml
 
 
-Repository structure:
+Important documentation:
+
+
+    docs/architecture/overview.md
+    docs/architecture/virtualization.md
+    docs/architecture/network.md
+    docs/infrastructure/vms.md
+    docs/infrastructure/networking.md
+    docs/incidents/troubleshooting/
+    docs/documentation-plan.md
+
+
+Git state:
+
+
+    Previous commit:
+
+        feat: lab foundation complete
+
+
+    Phase 1 documentation changes:
+
+        COMPLETED
+
+
+    Documentation-only Phase 1 changes:
+
+        NOT COMMITTED
+
+
+Reason:
+
+
+    Phase 1 review resulted in documentation updates only.
+
+    No new implementation change was introduced that
+    justified a separate commit.
+
+
+Current working principle:
+
+
+    Keep the previous foundation commit as the current
+    Git baseline.
+
+    The next commit will be created after a substantive
+    implementation change.
+
+
+Important:
+
+
+    The repository documentation may therefore describe
+    a more recent verified state than the latest Git commit.
+
+
+================================================================================
+PHASE 0 — LAB FOUNDATION
+================================================================================
+
+STATUS:
+
+
+    COMPLETE
+
+
+Major completed areas:
+
+
+    [x] Project architecture
+    [x] Repository
+    [x] Repository structure
+    [x] Documentation structure
+    [x] Documentation planning
+    [x] Arch Linux host
+    [x] QEMU/KVM
+    [x] libvirt
+    [x] qemu:///system
+    [x] virt-manager
+    [x] VM creation
+    [x] VM lifecycle
+    [x] Snapshots
+    [x] Resource allocation
+    [x] engineering-lab
+    [x] NAT
+    [x] 192.168.100.0/24
+    [x] Gateway
+    [x] DHCP
+    [x] MINT01
+    [x] DC01
+    [x] WIN01
+    [x] VM networking
+    [x] Connectivity verification
+    [x] Troubleshooting
+    [x] Phase 0 documentation
+
+
+Phase 0 commit:
+
+
+    feat: lab foundation complete
+
+
+================================================================================
+PHASE 1 — NETWORKING
+================================================================================
+
+STATUS:
+
+
+    COMPLETE
+
+
+Objective:
+
+
+    Establish a properly designed, verified and documented
+    networking foundation for the engineering company lab.
+
+
+Completed:
+
+
+    [x] Review current network architecture
+    [x] Define network addressing scheme
+    [x] Define IP allocation strategy
+    [x] Define static / reserved / dynamic addressing
+    [x] Define gateway behavior
+    [x] Define DNS strategy for current stage
+    [x] Define routing behavior
+    [x] Define NAT behavior
+    [x] Verify libvirt network configuration
+    [x] Verify host ↔ lab connectivity
+    [x] Verify VM ↔ VM connectivity
+    [x] Verify VM ↔ external network connectivity
+    [x] Verify DHCP behavior
+    [x] Verify DNS resolution
+    [x] Verify routing
+    [x] Verify firewall behavior
+    [x] Document network architecture
+    [x] Document deployed networking
+    [x] Review Phase 1 implementation
+    [x] Complete Phase 1 documentation review
+
+
+Phase 1 documentation result:
+
+
+    architecture/network.md
+        UPDATED
+
+
+    infrastructure/networking.md
+        UPDATED
+
+
+    networking procedures
+        NOT REQUIRED
+
+
+    networking incidents
+        NOT REQUIRED
+
+
+Phase 1 result:
+
+
+    NETWORKING FOUNDATION COMPLETE
+
+
+Phase 1 Git result:
+
+
+    Documentation changes intentionally remain
+    uncommitted until the next substantive implementation.
+
+
+================================================================================
+PHASE 2 — CLOUD
+================================================================================
+
+STATUS:
+
+
+    CURRENT
+
+
+Objective:
+
+
+    Introduce cloud infrastructure into the lab after
+    the networking foundation is established.
+
+
+Primary cloud laboratory:
+
+
+    FLOCI
+
+
+Planned direction:
+
+
+    [ ] Cloud architecture
+    [ ] IAM
+    [ ] S3
+    [ ] SQS
+    [ ] Lambda
+    [ ] RDS
+    [ ] Secrets
+    [ ] Networking integration
+    [ ] Security
+    [ ] Logging where useful
+    [ ] Documentation
+
+
+Primary scenario:
+
+
+    Engineering Document Workflow
+
+
+    Employee
+        ↓
+    Application
+        ↓
+    S3
+        ↓
+    SQS
+        ↓
+    Lambda
+        ↓
+    RDS
+        +
+    Logging
+        +
+    IAM
+        +
+    Secrets
+
+
+Important:
+
+
+    Do NOT implement cloud services merely because
+    they exist in AWS.
+
+
+    Each service should have a meaningful role
+    in the company scenario.
+
+
+    Actual implementation depends on Floci capabilities.
+
+
+Current Phase 2 state:
+
+
+    NOT YET IMPLEMENTED
+
+
+Next implementation task:
+
+
+    Inspect the available Floci environment and
+    determine the first concrete cloud implementation
+    required by the scenario.
+
+
+================================================================================
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Transform the existing standalone Windows environment
+    into a managed company domain environment.
+
+
+Planned direction:
+
+
+    [ ] AD DS
+    [ ] DNS
+    [ ] DHCP
+    [ ] Domain
+    [ ] Organizational Units
+    [ ] Users
+    [ ] Groups
+    [ ] Group Policy
+    [ ] WIN01 domain join
+    [ ] Windows administration
+    [ ] Permissions
+    [ ] Documentation
+
+
+Important:
+
+
+    AD DS and domain join must NOT be implemented
+    before Phase 3.
+
+
+================================================================================
+PHASE 4 — IT OPERATIONS
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Build realistic day-to-day IT administration workflows
+    around the infrastructure already created.
+
+
+Potential areas:
+
+
+    [ ] User lifecycle
+    [ ] Workstation lifecycle
+    [ ] Software deployment
+    [ ] Access management
+    [ ] Backup operations
+    [ ] Recovery operations
+    [ ] Patch management
+    [ ] Administrative procedures
+    [ ] Operational documentation
+
+
+================================================================================
+PHASE 5 — AUTOMATION / INFRASTRUCTURE AS CODE
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Convert appropriate manual administration
+    and infrastructure operations into
+    reproducible automation.
+
+
+Potential areas:
+
+
+    [ ] Terraform
+    [ ] Infrastructure definitions
+    [ ] Configuration automation
+    [ ] PowerShell
+    [ ] Bash
+    [ ] Python
+    [ ] Git workflows
+    [ ] CI/CD
+    [ ] Infrastructure validation
+    [ ] Automated operations
+
+
+Important:
+
+
+    Automation can be introduced earlier where it naturally
+    improves an implementation, but this phase is where
+    automation becomes a primary project objective.
+
+
+================================================================================
+PHASE 6 — ITSM
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Introduce structured IT service management around the
+    infrastructure and operational workflows.
+
+
+Potential areas:
+
+
+    [ ] ITSM platform
+    [ ] Users / organizations
+    [ ] Tickets
+    [ ] Incidents
+    [ ] Service requests
+    [ ] Assets
+    [ ] Knowledge base
+    [ ] Change management
+    [ ] Operational workflows
+
+
+================================================================================
+PHASE 7 — MONITORING
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Introduce infrastructure monitoring, observability
+    and operational visibility.
+
+
+Potential areas:
+
+
+    [ ] Host monitoring
+    [ ] VM monitoring
+    [ ] Service monitoring
+    [ ] Network monitoring
+    [ ] Logs
+    [ ] Metrics
+    [ ] Alerting
+    [ ] Dashboards
+    [ ] Incident integration
+
+
+================================================================================
+PHASE 8 — FINAL INTEGRATION
+================================================================================
+
+STATUS:
+
+
+    PLANNED
+
+
+Objective:
+
+
+    Connect the individual project phases into one coherent
+    company IT environment.
+
+
+Potential integration:
+
+
+    [ ] Networking
+    [ ] Cloud
+    [ ] Windows / AD
+    [ ] IT Operations
+    [ ] Automation / IaC
+    [ ] ITSM
+    [ ] Monitoring
+    [ ] Security
+    [ ] Backup / Recovery
+    [ ] Documentation
+    [ ] Operational workflows
+
+
+Final objective:
+
+
+    The lab should behave as a coherent small-company
+    infrastructure environment rather than a collection
+    of isolated technical exercises.
+
+
+================================================================================
+SECURITY
+================================================================================
+
+Security is cross-cutting.
+
+It is NOT postponed until the end.
+
+
+Apply throughout implementation:
+
+
+    Least Privilege
+    Authentication
+    Authorization
+    Secure defaults
+    Firewalling
+    Password policies
+    Account lockout
+    IAM policies
+    Secrets management
+    Audit logs
+    Patch management
+    Backups
+    Access reviews
+
+
+Advanced security infrastructure remains optional
+until justified by the architecture.
+
+
+================================================================================
+TODO / FUTURE IMPLEMENTATIONS
+================================================================================
+
+TODO is an extension layer.
+
+Potential future work:
+
+
+NETWORKING
+
+    VPN
+    Firewall appliance
+    Network segmentation
+    Multiple subnets
+    Advanced routing
+    Advanced NAT
+
+
+WINDOWS
+
+    FILE01
+    DFS
+    Advanced GPO
+    WIN02
+    DC02
+    Windows deployment
+
+
+ITSM
+
+    SLA
+    Advanced workflows
+    Asset discovery
+    Software deployment integration
+
+
+MONITORING
+
+    MON01
+    Prometheus
+    Grafana
+    Alerting
+    Centralized logging
+    Loki
+    OpenSearch / ELK
+
+
+SECURITY
+
+    MFA
+    VPN
+    Network segmentation
+    Advanced auditing
+    Access reviews
+
+
+CLOUD
+
+    Additional Floci services
+    Advanced IAM
+    Cloud networking
+    Additional workflows
+    Advanced secrets management
+
+
+AUTOMATION
+
+    Advanced user provisioning
+    Asset synchronization
+    ITSM automation
+    Infrastructure health checks
+    Infrastructure automation
+
+
+A TODO item is implemented only when:
+
+
+    there is a reason
+        OR
+    there is a useful scenario
+        OR
+    there is a meaningful learning objective.
+
+
+================================================================================
+REPOSITORY
+================================================================================
+
+Repository:
+
+
+    engineering-company-it-lab
+
+
+The repository is the source of truth for
+implementation and documentation.
+
+
+Structure:
 
 
 engineering-company-it-lab/
@@ -1815,7 +1826,6 @@ engineering-company-it-lab/
 +-- README.md
 |
 +-- docs/
-|    |
 |    +-- architecture/
 |    +-- infrastructure/
 |    +-- procedures/
@@ -1826,41 +1836,35 @@ engineering-company-it-lab/
 |    +-- disaster-recovery/
 |    └-- todo.md
 |
++-- networking/
+|    ├-- configs/
+|    └-- documentation/
+|
 +-- ad/
-|    |
-|    +-- powershell/
+|    ├-- powershell/
 |    └-- documentation/
 |
 +-- windows/
-|    |
-|    +-- powershell/
+|    ├-- powershell/
 |    └-- troubleshooting/
 |
-+-- networking/
-|    |
-|    +-- configs/
-|    └-- documentation/
++-- cloud/
+|    ├-- s3/
+|    ├-- sqs/
+|    ├-- lambda/
+|    ├-- rds/
+|    └-- iam/
 |
 +-- terraform/
-|    |
-|    +-- modules/
-|    +-- environments/
-|    +-- variables/
+|    ├-- modules/
+|    ├-- environments/
+|    ├-- variables/
 |    └-- providers/
 |
 +-- automation/
-|    |
-|    +-- powershell/
-|    +-- bash/
+|    ├-- powershell/
+|    ├-- bash/
 |    └-- python/
-|
-+-- cloud/
-|    |
-|    +-- s3/
-|    +-- sqs/
-|    +-- lambda/
-|    +-- rds/
-|    └-- iam/
 |
 +-- .github/
 |    └-- workflows/
@@ -1868,634 +1872,155 @@ engineering-company-it-lab/
 └-- .gitignore
 
 
-The exact structure may evolve.
+The structure may evolve with implementation.
 
 
 ================================================================================
-TROUBLESHOOTING DOCUMENTATION
+PROJECT ARTIFACTS
 ================================================================================
 
-Troubleshooting is documented DURING implementation.
-
-When a non-trivial problem occurs, it should be treated
-as a real learning / incident case.
+The project maintains four primary artifacts.
 
-The workflow is:
 
+1. CURRENT STATE
 
-    PROBLEM
-        ↓
-    SYMPTOM
-        ↓
-    INITIAL HYPOTHESIS
-        ↓
-    INVESTIGATION
-        ↓
-    DIAGNOSTICS
-        ↓
-    ROOT CAUSE
-        ↓
-    FIX
-        ↓
-    VERIFICATION
-        ↓
-    LESSON LEARNED
-        ↓
-    DOCUMENTATION
-
-
-Examples of problems worth documenting:
-
-
-    - libvirt network definition failure
-    - bridge creation failure
-    - DHCP failure
-    - DNS failure
-    - VM connectivity failure
-    - permission problem
-    - service startup failure
-    - incorrect configuration
-    - authentication failure
-    - Terraform error
-    - cloud permission error
-    - automation failure
+    Exact state of the deployed environment.
 
+    Contains:
 
-Not every trivial typo requires an incident document.
+        current phase
+        current stage
+        implemented components
+        VM state
+        networking state
+        documentation state
+        outstanding tasks
 
-A troubleshooting case should be documented when
-the problem provides useful knowledge about:
 
+2. ROADMAP
 
-    architecture
-    configuration
-    system behavior
-    diagnostics
-    failure modes
-    administration
-    security
-    or troubleshooting methodology.
+    Overall project progression.
 
+    Contains:
 
-The goal is not only to record the final fix.
+        phases
+        stages
+        progress
+        current position
+        completed work
 
-The documentation should capture:
-
-
-    WHAT happened
-    WHY it happened
-    HOW it was diagnosed
-    HOW it was fixed
-    HOW to verify the fix
-    WHAT was learned
-
-
-Troubleshooting cases become part of the project's
-practical knowledge base and portfolio evidence.
-
-
-================================================================================
-LEARNING METHOD
-================================================================================
-
-Teaching style:
 
-
-    1. Work through one phase at a time.
-    2. Divide phases into stages.
-    3. Divide difficult stages into smaller parts.
-    4. Explain concepts before implementation.
-    5. Connect new concepts to previously learned concepts.
-    6. Discuss real-world alternatives.
-    7. Discuss failure scenarios.
-    8. Ask conceptual questions.
-    9. Let the student answer.
-    10. Discuss / correct the answer.
-    11. Let the student implement.
-    12. Review the implementation.
-    13. Create a troubleshooting scenario.
-    14. Document the result.
-    15. Update progress.
-    16. Continue only after understanding is confirmed.
-
-
-IMPORTANT:
-
-Do NOT simply provide finished configurations.
-
-Prefer:
-
-
-    Concept
-        ↓
-    Why
-        ↓
-    Architecture
-        ↓
-    Alternatives
-        ↓
-    Question
-        ↓
-    Student answer
-        ↓
-    Implementation
-        ↓
-    Failure scenario
-        ↓
-    Troubleshooting
-        ↓
-    Review
-        ↓
-    Documentation
-
-
-The student prefers learning through reasoning and questions.
-
-
-================================================================================
-SCENARIO-DRIVEN LEARNING
-================================================================================
-
-The project should be driven by realistic business scenarios.
-
-
-PRIMARY SCENARIO
-----------------
-
-New Engineering Employee
-
-
-    Employee joins company
-        ↓
-    Create AD account
-        ↓
-    Assign groups
-        ↓
-    Apply GPO
-        ↓
-    Domain join workstation
-        ↓
-    Create ITSM asset
-        ↓
-    Request engineering software
-        ↓
-    Check license
-        ↓
-    Assign license
-        ↓
-    Install software
-        ↓
-    Give access to Engineering share
-        ↓
-    Verify
-        ↓
-    Document
-
-
-SUPPORT SCENARIO
----------------
-
-User reports a problem
-
-
-    User
-        ↓
-    ITSM Ticket
-        ↓
-    Initial Investigation
-        ↓
-    Diagnostics
-        ↓
-    Root Cause
-        ↓
-    Fix
-        ↓
-    Verification
-        ↓
-    Ticket Resolution
-        ↓
-    Knowledge Base / Documentation
-
-
-CLOUD SCENARIO
---------------
-
-Engineering document workflow
-
-
-    Employee
-        ↓
-    Application
-        ↓
-    S3
-        ↓
-    SQS
-        ↓
-    Lambda
-        |
-        +----> RDS
-        |
-        +----> Logs
-        |
-        +----> Audit information
-
-
-SECURITY SCENARIO
------------------
-
-Suspicious account activity
-
-
-    Alert
-        ↓
-    Investigation
-        ↓
-    Identify account
-        ↓
-    Disable / restrict access
-        ↓
-    Revoke credentials where applicable
-        ↓
-    Review permissions
-        ↓
-    Verify
-        ↓
-    Document incident
-
-
-================================================================================
-ROADMAP
-================================================================================
-
-PHASE 0 — LAB FOUNDATION
-------------------------
-
-    +-- Project architecture
-    +-- QEMU/KVM
-    +-- libvirt
-    +-- virt-manager
-    +-- VM creation
-    +-- snapshots
-    +-- resource allocation
-    +-- engineering-lab network
-    +-- initial VM networking
-    +-- Git repository
-    +-- repository structure
-    +-- documentation structure
-    +-- README
-    +-- .gitignore
-    +-- initial architecture documentation
-    +-- project TODO
-
-
-PHASE 1 — NETWORKING
---------------------
-
-    +-- libvirt networks
-    +-- engineering-lab
-    +-- IP addressing
-    +-- CIDR
-    +-- DHCP
-    +-- DNS
-    +-- routing basics
-    +-- firewall basics
-    +-- connectivity troubleshooting
-    +-- network troubleshooting methodology
-
-
-PHASE 2 — CLOUD LAB
--------------------
-
-    +-- Floci
-    +-- CLI / API
-    +-- AWS-compatible concepts
-    +-- IAM
-    +-- S3
-    +-- SQS
-    +-- Lambda
-    +-- RDS
-    +-- Secrets
-    +-- cloud networking where useful
-    +-- service interaction
-    +-- cloud troubleshooting
-
-
-PHASE 3 — CLOUD APPLICATION
----------------------------
-
-    +-- Engineering document workflow
-    +-- S3
-    +-- SQS
-    +-- Lambda
-    +-- RDS
-    +-- IAM
-    +-- Secrets
-    +-- logging
-    +-- permission failure
-    +-- service failure
-    +-- end-to-end workflow
-
-
-PHASE 4 — TERRAFORM
--------------------
-
-    +-- Providers
-    +-- Resources
-    +-- Variables
-    +-- Outputs
-    +-- State
-    +-- Plan
-    +-- Apply
-    +-- Destroy
-    +-- Modules
-    +-- Dependencies
-    +-- Drift
-    +-- Reproducible cloud infrastructure
-
-
-PHASE 5 — WINDOWS SERVER
-------------------------
-
-    +-- Windows Server
-    +-- AD DS
-    +-- DNS
-    +-- DHCP
-    +-- OUs
-    +-- Users
-    +-- Groups
-    +-- Group Policy
-    +-- Authentication
-    +-- Authorization
-    +-- PowerShell
-    +-- Windows administration
-
-
-PHASE 6 — WINDOWS CLIENT
-------------------------
-
-    +-- Windows 10/11
-    +-- Domain Join
-    +-- User Login
-    +-- GPO
-    +-- PowerShell
-    +-- Software
-    +-- Windows administration
-    +-- Event Viewer
-    +-- Services
-    +-- RDP
-    +-- Windows troubleshooting
-
-
-PHASE 7 — FILE SERVICES / PERMISSIONS
--------------------------------------
-
-    +-- SMB
-    +-- NTFS
-    +-- Share Permissions
-    +-- ACL
-    +-- Security Groups
-    +-- Effective Permissions
-    +-- Inheritance
-    +-- Least Privilege
-    +-- Permission troubleshooting
-
-
-PHASE 8 — REMOTE IT SUPPORT
----------------------------
-
-    +-- Windows troubleshooting
-    +-- Network troubleshooting
-    +-- Event Logs
-    +-- Services
-    +-- Performance
-    +-- RDP
-    +-- Incident investigation
-    +-- Troubleshooting methodology
-    +-- Incident documentation
-
-
-PHASE 9 — ITSM
---------------
-
-    +-- Open-source ITSM selection
-    +-- ITSM deployment
-    +-- Users
-    +-- Tickets
-    +-- Incidents
-    +-- Service Requests
-    +-- Changes
-    +-- Assets
-    +-- Software
-    +-- Licenses
-    +-- Knowledge Base
-    +-- Support workflow
-    +-- Software / license workflow
-
-
-PHASE 10 — CORE ARCHITECTURE COMPLETION
----------------------------------------
-
-    +-- Review complete architecture
-    +-- Connect Windows + ITSM + Cloud
-    +-- Verify end-to-end scenarios
-    +-- Review networking
-    +-- Review identity
-    +-- Review permissions
-    +-- Review cloud workflow
-    +-- Review Terraform
-    +-- Review documentation
-    +-- Review security baseline
-    +-- Identify architecture gaps
-    +-- Move remaining enhancements to TODO
-    +-- Establish transition into future implementations
-
-
-PHASE 11+ — TODO / FUTURE IMPLEMENTATIONS
------------------------------------------
-
-    No fixed technology order.
-
-    Features are selected from:
+3. CONSPECT
 
+    Practical technical knowledge gathered during
+    implementation.
+
+    Contains:
+
+        commands
+        configurations
+        concepts encountered
+        troubleshooting conclusions
+        important Q&A
+        implementation notes
+
+
+4. CONTEXT
+
+    This document.
+
+    Contains:
+
+        project purpose
+        architecture
+        design principles
+        roadmap
+        implementation methodology
         TODO
-            ↓
-        reason
-            ↓
-        prerequisites
-            ↓
-        learning value
-            ↓
-        implementation
-            ↓
-        troubleshooting
-            ↓
-        documentation
+        current-state model
 
 
-    Possible future topics:
-
-
-        NETWORKING
-            +-- VPN
-            +-- Advanced Firewall
-            +-- Network Segmentation
-            +-- Multiple Subnets
-            +-- Advanced Routing
-            +-- NAT
-
-
-        WINDOWS
-            +-- FILE01
-            +-- DFS
-            +-- Advanced GPO
-            +-- WIN02
-            +-- DC02
-            +-- Windows Deployment
-
-
-        ITSM
-            +-- SLA
-            +-- Advanced Workflows
-            +-- Asset Discovery
-            +-- Software Deployment Integration
-
-
-        MONITORING
-            +-- MON01
-            +-- Prometheus
-            +-- Grafana
-            +-- Alerting
-            +-- Centralized Logging
-            +-- Loki
-            +-- OpenSearch / ELK
-
-
-        SECURITY
-            +-- MFA
-            +-- VPN
-            +-- Network Segmentation
-            +-- Advanced Auditing
-            +-- Access Reviews
-            +-- Security Baselines
-
-
-        CLOUD
-            +-- Additional Floci Services
-            +-- Advanced IAM
-            +-- Cloud Networking
-            +-- Additional Workflows
-            +-- Advanced Secrets Management
-
-
-        AUTOMATION
-            +-- User Provisioning
-            +-- Asset Synchronization
-            +-- ITSM Automation
-            +-- Health Checks
-            +-- Infrastructure Automation
+Detailed implementation belongs in repository
+documentation and procedures rather than this master context.
 
 
 ================================================================================
 PROGRESS TRACKING
 ================================================================================
 
-The project uses four reference artifacts:
+Progress is updated AFTER meaningful implementation milestones.
 
 
-1. SHORT ROADMAP
-
-    modules
-    stages
-    progress bars
-    percentages
-    current position
+For each completed stage:
 
 
-2. WHOLE ROADMAP
-
-    complete roadmap
-    phases
-    stages
-    progress
-    completed topics
-    current position
-
-
-3. CONSPECT
-
-    detailed technical notes
-    commands
-    concepts
-    configurations
-    troubleshooting conclusions
-    important Q&A
+    IMPLEMENT
+        ↓
+    VERIFY
+        ↓
+    DOCUMENT
+        ↓
+    REVIEW
+        ↓
+    MARK COMPLETE
+        ↓
+    UPDATE PROJECT STATE
+        ↓
+    UPDATE PROGRESS
 
 
-4. CONTEXT
-
-    this document
-
-    describes:
-        architecture
-        purpose
-        learning method
-        roadmap
-        current state
-        design principles
-        TODO
+The roadmap should show:
 
 
-All roadmap and conspect documents should use:
+    completed stages
+    current stage
+    remaining stages
+    percentage
 
 
-    ASCII structure
-    code blocks
-    tree layouts
-    progress bars
-    clear separators
-    Vim-friendly searchable terminology
+Do not mark a stage complete merely because
+a tutorial or plan exists.
+
+
+A stage is complete when its intended implementation
+has been performed and verified.
 
 
 ================================================================================
 DEFINITION OF DONE
 ================================================================================
 
-The project is considered complete when the student can independently:
+The project is complete when the student can
+independently operate and explain the resulting environment.
 
 
-    - explain the architecture
-    - create and manage the VMs
-    - explain the libvirt networking model
-    - add a VM to the existing lab network
-    - explain the network topology
+This includes:
+
+
+    - manage the lab infrastructure
+    - explain the network
+    - add and manage VMs
+    - administer Windows
     - administer Active Directory
-    - create / modify / disable users
-    - manage groups and permissions
-    - configure and troubleshoot DNS
-    - configure and troubleshoot DHCP
-    - domain-join Windows clients
-    - administer Windows 10/11
-    - troubleshoot common endpoint issues
-    - investigate Event Logs
-    - provide remote support
-    - manage ITSM tickets
-    - manage assets
-    - manage software licenses
-    - explain ITSM workflows
-    - explain cloud IAM
+    - manage users and groups
+    - troubleshoot DNS and DHCP
+    - manage permissions
+    - support Windows endpoints
+    - investigate incidents
+    - manage ITSM workflows
+    - manage assets and software
+    - understand cloud IAM
     - deploy cloud resources in Floci
-    - use S3 / SQS / Lambda / RDS where supported
+    - operate S3 / SQS / Lambda / RDS where supported
     - manage secrets
     - use Terraform
-    - understand Terraform state and drift
-    - automate repetitive tasks
+    - automate repetitive administration
     - use GitHub Actions
+    - monitor infrastructure
     - troubleshoot failures
-    - apply least privilege
+    - apply security principles
     - document infrastructure
-    - write useful runbooks
-    - write incident reports
-    - explain design decisions and alternatives
+    - explain architectural decisions
 
 
 Most importantly:
@@ -2505,398 +2030,216 @@ Most importantly:
         +
     WHY it exists
         +
-    HOW it works
+    HOW it was implemented
         +
-    HOW to administer it
+    HOW it is administered
         +
-    HOW to troubleshoot it
+    HOW it is troubleshot
         +
-    WHAT alternatives exist
-        +
-    WHAT trade-offs were made
+    HOW the components interact
 
 
 ================================================================================
-FINAL PORTFOLIO STORY
+FINAL PROJECT STORY
 ================================================================================
 
-The final project should tell one coherent story:
+The final portfolio story should be:
 
 
-    "I built and administered a small engineering company's
-     internal IT environment and a local cloud infrastructure
-     laboratory."
+    "I designed, built and administered a small
+     engineering company's internal IT environment,
+     together with a local AWS-style cloud laboratory."
 
 
-The core story is:
+The implementation story:
 
 
-    Virtualization
+    Lab Foundation
         ↓
-    libvirt Networking
+    Networking
         ↓
-    Local Cloud Laboratory
+    Cloud
         ↓
-    Cloud Application
+    Windows / Active Directory
         ↓
-    Terraform
+    IT Operations
         ↓
-    Windows Server
-        ↓
-    Active Directory
-        ↓
-    Windows Client
-        ↓
-    File Services
-        ↓
-    IT Support
+    Automation / IaC
         ↓
     ITSM
         ↓
-    Architecture Integration
+    Monitoring
         ↓
-    TODO / Future Infrastructure
+    Final Integration
 
 
-Automation, CI/CD, security and monitoring are
-cross-cutting capabilities.
-
-They are not required to become separate mandatory
-phases before the core architecture is considered complete.
+Cross-cutting throughout:
 
 
-The student should be able to use this project during
-an interview as evidence of practical learning.
+    Security
+    Troubleshooting
+    Documentation
+
+
+Automation and IaC may also be introduced
+incrementally before their dedicated phase
+when implementation makes them useful.
 
 
 ================================================================================
-PHASE 0 — IMMEDIATE OBJECTIVES
+CURRENT OPERATING MODEL
 ================================================================================
 
-Before implementing the actual company infrastructure:
+From this point forward, work should proceed as:
 
 
-    1. Create project repository.
-
-    2. Create initial repository structure.
-
-    3. Create README.
-
-    4. Create .gitignore.
-
-    5. Create documentation structure.
-
-    6. Create project TODO.
-
-    7. Document approved architecture.
-
-    8. Prepare libvirt / virt-manager.
-
-    9. Create engineering-lab network.
-
-    10. Verify VM-to-VM networking.
-
-    11. Prepare MINT01.
-
-    12. Prepare DC01 installation media.
-
-    13. Prepare WIN01 installation media.
-
-    14. Establish snapshots / rollback strategy.
-
-    15. Document the initial lab foundation.
-
-    16. Commit the foundation to Git.
+    CURRENT STATE
+        ↓
+    CURRENT STAGE
+        ↓
+    WHAT ARE WE BUILDING?
+        ↓
+    WHY DOES IT EXIST?
+        ↓
+    IMPLEMENT
+        ↓
+    VERIFY
+        ↓
+    TROUBLESHOOT IF NECESSARY
+        ↓
+    DOCUMENT / CONSPECT
+        ↓
+    REVIEW
+        ↓
+    UPDATE CURRENT STATE
+        ↓
+    UPDATE ROADMAP
+        ↓
+    NEXT STAGE
 
 
-Only after this should the project move into:
+No standalone lectures unless the student
+specifically asks for one.
+
+
+If a concept is unclear:
+
+
+    STOP briefly
+        ↓
+    explain the specific concept
+        ↓
+    connect it to the current implementation
+        ↓
+    continue building
+
+
+The project always remains the primary activity.
+
+
+================================================================================
+CURRENT PROJECT DIRECTION
+================================================================================
+
+Previous phase:
 
 
     PHASE 1 — NETWORKING
 
 
-================================================================================
-IMPORTANT DESIGN PRINCIPLES
-================================================================================
+Previous phase status:
 
-1. REALISM OVER COMPLEXITY
 
-Do not add infrastructure simply because it looks impressive.
+    COMPLETE
 
 
-2. UNDERSTANDING OVER COMMAND MEMORIZATION
+Current phase:
 
-The student should understand why a command/configuration exists.
 
+    PHASE 2 — CLOUD
 
-3. SCENARIOS OVER ISOLATED TECHNOLOGIES
 
-Every major technology should have a practical reason to exist.
+Current phase status:
 
 
-4. TROUBLESHOOTING IS A FIRST-CLASS SKILL
+    READY TO BEGIN
 
-A working system is only half of the learning.
 
+Current objective:
 
-5. SECURITY FROM THE BEGINNING
 
-Use least privilege and secure defaults whenever practical.
+    Begin the cloud implementation using FLOCI
+    and build the first meaningful component required
+    by the Engineering Document Workflow scenario.
 
 
-6. DOCUMENT EVERYTHING IMPORTANT
+Current networking foundation:
 
-Infrastructure without documentation is incomplete.
 
+    COMPLETE AND VERIFIED
 
-7. AUTOMATE AFTER UNDERSTANDING
 
-First perform a task manually.
+Current documentation:
 
-Then automate it.
 
+    PHASE 1 DOCUMENTATION COMPLETE
 
-8. KEEP THE LAB REPRODUCIBLE
 
-Prefer documented and reproducible configuration.
+Current Git baseline:
 
 
-9. AVOID UNNECESSARY COST
+    feat: lab foundation complete
 
-Use local technologies and free/test environments whenever possible.
 
+Current Git condition:
 
-10. DO NOT OVERBUILD THE VM ENVIRONMENT
 
-Create a new VM only when it has a real purpose.
+    Phase 1 documentation changes are intentionally
+    uncommitted because they contain documentation-only
+    changes.
 
 
-11. DESIGN NETWORKING FOR GROWTH
+Next Git commit:
 
-The base libvirt network should support additional VMs
-without requiring a redesign.
 
+    After the next substantive implementation change.
 
-12. BUILD INFRASTRUCTURE BEFORE DEPENDENT SERVICES
 
-Establish:
+Next phase:
 
-    virtualization
-        ↓
-    networking
-        ↓
-    cloud / infrastructure model
-        ↓
-    Windows infrastructure
-        ↓
-    dependent services
 
+    PHASE 2 — CLOUD
 
-Do not introduce higher-level services before
-their underlying infrastructure is understood.
 
+Following phase:
 
-13. KEEP THE MASTER CONTEXT STABLE
 
-Detailed implementation should live in:
+    PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 
-    tutorials
-    conspect
-    procedures
-    incident reports
-    repository documentation
 
+Important restrictions:
 
-The master context should describe:
 
-    architecture
-    goals
-    roadmap
-    current state
-    design decisions
-    TODO
+    Do NOT configure AD DS yet.
 
+    Do NOT configure DC01 as a Domain Controller yet.
 
-14. CONNECT TECHNOLOGIES
+    Do NOT domain-join WIN01 yet.
 
-The goal is to understand how:
+    Do NOT turn the project into a theoretical course.
 
+    Do NOT add infrastructure complexity without
+    an implementation reason.
 
-    User
-      ↓
-    Endpoint
-      ↓
-    Network
-      ↓
-    Identity
-      ↓
-    Permissions
-      ↓
-    Application
-      ↓
-    ITSM
-      ↓
-    Cloud
-      ↓
-    Infrastructure as Code
-      ↓
-    Automation
-      ↓
-    Security
-      ↓
-    Troubleshooting
-
-
-work together.
-
-
-================================================================================
-HOW TO CONTINUE TEACHING
-================================================================================
-
-When beginning a new phase:
-
-
-    1. Explain the goal.
-    2. Explain the architecture.
-    3. Explain the mental model.
-    4. Explain the important concepts.
-    5. Explain why each component exists.
-    6. Explain realistic alternatives.
-    7. Explain failure scenarios.
-    8. Ask conceptual questions.
-    9. Let the student answer.
-    10. Discuss / correct the answer.
-    11. Let the student implement.
-    12. Review the implementation.
-    13. Introduce a troubleshooting scenario.
-    14. Solve the scenario.
-    15. Document the result.
-    16. Update the roadmap.
-    17. Update project progress.
-    18. Continue to the next stage.
-
-
-Do NOT rush through phases.
-
-Do NOT provide complete configurations immediately
-when the goal is to learn them.
-
-Prefer student implementation followed by review.
-
-
-If the student asks about a previously covered concept:
-
-
-    Do not restart the entire phase.
-
-
-Instead:
-
-
-    answer the specific question
-        ↓
-    connect it to the existing mental model
-        ↓
-    continue from the current position
-
-
-The student prefers a static learning flow:
-
-
-    CURRENT STAGE
-        ↓
-    EXPLANATION
-        ↓
-    DISCUSSION
-        ↓
-    IMPLEMENTATION
-        ↓
-    TROUBLESHOOTING
-        ↓
-    DOCUMENTATION
-        ↓
-    REVIEW
-        ↓
-    NEXT STAGE
-
-
-================================================================================
-FINAL ARCHITECTURE SUMMARY
-================================================================================
-
-
-HOST
-│
-└── Arch Linux
-      │
-      └── QEMU/KVM
-            │
-            └── libvirt / virt-manager
-                  │
-                  └── engineering-lab
-                        │
-                        ├── MINT01
-                        │     └── Linux Mint
-                        │          └── IT Administration
-                        │
-                        ├── DC01
-                        │     └── Windows Server
-                        │          ├── Active Directory
-                        │          ├── DNS
-                        │          └── DHCP
-                        │
-                        ├── WIN01
-                        │     └── Windows 10/11
-                        │          └── Domain Client
-                        │
-                        └── future VMs
-                              └── added only when required
-
-
-                         ENGINEERING COMPANY
-                                │
-              +-----------------+-----------------+
-              │                 │                 │
-              ▼                 ▼                 ▼
-          SYSADMIN            ITSM              CLOUD
-              │                 │                 │
-          Windows          Open Source          Floci
-          AD               Tickets              IAM
-          DNS              Incidents            S3
-          DHCP             Assets               SQS
-          GPO              Software             Lambda
-          SMB              Licenses             RDS
-          ACL              KB                   Secrets
-              │                 │                 │
-              +-----------------+-----------------+
-                                │
-                                ▼
-                         INFRASTRUCTURE AS CODE
-                                │
-                            Terraform
-                                │
-                                ▼
-                            AUTOMATION
-                                │
-                     +----------+----------+
-                     │          │          │
-                PowerShell    Bash      Python
-                                │
-                                ▼
-                           GitHub Actions
-                                │
-                                ▼
-                            SECURITY
-                                │
-                                ▼
-                         TROUBLESHOOTING
-                                │
-                                ▼
-                         DOCUMENTATION
-                                │
-                                ▼
-                         TODO / EXTENSIONS
+    Implement what the current phase requires.
+
+    Ask questions when a concept is unclear.
+
+    Test the result.
+
+    Document the actual state.
+
+    Review before progressing.
 
 
 ================================================================================

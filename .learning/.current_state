@@ -8,6 +8,104 @@ Project:
 
 
 ================================================================================
+PROJECT APPROACH
+================================================================================
+
+Core principle:
+
+    This is an implementation-first infrastructure project.
+
+    We are building a realistic IT environment, not following
+    a theoretical learning course.
+
+Workflow:
+
+    DESIGN
+        ↓
+    IMPLEMENT
+        ↓
+    TEST / TROUBLESHOOT
+        ↓
+    DOCUMENT
+        ↓
+    REVIEW ACTUAL STATE
+        ↓
+    COMMIT
+        ↓
+    NEXT PHASE
+
+
+Learning model:
+
+    No standalone lectures or learning stages.
+
+    If a concept is unclear during implementation,
+    stop and discuss that specific concept as needed,
+    then continue implementing.
+
+
+================================================================================
+PROJECT ROADMAP
+================================================================================
+
+PHASE 0 — LAB FOUNDATION
+    [x] COMPLETE
+
+PHASE 1 — NETWORKING
+    [x] COMPLETE
+
+PHASE 2 — CLOUD
+    [ ] CURRENT / NEXT
+
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+    [ ] PLANNED
+
+PHASE 4 — IT OPERATIONS
+    [ ] PLANNED
+
+PHASE 5 — AUTOMATION / IaC
+    [ ] PLANNED
+
+PHASE 6 — ITSM
+    [ ] PLANNED
+
+PHASE 7 — MONITORING
+    [ ] PLANNED
+
+PHASE 8 — FINAL INTEGRATION
+    [ ] PLANNED
+
+
+Phase order is intentional:
+
+    Networking
+        ↓
+    Cloud
+        ↓
+    Windows / Active Directory
+        ↓
+    IT Operations
+        ↓
+    Automation / IaC
+        ↓
+    ITSM
+        ↓
+    Monitoring
+        ↓
+    Final Integration
+
+
+Automation principle:
+
+    Automation / IaC is a dedicated later phase.
+
+    However, automation may be introduced earlier when it is
+    naturally required by an implementation task.
+
+    Do not force automation prematurely.
+
+
+================================================================================
 HOST / VIRTUALIZATION
 ================================================================================
 
@@ -41,6 +139,7 @@ Virtualization status:
     [x] VM creation
     [x] VM lifecycle management
     [x] VM snapshots
+    [x] Resource allocation
 
 
 ================================================================================
@@ -55,6 +154,11 @@ Network:
 Type:
 
     NAT
+
+
+Bridge:
+
+    engineering-lab
 
 
 Subnet:
@@ -75,16 +179,21 @@ DHCP range:
 DHCP reservations:
 
     MINT01
-        52:54:00:c1:bb:a8
-        192.168.100.10
+        MAC: 52:54:00:c1:bb:a8
+        IP: 192.168.100.10
 
     DC01
-        52:54:00:17:7d:e5
-        192.168.100.20
+        MAC: 52:54:00:17:7d:e5
+        IP: 192.168.100.20
 
     WIN01
-        52:54:00:cd:78:97
-        192.168.100.30
+        MAC: 52:54:00:cd:78:97
+        IP: 192.168.100.30
+
+
+NAT:
+
+    ENABLED
 
 
 Network definition:
@@ -103,6 +212,8 @@ Network status:
     [x] DC01 reservation
     [x] WIN01 reservation
     [x] All three VMs connected
+    [x] DHCP behavior verified
+    [x] DNS behavior verified
     [x] Gateway connectivity
     [x] MINT01 connectivity
     [x] DC01 connectivity
@@ -142,9 +253,34 @@ Role:
     IT Administration Workstation
 
 
+Hostname:
+
+    vm
+
+
 IP:
 
-    192.168.100.10
+    192.168.100.10/24
+
+
+Interface:
+
+    enp1s0
+
+
+Network management:
+
+    NetworkManager
+
+
+DNS:
+
+    192.168.100.1
+
+
+Default gateway:
+
+    192.168.100.1
 
 
 Status:
@@ -152,15 +288,58 @@ Status:
     RUNNING / READY
 
 
-Configured:
+Configured and verified:
 
     [x] VM created
     [x] Linux Mint installed
     [x] Host configuration
     [x] engineering-lab networking
     [x] DHCP reservation
-    [x] Network connectivity
+    [x] DHCP lease
+    [x] DHCP renewal
+    [x] NetworkManager
+    [x] Default gateway
+    [x] DNS resolution
+    [x] External connectivity
+    [x] MINT01 -> DC01
+    [x] MINT01 -> WIN01
     [x] Administrative tooling
+
+
+DHCP verification:
+
+    MINT01 successfully receives its reserved address
+    192.168.100.10 through DHCP.
+
+    DHCP renewal was verified by disconnecting and
+    reconnecting the network interface.
+
+
+DNS verification:
+
+    MINT01 uses:
+
+        192.168.100.1
+
+    as its current DNS server.
+
+    External DNS resolution was successfully verified
+    using resolvectl.
+
+
+Example verified query:
+
+    resolvectl query google.com
+
+
+Result:
+
+    External DNS resolution successful.
+
+
+External connectivity:
+
+    [x] MINT01 has verified external network connectivity.
 
 
 Purpose:
@@ -175,7 +354,6 @@ Purpose:
 
 
 --------------------------------------------------------------------------------
-
 DC01
 ----
 
@@ -196,7 +374,7 @@ Hostname:
 
 IP:
 
-    192.168.100.20
+    192.168.100.20/24
 
 
 Gateway:
@@ -254,7 +432,6 @@ Important:
 
 
 --------------------------------------------------------------------------------
-
 WIN01
 -----
 
@@ -275,7 +452,12 @@ Hostname:
 
 IP:
 
-    192.168.100.30
+    192.168.100.30/24
+
+
+Gateway:
+
+    192.168.100.1
 
 
 Status:
@@ -321,8 +503,73 @@ Important:
 
     It has NOT been domain-joined.
 
-    Domain Join will happen only after AD DS is
-    configured on DC01.
+    Domain Join will happen only after AD DS is configured
+    on DC01 during Phase 3.
+
+
+================================================================================
+NETWORK VERIFICATION
+================================================================================
+
+Verified network state:
+
+    MINT01  192.168.100.10/24
+    DC01    192.168.100.20/24
+    WIN01   192.168.100.30/24
+
+    Gateway:
+        192.168.100.1
+
+    DHCP:
+        192.168.100.50-192.168.100.100
+
+    Network:
+        engineering-lab
+
+    NAT:
+        enabled
+
+
+Connectivity matrix:
+
+    MINT01 -> DC01
+        [x]
+
+    MINT01 -> WIN01
+        [x]
+
+    DC01 -> MINT01
+        [x]
+
+    DC01 -> WIN01
+        [x]
+
+    WIN01 -> MINT01
+        [x]
+
+    WIN01 -> DC01
+        [x]
+
+
+Gateway connectivity:
+
+    [x] MINT01 -> 192.168.100.1
+    [x] DC01 -> 192.168.100.1
+    [x] WIN01 -> 192.168.100.1
+
+
+DNS:
+
+    [x] MINT01 -> 192.168.100.1
+    [x] External DNS resolution
+    [x] DNS query through resolvectl
+
+
+DHCP:
+
+    [x] Static DHCP reservations
+    [x] MINT01 receives reserved address
+    [x] DHCP renewal verified
 
 
 ================================================================================
@@ -332,7 +579,8 @@ TROUBLESHOOTING
 Troubleshooting is treated as part of implementation,
 not as a separate activity.
 
-Current troubleshooting cases:
+
+Historical troubleshooting cases:
 
     [x] TRB-001
     [x] TRB-002
@@ -362,6 +610,14 @@ TRB-003:
 Troubleshooting documentation location:
 
     docs/incidents/troubleshooting/
+
+
+Phase 1 result:
+
+    No new networking incident documentation was created.
+
+    The existing troubleshooting cases remain historical
+    implementation records from the laboratory foundation.
 
 
 ================================================================================
@@ -415,18 +671,15 @@ Documentation model:
     backup and recovery
 
 
-Documentation plan:
+Documentation principle:
 
-    docs/documentation-plan.md
+    Documentation follows implementation.
 
+    Planned documentation is not treated as completed
+    documentation.
 
-Documentation is updated at the end of each phase.
-
-The documentation plan is reviewed against the actual
-implementation before the next phase begins.
-
-Planned documentation is not treated as completed
-documentation.
+    Each phase is documented after the implemented state
+    has been verified.
 
 
 --------------------------------------------------------------------------------
@@ -437,7 +690,7 @@ Architecture:
 
     [x] architecture/overview.md
     [x] architecture/virtualization.md
-    [ ] architecture/network.md
+    [x] architecture/network.md
     [ ] architecture/active-directory.md
     [ ] architecture/cloud.md
 
@@ -445,7 +698,7 @@ Architecture:
 Infrastructure:
 
     [x] infrastructure/vms.md
-    [ ] infrastructure/networking.md
+    [x] infrastructure/networking.md
     [ ] infrastructure/services.md
 
 
@@ -493,12 +746,14 @@ Disaster Recovery:
     [ ] restore.md
 
 
-Current documentation priority:
+Phase 1 documentation result:
 
-    Finish Phase 0 documentation.
-
-    Phase 1 networking documentation will be created
-    or substantially updated after Phase 1 implementation.
+    [x] architecture/network.md updated
+    [x] infrastructure/networking.md updated
+    [x] documentation-plan.md updated
+    [x] Documentation reviewed against actual state
+    [x] No networking procedures required
+    [x] No new networking incidents required
 
 
 ================================================================================
@@ -524,40 +779,56 @@ Important implementation files:
     networking/configs/engineering-lab.xml
 
 
-Current working tree contains changes related to:
+Important documentation:
 
-    .learning/.context
-    .learning/.current_state
     docs/architecture/overview.md
-    docs/infrastructure/vms.md
-    networking/configs/engineering-lab.xml
-
-
-New documentation:
-
     docs/architecture/virtualization.md
-    docs/incidents/troubleshooting/TRB-003-windows-icmp-firewall.md
+    docs/architecture/network.md
+    docs/infrastructure/vms.md
+    docs/infrastructure/networking.md
+    docs/documentation-plan.md
+    docs/incidents/troubleshooting/
 
 
-Git commit status:
+Latest committed state:
 
-    Check with:
+    feat: lab foundation complete
 
-        git status
 
-    before committing the current Phase 0 documentation.
+Phase 1 Git state:
+
+    No implementation changes were made.
+
+    Phase 1 produced documentation updates only.
+
+    The Phase 1 documentation changes are intentionally
+    NOT committed yet.
+
+
+Current Git strategy:
+
+    Keep:
+
+        feat: lab foundation complete
+
+    as the latest commit.
+
+    The next commit will be created after the next meaningful
+    infrastructure implementation change rather than creating
+    a documentation-only commit at this point.
 
 
 ================================================================================
 PHASE 0 — LAB FOUNDATION
 ================================================================================
 
-PHASE 0 STATUS:
+STATUS:
 
-    IN PROGRESS
+    COMPLETE
 
 
-ARCHITECTURE
+Architecture:
+
     [x] Project architecture
     [x] Architecture overview
     [x] Repository
@@ -566,7 +837,8 @@ ARCHITECTURE
     [x] Documentation planning
 
 
-VIRTUALIZATION
+Virtualization:
+
     [x] Arch Linux
     [x] QEMU/KVM
     [x] libvirt
@@ -578,7 +850,8 @@ VIRTUALIZATION
     [x] Resource allocation
 
 
-NETWORK
+Network foundation:
+
     [x] engineering-lab
     [x] NAT
     [x] 192.168.100.0/24
@@ -592,51 +865,22 @@ NETWORK
     [x] VM-to-VM connectivity
 
 
-VMS
+VMs:
+
     [x] MINT01
     [x] DC01
     [x] WIN01
 
 
-MINT01
-    [x] Installed
-    [x] Networked
-    [x] DHCP reservation
-    [x] Connectivity verified
+Troubleshooting:
 
-
-DC01
-    [x] Installed
-    [x] Hostname
-    [x] Networked
-    [x] DHCP reservation
-    [x] Connectivity verified
-    [x] Baseline verified
-    [x] Baseline snapshot
-
-
-WIN01
-    [x] VM created
-    [x] Windows installed
-    [x] Hostname = WIN01
-    [x] DHCP reservation
-    [x] Correct subnet
-    [x] Correct gateway
-    [x] Gateway connectivity
-    [x] MINT01 connectivity
-    [x] DC01 connectivity
-    [x] VM-to-VM connectivity
-    [x] Windows firewall troubleshooting
-    [x] Baseline snapshot
-
-
-TROUBLESHOOTING
     [x] TRB-001
     [x] TRB-002
     [x] TRB-003
 
 
-DOCUMENTATION
+Documentation:
+
     [x] architecture/overview.md
     [x] architecture/virtualization.md
     [x] infrastructure/vms.md
@@ -645,13 +889,344 @@ DOCUMENTATION
     [x] Phase 0 documentation completion
 
 
-PHASE 0 REVIEW
+Phase 0 review:
+
     [x] Verify documentation against actual state
     [x] Identify missing Phase 0 documentation
     [x] Reconcile documentation-plan.md
-    [ ] Review Git changes
-    [ ] Commit Phase 0
-    [ ] Mark Phase 0 COMPLETE
+    [x] Review Git changes
+    [x] Commit Phase 0
+    [x] Mark Phase 0 COMPLETE
+
+
+================================================================================
+PHASE 1 — NETWORKING
+================================================================================
+
+STATUS:
+
+    COMPLETE
+
+
+Objective:
+
+    Turn the existing basic lab network into a properly
+    designed, verified and documented networking foundation.
+
+
+Implementation result:
+
+    The existing engineering-lab network was inspected
+    and verified.
+
+    No unnecessary networking rebuild was performed.
+
+    Existing Phase 0 networking was reused as the foundation.
+
+
+Network architecture:
+
+    [x] Review current network architecture
+    [x] Define network addressing scheme
+    [x] Define IP allocation strategy
+    [x] Define static / reserved / dynamic addressing
+    [x] Define gateway behavior
+    [x] Define DNS strategy for current stage
+    [x] Define routing behavior
+    [x] Define NAT behavior
+    [x] Verify libvirt network configuration
+
+
+Verification:
+
+    [x] Verify host ↔ lab connectivity
+    [x] Verify VM ↔ VM connectivity
+    [x] Verify VM ↔ external network connectivity
+    [x] Verify DHCP behavior
+    [x] Verify DHCP renewal
+    [x] Verify DNS resolution
+    [x] Verify routing
+    [x] Verify firewall behavior
+
+
+Documentation:
+
+    [x] Document network architecture
+    [x] Document deployed networking
+    [x] Review documentation against actual state
+    [x] Update documentation-plan.md
+
+
+Procedures:
+
+    [x] Reviewed
+    [x] No standalone networking procedure required
+
+
+Incidents:
+
+    [x] Reviewed
+    [x] No new networking incident required
+
+
+Phase 1 review:
+
+    [x] Implementation verified
+    [x] Network state documented
+    [x] Documentation reviewed
+    [x] documentation-plan.md updated
+    [x] Phase 1 marked COMPLETE
+
+
+Git:
+
+    [ ] Phase 1 commit
+
+    Reason:
+
+        Phase 1 resulted in documentation changes only.
+
+        The existing:
+
+            feat: lab foundation complete
+
+        commit remains the latest committed state.
+
+        Documentation changes remain in the working tree
+        until the next meaningful implementation change.
+
+
+================================================================================
+PHASE 2 — CLOUD
+================================================================================
+
+STATUS:
+
+    NEXT
+
+
+Objective:
+
+    Introduce cloud infrastructure into the lab after the
+    networking foundation is established.
+
+
+Planned direction:
+
+    [ ] Cloud architecture
+    [ ] IAM
+    [ ] Compute
+    [ ] Object storage
+    [ ] Database
+    [ ] Serverless component
+    [ ] Networking integration
+    [ ] Security
+    [ ] Documentation
+
+
+Note:
+
+    Exact cloud implementation will be defined when
+    Phase 2 begins.
+
+
+Important:
+
+    Phase 2 must build on the verified Phase 1 network
+    foundation rather than unnecessarily modifying it.
+
+
+================================================================================
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Transform the existing standalone Windows environment
+    into a managed company domain environment.
+
+
+Planned direction:
+
+    [ ] AD DS
+    [ ] DNS
+    [ ] DHCP
+    [ ] Domain
+    [ ] Organizational Units
+    [ ] Users
+    [ ] Groups
+    [ ] Group Policy
+    [ ] WIN01 domain join
+    [ ] Windows administration
+    [ ] Permissions
+    [ ] Documentation
+
+
+Important:
+
+    AD DS and domain join must NOT be implemented before
+    Phase 3.
+
+
+================================================================================
+PHASE 4 — IT OPERATIONS
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Build realistic day-to-day IT administration workflows
+    around the infrastructure already created.
+
+
+Potential areas:
+
+    [ ] User lifecycle
+    [ ] Workstation lifecycle
+    [ ] Software deployment
+    [ ] Access management
+    [ ] Backup operations
+    [ ] Recovery operations
+    [ ] Patch management
+    [ ] Administrative procedures
+    [ ] Operational documentation
+
+
+================================================================================
+PHASE 5 — AUTOMATION / IaC
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Automate repeatable infrastructure and operational tasks.
+
+
+Potential areas:
+
+    [ ] Terraform
+    [ ] Infrastructure definitions
+    [ ] Configuration automation
+    [ ] PowerShell
+    [ ] Bash
+    [ ] Python
+    [ ] Git workflows
+    [ ] CI/CD
+    [ ] Infrastructure validation
+    [ ] Automated operations
+
+
+Important:
+
+    Automation can be introduced earlier where it naturally
+    improves an implementation, but this phase is where
+    automation becomes a primary project objective.
+
+
+================================================================================
+PHASE 6 — ITSM
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Introduce structured IT service management around the
+    infrastructure and operational workflows.
+
+
+Potential areas:
+
+    [ ] ITSM platform
+    [ ] Users / organizations
+    [ ] Tickets
+    [ ] Incidents
+    [ ] Service requests
+    [ ] Assets
+    [ ] Knowledge base
+    [ ] Change management
+    [ ] Operational workflows
+
+
+================================================================================
+PHASE 7 — MONITORING
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Introduce infrastructure monitoring, observability and
+    operational visibility.
+
+
+Potential areas:
+
+    [ ] Host monitoring
+    [ ] VM monitoring
+    [ ] Service monitoring
+    [ ] Network monitoring
+    [ ] Logs
+    [ ] Metrics
+    [ ] Alerting
+    [ ] Dashboards
+    [ ] Incident integration
+
+
+================================================================================
+PHASE 8 — FINAL INTEGRATION
+================================================================================
+
+STATUS:
+
+    PLANNED
+
+
+Objective:
+
+    Connect the individual project phases into one coherent
+    company IT environment.
+
+
+Potential integration:
+
+    [ ] Networking
+    [ ] Cloud
+    [ ] Windows / AD
+    [ ] IT Operations
+    [ ] Automation / IaC
+    [ ] ITSM
+    [ ] Monitoring
+    [ ] Security
+    [ ] Backup / Recovery
+    [ ] Documentation
+    [ ] Operational workflows
+
+
+Final objective:
+
+    The lab should behave as a coherent small-company
+    infrastructure environment rather than a collection
+    of isolated technical exercises.
 
 
 ================================================================================
@@ -660,71 +1235,72 @@ CURRENT POSITION
 
 Current phase:
 
-    PHASE 0 — LAB FOUNDATION
+    PHASE 2 — CLOUD
 
 
 Current stage:
 
-    PHASE 0 REVIEW
+    PREPARATION / DESIGN
 
 
-Implementation status:
-
-    LAB FOUNDATION COMPLETE
-
-
-Documentation status:
-
-    COMPLETE per Phase 0 with docs-plan.md
-
-
-Current objective:
-
-    Finish and verify Phase 0 Review.
-
-
-Next implementation phase:
+Previous phase:
 
     PHASE 1 — NETWORKING
 
 
-Important:
+Previous phase status:
 
-    Do NOT begin Active Directory yet.
+    COMPLETE
+
+
+Current implementation state:
+
+    Phase 0 established the virtualization and basic
+    laboratory networking foundation.
+
+    Phase 1 reviewed, verified and documented the actual
+    networking state.
+
+    The engineering-lab network is now a verified foundation
+    for the next phases.
+
+
+Immediate objective:
+
+    Begin PHASE 2 — CLOUD.
+
+    First:
+
+        determine the concrete cloud architecture and
+        implementation requirements.
+
+    Then:
+
+        IMPLEMENT
+            ↓
+        TEST
+            ↓
+        TROUBLESHOOT IF NEEDED
+            ↓
+        DOCUMENT
+            ↓
+        REVIEW
+            ↓
+        COMMIT
+
+
+Important restrictions:
+
+    Do NOT configure AD DS yet.
+
+    Do NOT configure DC01 as a Domain Controller yet.
 
     Do NOT domain-join WIN01 yet.
 
-    Phase 1 should establish the networking concepts and
-    documentation before the Windows Server phase introduces
-    AD DS, DNS and DHCP as server roles.
+    Do NOT turn implementation into a theoretical course.
 
-
-================================================================================
-NEXT STEP
-================================================================================
-
-1. Finish Phase 0 documentation.
-
-2. Verify:
-
-       architecture/overview.md
-       architecture/virtualization.md
-       infrastructure/vms.md
-       troubleshooting documentation
-
-3. Create/update:
-
-       docs/documentation-plan.md
-
-4. Review the actual repository state.
-
-5. Commit the completed Phase 0 documentation.
-
-6. Update the project roadmap/state.
-
-7. Begin:
-
-       PHASE 1 — NETWORKING
+    Implement what the lab needs, ask questions when
+    something is unclear, test the result, and document it.
 
 
 ================================================================================
@@ -748,8 +1324,6 @@ ARCHITECTURAL STATE
        192.168.100.10    192.168.100.20    192.168.100.30
              |                |                |
        Admin Workstation   Windows Server    Windows Client
-                              |
-                         future AD/DNS/DHCP
 
 
 Current architectural reality:
@@ -760,16 +1334,31 @@ Current architectural reality:
     Base laboratory networking
         DONE
 
+    Phase 1 networking verification
+        DONE
+
+    Phase 1 networking documentation
+        DONE
+
     MINT01
         READY
 
     DC01
-        READY FOR WINDOWS INFRASTRUCTURE CONFIGURATION
+        READY FOR FUTURE WINDOWS INFRASTRUCTURE
 
     WIN01
         READY AS STANDALONE CLIENT
 
     VM-to-VM connectivity
+        VERIFIED
+
+    DHCP
+        VERIFIED
+
+    Current DNS
+        VERIFIED
+
+    Routing / NAT
         VERIFIED
 
     Active Directory
@@ -778,23 +1367,50 @@ Current architectural reality:
     Domain Join
         NOT YET IMPLEMENTED
 
-    ITSM
+    Cloud
+        NEXT
+
+    IT Operations
         NOT YET IMPLEMENTED
 
-    Cloud / Floci
-        NOT YET IMPLEMENTED
-
-    Terraform
+    Terraform / IaC
         NOT YET IMPLEMENTED
 
     Automation
         NOT YET IMPLEMENTED
 
-    CI/CD
+    ITSM
         NOT YET IMPLEMENTED
 
     Monitoring
         NOT YET IMPLEMENTED
+
+    Final Integration
+        NOT YET IMPLEMENTED
+
+
+================================================================================
+NEXT ACTION
+================================================================================
+
+    Begin PHASE 2 — CLOUD.
+
+    First action:
+
+        Define the concrete cloud architecture and decide
+        what cloud services will actually be implemented.
+
+    Then:
+
+        IMPLEMENT
+            ↓
+        TEST
+            ↓
+        DOCUMENT
+            ↓
+        REVIEW
+            ↓
+        COMMIT
 
 
 ================================================================================
