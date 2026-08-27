@@ -1,0 +1,24 @@
+services:
+  papra:
+    container_name: papra
+    image: ghcr.io/papra-hq/papra:latest
+    restart: unless-stopped
+    ports:
+      - "1221:1221"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET}
+      APP_BASE_URL: ${APP_BASE_URL}
+
+      DOCUMENT_STORAGE_DRIVER: ${DOCUMENT_STORAGE_DRIVER}
+
+      DOCUMENT_STORAGE_S3_ACCESS_KEY_ID: ${DOCUMENT_STORAGE_S3_ACCESS_KEY_ID}
+      DOCUMENT_STORAGE_S3_SECRET_ACCESS_KEY: ${DOCUMENT_STORAGE_S3_SECRET_ACCESS_KEY}
+      DOCUMENT_STORAGE_S3_BUCKET_NAME: ${DOCUMENT_STORAGE_S3_BUCKET_NAME}
+      DOCUMENT_STORAGE_S3_REGION: ${DOCUMENT_STORAGE_S3_REGION}
+      DOCUMENT_STORAGE_S3_ENDPOINT: ${DOCUMENT_STORAGE_S3_ENDPOINT}
+      DOCUMENT_STORAGE_S3_FORCE_PATH_STYLE: ${DOCUMENT_STORAGE_S3_FORCE_PATH_STYLE}
+    volumes:
+      - ./papra-data:/app/app-data
+    user: "${UID}:${GID}"
