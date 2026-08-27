@@ -1,0 +1,57 @@
+services:
+  floci:
+    image: floci/floci:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - floci-data:/app/data
+
+      # Floci access to start docker backend containers (Lambda, RDS, etc.)
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      FLOCI_STORAGE_MODE: hybrid
+      FLOCI_STORAGE_PERSISTENT_PATH: /app/data
+    networks:
+      - lab
+
+  papra:
+    image: ghcr.io/papra-hq/papra:latest
+    container_name: papra
+    restart: unless-stopped
+    ports:
+      - "1221:1221"
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET}
+      APP_BASE_URL: ${APP_BASE_URL}
+
+      DOCUMENT_STORAGE_DRIVER: ${DOCUMENT_STORAGE_DRIVER}
+
+      DOCUMENT_STORAGE_S3_ACCESS_KEY_ID: ${DOCUMENT_STORAGE_S3_ACCESS_KEY_ID}
+      DOCUMENT_STORAGE_S3_SECRET_ACCESS_KEY: ${DOCUMENT_STORAGE_S3_SECRET_ACCESS_KEY}
+      DOCUMENT_STORAGE_S3_BUCKET_NAME: ${DOCUMENT_STORAGE_S3_BUCKET_NAME}
+      DOCUMENT_STORAGE_S3_REGION: ${DOCUMENT_STORAGE_S3_REGION}
+
+      DOCUMENT_STORAGE_S3_ENDPOINT: ${DOCUMENT_STORAGE_S3_ENDPOINT}
+
+      DOCUMENT_STORAGE_S3_FORCE_PATH_STYLE: ${DOCUMENT_STORAGE_S3_FORCE_PATH_STYLE}
+
+    volumes:
+      - ./app/papra/papra-data:/app/app-data
+
+    user: "${UID}:${GID}"
+
+    depends_on:
+      floci:
+        condition: service_healthy
+
+    networks:
+      - lab
+
+volumes:
+  floci-data:
+    external: true
+    name: floci_data
+
+networks:
+  lab:
+    driver: bridge
