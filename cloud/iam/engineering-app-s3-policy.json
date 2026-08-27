@@ -1,0 +1,20 @@
+{
+  "Version": "2026-08-25",
+  "Statement": [
+    {
+      "Sid": "ListEngineeringDocumentsBucket",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::engineering-documents"
+    },
+    {
+      "Sid": "ReadWriteEngineeringDocuments",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::engineering-documents/*"
+    }
+  ]
+}
