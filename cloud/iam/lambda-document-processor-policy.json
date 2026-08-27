@@ -1,0 +1,33 @@
+{
+  "Version": "2026-08-27",
+  "Statement": [
+    {
+      "Sid": "ReadDocumentObjects",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::engineering-documents/*"
+    },
+    {
+      "Sid": "ConsumeDocumentQueue",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": "arn:aws:sqs:eu-east-1:000000000000:document-processing"
+    },
+    {
+      "Sid": "WriteLambdaLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
