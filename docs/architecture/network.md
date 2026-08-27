@@ -1,8 +1,6 @@
 # Engineering Lab Network Architecture
 
-================================================================================
-PURPOSE
-================================================================================
+## PURPOSE
 
 This document describes the network architecture of the Engineering Company
 IT Lab.
@@ -17,9 +15,7 @@ implemented or when explicitly identified as a planned dependency of a later
 phase.
 
 
-================================================================================
-NETWORK OVERVIEW
-================================================================================
+## NETWORK OVERVIEW
 
 The laboratory uses a dedicated libvirt virtual network named:
 
@@ -67,9 +63,7 @@ The network is currently flat. No VLANs or additional network segments are
 implemented inside the lab.
 
 
-================================================================================
-LIBVIRT NETWORK
-================================================================================
+## LIBVIRT NETWORK
 
 The network is managed by libvirt.
 
@@ -98,9 +92,7 @@ The libvirt network is:
 The network uses libvirt's integrated DHCP and NAT functionality.
 
 
-================================================================================
-IP ADDRESSING
-================================================================================
+## IP ADDRESSING
 
 The laboratory uses the following addressing model:
 
@@ -124,9 +116,7 @@ VM network interface MAC addresses.
 This provides stable addresses while retaining DHCP-based configuration.
 
 
-================================================================================
-CURRENT VM NETWORK IDENTITIES
-================================================================================
+## CURRENT VM NETWORK IDENTITIES
 
 MINT01
 
@@ -152,9 +142,7 @@ WIN01
     Role:       Windows client laboratory host
 
 
-================================================================================
-DHCP
-================================================================================
+## DHCP
 
 DHCP is currently provided by the libvirt engineering-lab network.
 
@@ -178,9 +166,7 @@ reconnecting the network interface and confirming that the reserved address
 192.168.100.10 was reissued.
 
 
-================================================================================
-ROUTING
-================================================================================
+## ROUTING
 
 The laboratory VMs use:
 
@@ -200,9 +186,7 @@ Traffic destined for external networks is forwarded through the libvirt
 gateway and NATed to the host's external network.
 
 
-================================================================================
-NAT AND EXTERNAL CONNECTIVITY
-================================================================================
+## NAT AND EXTERNAL CONNECTIVITY
 
 The engineering-lab network uses libvirt NAT.
 
@@ -239,9 +223,7 @@ Therefore both IP connectivity and external DNS resolution are currently
 working.
 
 
-================================================================================
-DNS
-================================================================================
+## DNS
 
 DNS is currently provided to the laboratory VMs through the libvirt gateway:
 
@@ -271,9 +253,7 @@ At that point, the DNS architecture will be reviewed and this document
 updated to reflect the new authoritative internal DNS design.
 
 
-================================================================================
-INTERNAL CONNECTIVITY
-================================================================================
+##INTERNAL CONNECTIVITY
 
 All three laboratory VMs are currently members of the same IPv4 subnet:
 
@@ -296,9 +276,7 @@ The current network therefore provides full basic Layer 3 connectivity
 between the laboratory hosts.
 
 
-================================================================================
-NETWORK SEGMENTATION
-================================================================================
+## NETWORK SEGMENTATION
 
 No internal network segmentation is currently implemented.
 
@@ -323,9 +301,7 @@ Additional segmentation may be introduced in future phases if required by
 the laboratory architecture.
 
 
-================================================================================
-FIREWALL
-================================================================================
+## FIREWALL
 
 No dedicated network firewall appliance is currently deployed inside the
 laboratory network.
@@ -338,9 +314,7 @@ addressed as part of Windows infrastructure and troubleshooting work where
 applicable.
 
 
-================================================================================
-CURRENT NETWORK STATE
-================================================================================
+## CURRENT NETWORK STATE
 
 The verified network state is:
 
@@ -384,9 +358,7 @@ The verified network state is:
         Not implemented
 
 
-================================================================================
-ARCHITECTURAL STATUS
-================================================================================
+## ARCHITECTURAL STATUS
 
 The Phase 1 networking architecture is considered complete.
 
@@ -406,6 +378,4 @@ Infrastructure / Active Directory phase, when DC01 will provide internal
 Active Directory DNS and the network's DNS architecture will be updated.
 
 
-================================================================================
-END
-================================================================================
+## END

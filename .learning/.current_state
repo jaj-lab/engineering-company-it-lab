@@ -621,17 +621,16 @@ PHASE 2 — CLOUD ARCHITECTURE
                          | processor   |
                          +------+------+
                                 |
-                                |
-                    Future processing logic
-                                |
                     +-----------+-----------+
                     |                       |
                     v                       v
                  RDS                 Secrets Manager
-              PostgreSQL             credentials
-                    |
-                    v
-             Document metadata
+              PostgreSQL             database secret
+                    |                       |
+                    +-----------+-----------+
+                                |
+                                v
+                       Document metadata
 
 
 Supporting the workflow:
@@ -643,6 +642,8 @@ Supporting the workflow:
         +--> Lambda execution role
         +--> S3 permissions
         +--> SQS permissions
+        +--> RDS access
+        +--> Secrets Manager access
         +--> Logging permissions
 
 
@@ -666,24 +667,39 @@ Current implemented flow:
       | Event source mapping
       v
     Lambda
+      |
+      +------> Secrets Manager
+      |          |
+      |          | database credentials
+      |          v
+      +------> RDS PostgreSQL
+                 |
+                 v
+          Document metadata
 
 
 Future flow:
 
 
+    Employee
+        |
+        v
+    Application
+        |
+        v
     S3
-      |
-      v
+        |
+        v
     SQS
-      |
-      v
+        |
+        v
     Lambda
-      |
-      +------> RDS
-      |
-      +------> Secrets Manager
-      |
-      +------> Logging
+        |
+        +------> RDS
+        |
+        +------> Secrets Manager
+        |
+        +------> Logging
 
 
 ================================================================================
@@ -720,6 +736,9 @@ Lambda
     [x] SQS event source mapping
     [x] Event source mapping enabled
     [x] S3 → SQS → Lambda flow verified
+    [x] Lambda → RDS integration
+    [x] Database secret retrieval
+    [x] Document metadata insertion
 
 
 IAM
@@ -733,22 +752,28 @@ IAM
     [x] Role trust relationship
     [x] S3 permissions
     [x] SQS permissions
+    [x] RDS-related access required by implementation
+    [x] Secrets Manager permissions
     [x] CloudWatch Logs permissions
 
 
 RDS
 ---
 
-    [ ] PostgreSQL
-    [ ] documents metadata table
-    [ ] Lambda → RDS integration
+    [x] PostgreSQL
+    [x] Database configured
+    [x] documents metadata table
+    [x] Lambda → RDS integration
+    [x] Metadata insertion verified
 
 
 Secrets Manager
 ---------------
 
-    [ ] Database secret
-    [ ] Lambda secret retrieval
+    [x] Database secret
+    [x] Secret configuration
+    [x] Lambda secret retrieval
+    [x] Secret-based database connection
 
 
 Application
@@ -773,7 +798,7 @@ Application policy:
     engineering-app-s3
 
 
-Intended permissions:
+Intended application permissions:
 
     s3:ListBucket
     s3:GetObject
@@ -790,7 +815,7 @@ Attached policy:
     document-processor
 
 
-Policy permissions:
+Policy permissions include:
 
 
     S3:
@@ -811,6 +836,18 @@ Policy permissions:
         Resource:
 
             arn:aws:sqs:eu-east-1:000000000000:document-processing
+
+
+    Secrets Manager:
+
+        Secret retrieval required by Lambda
+        for database credentials
+
+
+    RDS:
+
+        Database connectivity required by Lambda
+        for document metadata persistence
 
 
     CloudWatch Logs:
@@ -907,7 +944,21 @@ Important distinction:
         =
     structured information ABOUT documents
 
-    RDS is not yet implemented.
+
+Current relationship:
+
+
+    S3
+        |
+        | ObjectCreated
+        v
+    SQS
+        |
+        v
+    Lambda
+        |
+        v
+    RDS
 
 
 ================================================================================
@@ -938,6 +989,7 @@ Implemented:
     [x] Message delivery verified
     [x] Message reception verified
     [x] Lambda consumer integration
+    [x] Successful message deletion
 
 
 Current relationship:
@@ -952,6 +1004,9 @@ Current relationship:
             | Lambda event source mapping
             v
     document-processor
+            |
+            v
+    RDS PostgreSQL
 
 
 ================================================================================
@@ -1025,10 +1080,15 @@ Current Lambda behavior:
 
     [x] Receive SQS event
     [x] Extract S3 event information
+    [x] Extract bucket
+    [x] Extract object key
+    [x] Extract event type
     [x] Log event
-    [x] Log bucket
-    [x] Log object key
+    [x] Retrieve database credentials from Secrets Manager
+    [x] Connect to PostgreSQL
+    [x] Store document metadata in RDS
     [x] Return successful execution
+    [x] Allow successful SQS message deletion
 
 
 Current implementation:
@@ -1047,7 +1107,13 @@ Current implementation:
         object key
         event type
         ↓
-    Log information
+    Retrieve database secret
+        ↓
+    Connect to PostgreSQL
+        ↓
+    Store document metadata
+        ↓
+    Log execution
         ↓
     Successful Lambda execution
         ↓
@@ -1056,13 +1122,148 @@ Current implementation:
 
 Important:
 
-    The Lambda currently demonstrates event-driven
-    integration and object-event extraction.
+    The Lambda now performs the first real persistence
+    operation in the document-processing workflow.
 
-    It does NOT yet perform full document processing.
+    It is no longer only demonstrating event extraction.
 
-    RDS integration, secret retrieval and actual
-    processing workflow remain future work.
+    The current workflow includes:
+
+        S3
+        SQS
+        Lambda
+        Secrets Manager
+        RDS PostgreSQL
+
+
+Full employee-facing document processing is not yet
+implemented.
+
+
+================================================================================
+RDS STATE
+================================================================================
+
+Database:
+
+    PostgreSQL
+
+
+Purpose:
+
+    Store structured metadata about documents processed
+    by the Lambda workflow.
+
+
+Implemented:
+
+    [x] PostgreSQL database
+    [x] Database connectivity
+    [x] documents metadata table
+    [x] Lambda database integration
+    [x] Document metadata insertion
+
+
+Logical responsibility:
+
+
+    S3
+        =
+    actual document object
+
+
+    RDS
+        =
+    structured metadata ABOUT the document
+
+
+Current workflow:
+
+
+    S3 object
+        |
+        | ObjectCreated
+        v
+    SQS
+        |
+        v
+    Lambda
+        |
+        +--> Read S3 event
+        |
+        +--> Retrieve DB credentials
+        |
+        +--> Connect to PostgreSQL
+        |
+        +--> Insert document metadata
+        |
+        v
+    RDS documents table
+
+
+Important:
+
+    RDS is currently used for document metadata.
+
+    The actual document object remains stored in S3.
+
+    RDS is not being used as document-object storage.
+
+
+Verification:
+
+    [x] PostgreSQL available
+    [x] documents table available
+    [x] Lambda can connect
+    [x] Lambda can insert document metadata
+
+
+================================================================================
+SECRETS MANAGER STATE
+================================================================================
+
+Purpose:
+
+    Store database credentials separately from
+    Lambda application code.
+
+
+Implemented:
+
+    [x] Database secret
+    [x] Secret configuration
+    [x] Lambda access to secret
+    [x] Database credential retrieval
+    [x] Secret-based PostgreSQL connection
+
+
+Current relationship:
+
+
+    Secrets Manager
+          |
+          | database credentials
+          v
+       Lambda
+          |
+          | authenticated connection
+          v
+       RDS PostgreSQL
+
+
+Security principle:
+
+    Database credentials are not hard-coded into
+    the Lambda function.
+
+    Lambda retrieves the required credentials from
+    Secrets Manager during execution.
+
+
+IAM requirement:
+
+    Lambda execution role requires permission to
+    retrieve the database secret.
 
 
 ================================================================================
@@ -1305,18 +1506,20 @@ Cloud:
     [x] S3 documentation
     [ ] SQS service README
     [ ] Lambda service README
-    [ ] RDS documentation
-    [ ] Secrets Manager documentation
+    [x] RDS implementation
+    [x] RDS documentation
+    [x] Secrets Manager implementation
+    [x] Secrets Manager documentation
 
 
 Important:
 
     Service-specific READMEs for the active cloud services
-    are intentionally being finalized after the complete
-    Phase 2 workflow is implemented.
+    are finalized after the relevant implementation has
+    been completed and verified.
 
-    This avoids documenting isolated intermediate states
-    as final service architecture.
+    Documentation reflects the actual implementation rather
+    than isolated intermediate states.
 
 
 Procedures:
@@ -1401,6 +1604,8 @@ Cloud implementation:
     |   +-- tmp/
     |
     +-- sqs/
+    |
+    +-- secrets/
 
 
 Current cloud implementation is being developed on:
@@ -1429,6 +1634,10 @@ Important cloud files:
     cloud/lambda/document-processor/index.py
 
     cloud/lambda/document-processor/function.zip
+
+    cloud/rds/
+
+    cloud/secrets/
 
 
 Important documentation:
@@ -1582,6 +1791,8 @@ Implemented:
     [x] Role trust relationship
     [x] S3 permissions for Lambda
     [x] SQS permissions for Lambda
+    [x] Secrets Manager permissions
+    [x] RDS-related access
     [x] CloudWatch Logs permissions
     [x] Floci IAM limitation documented
 
@@ -1622,6 +1833,7 @@ Implemented:
     [x] Message reception
     [x] Message inspection
     [x] Lambda consumer integration
+    [x] Message deletion after successful processing
 
 
 --------------------------------------------------------------------------------
@@ -1647,21 +1859,33 @@ Implemented:
     [x] S3 object event extraction
     [x] Lambda execution logging
     [x] Successful SQS message deletion
+    [x] Lambda → RDS integration
+    [x] Lambda → Secrets Manager integration
 
 
 Current Lambda purpose:
 
-    Demonstrate event-driven document processing
-    infrastructure.
-
-    The function currently extracts and logs:
-
-        event type
-        bucket
-        object key
+    Process S3-originated document events delivered through
+    SQS and persist structured document metadata in RDS.
 
 
-Full document processing is not yet implemented.
+Current Lambda workflow:
+
+    Receive event
+        ↓
+    Extract S3 information
+        ↓
+    Retrieve database secret
+        ↓
+    Connect to PostgreSQL
+        ↓
+    Store document metadata
+        ↓
+    Log execution
+        ↓
+    Successful execution
+        ↓
+    SQS message deletion
 
 
 --------------------------------------------------------------------------------
@@ -1670,15 +1894,37 @@ STAGE 6 — RDS
 
 STATUS:
 
-    NEXT
+    COMPLETE
 
 
-Planned:
+Implemented:
 
-    [ ] PostgreSQL
-    [ ] documents table
-    [ ] Document metadata model
-    [ ] Lambda → RDS integration
+    [x] PostgreSQL
+    [x] Database
+    [x] documents table
+    [x] Document metadata model
+    [x] Lambda → RDS integration
+    [x] Metadata insertion
+    [x] Database connectivity verification
+
+
+Result:
+
+    The document-processing workflow now has persistent
+    structured metadata storage.
+
+
+Relationship:
+
+
+    S3
+        =
+    document object
+
+
+    RDS
+        =
+    document metadata
 
 
 --------------------------------------------------------------------------------
@@ -1687,14 +1933,35 @@ STAGE 7 — SECRETS
 
 STATUS:
 
-    PLANNED
+    COMPLETE
 
 
-Planned:
+Implemented:
 
-    [ ] Secrets Manager
-    [ ] Database credentials
-    [ ] Lambda secret retrieval
+    [x] Secrets Manager
+    [x] Database secret
+    [x] Lambda access to secret
+    [x] Secret retrieval
+    [x] Database connection using retrieved credentials
+
+
+Result:
+
+    Database credentials are separated from Lambda source
+    code and retrieved through the cloud secret-management
+    layer.
+
+
+Relationship:
+
+
+    Secrets Manager
+          |
+          v
+       Lambda
+          |
+          v
+       RDS
 
 
 --------------------------------------------------------------------------------
@@ -1711,6 +1978,7 @@ Current:
     [x] Lambda execution logs
     [x] Floci Lambda runtime logs
     [x] Workflow visibility during troubleshooting
+    [x] Database-related Lambda execution visibility
 
 
 Future:
@@ -1778,9 +2046,9 @@ PHASE 2 CURRENT PROGRESS
     [x] STAGE 3 — S3
     [x] STAGE 4 — SQS
     [x] STAGE 5 — Lambda
+    [x] STAGE 6 — RDS
+    [x] STAGE 7 — Secrets
 
-    [ ] STAGE 6 — RDS
-    [ ] STAGE 7 — Secrets
     [~] STAGE 8 — Logging
     [ ] STAGE 9 — Application
     [ ] STAGE 10 — End-to-End Verification
@@ -1789,24 +2057,76 @@ PHASE 2 CURRENT PROGRESS
 Current position:
 
 
-    >>> STAGE 6 — RDS <<<
+    >>> STAGE 8 — LOGGING <<<
 
 
 Immediate objective:
 
 
-    Introduce PostgreSQL storage for structured
-    document-processing metadata.
+    Define and implement the final logging architecture
+    required by the document-processing workflow.
 
 
-Expected next relationship:
+Current implemented cloud workflow:
 
 
+    S3
+      |
+      v
+    SQS
+      |
+      v
     Lambda
-        |
-        | store metadata
-        v
-    RDS PostgreSQL
+      |
+      +------> Secrets Manager
+      |
+      +------> RDS PostgreSQL
+      |
+      v
+    Logging
+
+
+================================================================================
+PHASE 2 — CURRENT IMPLEMENTATION MILESTONE
+================================================================================
+
+Completed cloud infrastructure currently provides:
+
+
+    S3
+      |
+      | ObjectCreated
+      v
+    SQS
+      |
+      | Event Source Mapping
+      v
+    Lambda
+      |
+      +------> Secrets Manager
+      |          |
+      |          v
+      |       DB credentials
+      |
+      +------> RDS PostgreSQL
+                 |
+                 v
+          Document metadata
+
+
+This means the core backend event-driven infrastructure
+is now operational.
+
+
+Remaining major Phase 2 components:
+
+
+    [ ] Final logging architecture
+    [ ] Employee-facing application
+    [ ] Application → S3 integration
+    [ ] Final end-to-end verification
+    [ ] Final documentation review
+    [ ] Phase 2 commit / completion
 
 
 ================================================================================
@@ -1836,13 +2156,13 @@ Phase 2 is complete when:
 
     [x] S3 → SQS → Lambda flow works
 
-    [ ] RDS PostgreSQL stores document metadata
+    [x] RDS PostgreSQL stores document metadata
 
-    [ ] Lambda can interact with RDS
+    [x] Lambda can interact with RDS
 
-    [ ] Secrets Manager stores sensitive configuration
+    [x] Secrets Manager stores sensitive configuration
 
-    [ ] Lambda retrieves required secrets
+    [x] Lambda retrieves required secrets
 
     [ ] Final logging architecture implemented
 
@@ -2099,7 +2419,7 @@ Current phase:
 
 Current stage:
 
-    STAGE 6 — RDS
+    STAGE 8 — LOGGING
 
 
 Previous completed stages:
@@ -2109,6 +2429,8 @@ Previous completed stages:
     STAGE 3 — S3
     STAGE 4 — SQS
     STAGE 5 — Lambda
+    STAGE 6 — RDS
+    STAGE 7 — Secrets
 
 
 Previous phases:
@@ -2138,16 +2460,24 @@ Current implementation state:
     Lambda successfully receives S3-originated events
     through SQS and extracts document information.
 
+    Lambda now retrieves database credentials through
+    Secrets Manager.
+
+    Lambda now connects to PostgreSQL.
+
+    RDS stores structured document metadata.
+
+    The core backend document-processing workflow is
+    therefore operational from S3 through persistence.
+
+
     Two Floci-specific incidents have been investigated
     and documented.
-
-    The next major missing infrastructure component is
-    persistent structured metadata storage.
 
 
 Immediate objective:
 
-    Implement RDS PostgreSQL.
+    Continue Phase 2 with the logging architecture.
 
     Then:
 
@@ -2206,16 +2536,17 @@ ARCHITECTURAL STATE
              v
        AWS-compatible APIs
              |
-             v
-    +--------+--------+
-    |        |        |
-    v        v        v
-   S3       SQS    Lambda
-    |        |        |
-    +------->+------->+
+    +--------+--------+----------------+
+    |        |        |                |
+    v        v        v                v
+   S3       SQS    Lambda       Secrets Manager
+    |        |        |                |
+    |        |        +----------------+
+    |        |                 |
+    +------->+-----------------+
              |
              v
-        Future RDS
+        RDS PostgreSQL
              |
              v
        Document metadata
@@ -2276,10 +2607,22 @@ Cloud:
         VERIFIED
 
     RDS
-        NEXT
+        IMPLEMENTED / VERIFIED
+
+    Lambda → RDS
+        VERIFIED
 
     Secrets Manager
-        NOT YET IMPLEMENTED
+        IMPLEMENTED / VERIFIED
+
+    Lambda → Secrets Manager
+        VERIFIED
+
+    Document metadata persistence
+        VERIFIED
+
+    Logging
+        PARTIALLY IMPLEMENTED
 
     Application
         NOT YET IMPLEMENTED
@@ -2317,13 +2660,14 @@ NEXT ACTION
 
     Current stage:
 
-        STAGE 6 — RDS
+        STAGE 8 — LOGGING
 
 
     First action:
 
-        Define the PostgreSQL metadata model required
-        by the document-processing workflow.
+        Define the logging architecture required for
+        the completed S3 → SQS → Lambda → RDS workflow.
+
 
     Then:
 

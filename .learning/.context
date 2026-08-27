@@ -61,6 +61,39 @@ engineering-company environment where infrastructure components
 actually interact with each other.
 
 
+
+================================================================================
+PROJECT ARCHITECTURE
+================================================================================
+
+                            ENGINEERING COMPANY IT LAB
+                                      |
+                  +-------------------+-------------------+
+                  |                                       |
+                  v                                       v
+          CORPORATE IT ENVIRONMENT              CLOUD APPLICATION
+                  |                                       |
+            +-----+------+                          +-----+-----+
+            |            |                          |           |
+          AD/IT       Employees              Document App    IAM
+            |            |                          |           |
+            |            +---- Employee uploads ---> S3
+            |                                       |
+            |                                       v
+            |                                      SQS
+            |                                       |
+            |                                       v
+            |                                    Lambda
+            |                                    /  |  \
+            |                                   /   |   \
+            |                                  v    v    v
+            |                                RDS Secrets Logs
+            |
+            +---- Windows workstations
+            |
+            +---- IT operations
+
+
 ================================================================================
 PRIMARY PROJECT PRINCIPLE
 ================================================================================
@@ -367,6 +400,9 @@ knowledge.
 
 
 Not every typo requires an incident document.
+
+
+
 
 
 ================================================================================
