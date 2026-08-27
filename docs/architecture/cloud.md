@@ -4,7 +4,8 @@
 
 The Engineering Company IT Lab includes a local AWS-compatible cloud
 environment used to practice cloud infrastructure, service integration,
-IAM, event-driven processing, and managed database workflows.
+IAM, event-driven processing, managed database workflows, and application
+integration.
 
 The cloud environment is provided by Floci and runs as part of the
 laboratory infrastructure.
@@ -18,8 +19,10 @@ The current implementation consists of:
 - RDS PostgreSQL
 - Secrets Manager
 - CloudWatch Logs
+- Papra
 
-The services form an event-driven document processing workflow.
+The services form an event-driven document processing workflow with
+Papra acting as the document management application.
 
 
 ## Cloud Environment
@@ -48,6 +51,11 @@ self-contained.
 
 The current cloud architecture is:
 
+    Papra
+    document management application
+            |
+            | Document upload
+            v
     S3
     engineering-documents
             |
@@ -75,8 +83,10 @@ The current cloud architecture is:
 
 ## Document Processing Workflow
 
-The current workflow begins when an object is created in the
-`engineering-documents` S3 bucket.
+The current workflow begins when a document is uploaded through the
+Papra document management application.
+
+Papra stores uploaded documents in the `engineering-documents` S3 bucket.
 
 S3 produces an object-created event which is delivered to the
 `document-processing` SQS queue.
@@ -104,6 +114,10 @@ table.
 After successful Lambda execution, the processed SQS message is
 deleted from the queue.
 
+Papra provides the application-level document management interface,
+while the cloud services provide document storage, asynchronous
+processing, metadata persistence, identity, secrets, and logging.
+
 
 ## Identity and Access
 
@@ -117,6 +131,9 @@ from Secrets Manager.
 
 The secret is restricted to the database credentials used by the
 document-processing workflow.
+
+Papra uses credentials required to access its configured S3 storage
+backend.
 
 Other service permissions are intentionally limited to the resources
 required by the laboratory workflow.
@@ -180,14 +197,22 @@ The following cloud components have been implemented and verified:
     CloudWatch Logs
         VERIFIED
 
+    Papra
+        VERIFIED
+
 
 ## Current Scope
 
 The current cloud infrastructure provides the foundation for the
-document processing workflow.
+engineering document management and processing workflow.
+
+Papra is now integrated as the application layer for document
+management, with S3 providing object storage and the existing
+SQS/Lambda/RDS workflow providing asynchronous document metadata
+processing.
 
 The infrastructure has been implemented incrementally and verified
 through direct service operations and workflow tests.
 
-Further application functionality will be built on top of this
-infrastructure during the remaining stages of Phase 2.
+Further cloud functionality can be built on top of this infrastructure
+during the remaining stages of the project.

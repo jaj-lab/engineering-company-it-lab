@@ -83,19 +83,19 @@ PHASE 1 — NETWORKING
 
 
 PHASE 2 — CLOUD
-    [ ] Cloud architecture
-    [ ] IAM
-    [ ] Storage
-    [ ] Compute/serverless
-    [ ] Database
-    [ ] Networking
-    [ ] Security
-    [ ] Monitoring
-    [ ] Documentation
-    [ ] Review
-    [ ] Commit
+    [x] Cloud architecture
+    [x] IAM
+    [x] Storage
+    [x] Compute/serverless
+    [x] Database
+    [x] Networking
+    [x] Security
+    [x] Monitoring
+    [x] Documentation
+    [x] Review
+    [x] Commit
 
-    STATUS: NEXT
+    STATUS: COMPLETE
 
 PHASE 3 — WINDOWS INFRASTRUCTURE / ACTIVE DIRECTORY
     [ ] Configure DC01 as Domain Controller
@@ -112,6 +112,7 @@ PHASE 3 — WINDOWS INFRASTRUCTURE / ACTIVE DIRECTORY
     [ ] Review
     [ ] Commit
 
+    STATUS: NEXT
 
 PHASE 4 — IT OPERATIONS
     [ ] Define service inventory

@@ -63,10 +63,10 @@ PHASE 1 — NETWORKING
     [x] COMPLETE
 
 PHASE 2 — CLOUD
-    [~] IN PROGRESS
+    [x] COMPLETE
 
 PHASE 3 — WINDOWS / ACTIVE DIRECTORY
-    [ ] PLANNED
+    [~] IN PROGRESS
 
 PHASE 4 — IT OPERATIONS
     [ ] PLANNED
@@ -308,7 +308,7 @@ Purpose:
     future Terraform / cloud tooling
 
 
-Cloud tooling currently used:
+Cloud tooling:
 
     Docker
     Docker Compose
@@ -332,7 +332,7 @@ OS:
 
 Role:
 
-    Future Domain Controller
+    Domain Controller
 
 
 Hostname:
@@ -350,38 +350,15 @@ Gateway:
     192.168.100.1
 
 
-Current DNS:
-
-    192.168.100.1
-
-
 Status:
 
-    INSTALLED / BASELINE READY
+    BASELINE READY / FUTURE AD INFRASTRUCTURE
 
 
-Important:
+Current Phase 3 objective:
 
-    DC01 is currently a Windows Server installation.
-
-    It is NOT yet a Domain Controller.
-
-
-Not yet configured:
-
-    [ ] Active Directory Domain Services
-    [ ] DNS Server role
-    [ ] DHCP Server role
-    [ ] Domain
-    [ ] Organizational Units
-    [ ] Users
-    [ ] Groups
-    [ ] Group Policy
-
-
-Snapshot:
-
-    [x] DC01 baseline snapshot
+    Configure DC01 as the primary Domain Controller
+    for the engineering-company Windows environment.
 
 
 --------------------------------------------------------------------------------
@@ -418,19 +395,15 @@ Status:
     INSTALLED / NETWORK READY
 
 
-Important:
+Current state:
 
-    WIN01 is currently a standalone Windows client.
-
-    It has NOT been domain-joined.
-
-    Domain Join will happen only after AD DS is configured
-    on DC01 during Phase 3.
+    Standalone Windows client.
 
 
-Snapshot:
+Phase 3 target:
 
-    [x] WIN01 baseline snapshot
+    Domain-join WIN01 after Active Directory Domain Services
+    and DNS have been configured on DC01.
 
 
 ================================================================================
@@ -503,14 +476,20 @@ PHASE 2 — CLOUD LAB
 
 STATUS:
 
-    IN PROGRESS
+    COMPLETE
 
 
 Objective:
 
-    Build a small AWS-style cloud application inside Floci
-    representing a realistic engineering-company document
+    Build a realistic AWS-style cloud application inside
+    Floci representing an engineering-company document
     processing workflow.
+
+
+Completion state:
+
+    Phase 2 infrastructure has been implemented,
+    integrated, tested, documented and committed.
 
 
 Cloud platform:
@@ -550,16 +529,11 @@ Persistent storage:
         /app/data
 
 
-Important:
+Docker socket:
 
-    Floci requires access to the host Docker socket for
-    Lambda execution.
-
-    Compose configuration mounts:
-
-        /var/run/docker.sock
-            →
-        /var/run/docker.sock
+    /var/run/docker.sock
+        →
+    /var/run/docker.sock
 
 
 AWS CLI configuration:
@@ -575,26 +549,27 @@ Environment management:
     direnv
 
 
-Current endpoint:
-
-    http://localhost:4566
-
-
-Current region:
+Region:
 
     eu-east-1
 
 
 ================================================================================
-PHASE 2 — CLOUD ARCHITECTURE
+PHASE 2 — COMPLETED CLOUD ARCHITECTURE
 ================================================================================
 
 
                          ENGINEERING COMPANY
                                 |
                                 v
-                           Document
+                           Employee
                                 |
+                                v
+                         +-------------+
+                         | Application |
+                         +------+------+
+                                |
+                                | Upload
                                 v
                          +-------------+
                          |     S3      |
@@ -624,9 +599,10 @@ PHASE 2 — CLOUD ARCHITECTURE
                     +-----------+-----------+
                     |                       |
                     v                       v
-                 RDS                 Secrets Manager
-              PostgreSQL             database secret
+                 Secrets                 RDS
+                 Manager              PostgreSQL
                     |                       |
+                    | credentials          |
                     +-----------+-----------+
                                 |
                                 v
@@ -642,8 +618,7 @@ Supporting the workflow:
         +--> Lambda execution role
         +--> S3 permissions
         +--> SQS permissions
-        +--> RDS access
-        +--> Secrets Manager access
+        +--> Secrets Manager permissions
         +--> Logging permissions
 
 
@@ -655,30 +630,7 @@ Supporting the workflow:
         +--> troubleshooting
 
 
-Current implemented flow:
-
-
-    S3
-      |
-      | ObjectCreated event
-      v
-    SQS
-      |
-      | Event source mapping
-      v
-    Lambda
-      |
-      +------> Secrets Manager
-      |          |
-      |          | database credentials
-      |          v
-      +------> RDS PostgreSQL
-                 |
-                 v
-          Document metadata
-
-
-Future flow:
+Final Phase 2 workflow:
 
 
     Employee
@@ -686,25 +638,46 @@ Future flow:
         v
     Application
         |
+        | document upload
         v
     S3
         |
+        | ObjectCreated
         v
     SQS
         |
+        | Event Source Mapping
         v
     Lambda
         |
-        +------> RDS
-        |
         +------> Secrets Manager
-        |
-        +------> Logging
+        |             |
+        |             | database credentials
+        |             v
+        +------> RDS PostgreSQL
+                       |
+                       v
+                Document metadata
+
+
+IAM controls access across the workflow.
 
 
 ================================================================================
-CLOUD RESOURCE STATE
+PHASE 2 — CLOUD RESOURCE STATE
 ================================================================================
+
+Floci
+-----
+
+    [x] AWS-compatible cloud environment
+    [x] Docker deployment
+    [x] Docker Compose configuration
+    [x] Persistent storage
+    [x] Docker socket integration
+    [x] Health verification
+    [x] AWS CLI connectivity
+
 
 S3
 ---
@@ -713,7 +686,8 @@ S3
     [x] ListBucket tested
     [x] PutObject tested
     [x] GetObject tested
-    [x] S3 event notification configured
+    [x] ObjectCreated notification
+    [x] S3 → SQS integration
 
 
 SQS
@@ -721,40 +695,28 @@ SQS
 
     [x] document-processing queue
     [x] Queue attributes verified
-    [x] Message send / event delivery verified
-    [x] Message receive verified
-    [x] Message deletion through Lambda verified
+    [x] S3 event delivery
+    [x] Message reception
+    [x] Message processing
+    [x] Message deletion
+    [x] Lambda event source mapping
 
 
 Lambda
 ------
 
-    [x] document-processor function
-    [x] Python 3.12 runtime
+    [x] document-processor
+    [x] Python 3.12
     [x] index.handler
-    [x] Function invocation verified
+    [x] Function package
+    [x] Execution role
+    [x] Manual invocation
     [x] SQS event source mapping
-    [x] Event source mapping enabled
-    [x] S3 → SQS → Lambda flow verified
-    [x] Lambda → RDS integration
-    [x] Database secret retrieval
-    [x] Document metadata insertion
-
-
-IAM
----
-
-    [x] engineering-app identity
-    [x] engineering-app-s3 policy
-    [x] Lambda execution role
-    [x] document-processor-role
-    [x] document-processor policy
-    [x] Role trust relationship
-    [x] S3 permissions
-    [x] SQS permissions
-    [x] RDS-related access required by implementation
-    [x] Secrets Manager permissions
-    [x] CloudWatch Logs permissions
+    [x] S3 event extraction
+    [x] Secrets Manager integration
+    [x] PostgreSQL integration
+    [x] Metadata insertion
+    [x] Execution logging
 
 
 RDS
@@ -762,7 +724,8 @@ RDS
 
     [x] PostgreSQL
     [x] Database configured
-    [x] documents metadata table
+    [x] documents table
+    [x] Database connectivity
     [x] Lambda → RDS integration
     [x] Metadata insertion verified
 
@@ -772,16 +735,47 @@ Secrets Manager
 
     [x] Database secret
     [x] Secret configuration
-    [x] Lambda secret retrieval
+    [x] Lambda access
+    [x] Secret retrieval
     [x] Secret-based database connection
+
+
+IAM
+---
+
+    [x] engineering-app identity
+    [x] engineering-app-s3 policy
+    [x] Access key
+    [x] Lambda execution role
+    [x] document-processor-role
+    [x] document-processor policy
+    [x] Role trust relationship
+    [x] S3 permissions
+    [x] SQS permissions
+    [x] Secrets Manager permissions
+    [x] CloudWatch Logs permissions
+    [x] Authorization testing
+    [x] Floci IAM limitation documented
+
+
+Logging
+-------
+
+    [x] Lambda execution logs
+    [x] Workflow event logging
+    [x] Database-related execution visibility
+    [x] Error investigation visibility
+    [x] Operational troubleshooting visibility
 
 
 Application
 -----------
 
-    [ ] Employee-facing document application
-    [ ] Application → S3 integration
-    [ ] Document status interface
+    [x] Cloud application implemented
+    [x] Application integrated with Floci AWS-compatible APIs
+    [x] Application → cloud workflow integration
+    [x] Document submission workflow
+    [x] Cloud-side document processing integration
 
 
 ================================================================================
@@ -815,7 +809,7 @@ Attached policy:
     document-processor
 
 
-Policy permissions include:
+Lambda permissions include:
 
 
     S3:
@@ -840,14 +834,12 @@ Policy permissions include:
 
     Secrets Manager:
 
-        Secret retrieval required by Lambda
-        for database credentials
+        Database secret retrieval
 
 
     RDS:
 
-        Database connectivity required by Lambda
-        for document metadata persistence
+        Database connectivity required by implementation
 
 
     CloudWatch Logs:
@@ -855,10 +847,6 @@ Policy permissions include:
         logs:CreateLogGroup
         logs:CreateLogStream
         logs:PutLogEvents
-
-        Resource:
-
-            *
 
 
 Trust relationship:
@@ -882,13 +870,27 @@ IAM principle:
 
 Known platform limitation:
 
-    Floci did not fully enforce the expected AWS IAM
-    authorization boundaries during the tested S3 operations.
+    Floci does not fully reproduce AWS IAM authorization
+    behavior for all tested S3 control-plane operations.
 
-    The policy design remains intentionally least privilege.
+    During testing, engineering-app was able to perform
+    operations such as:
 
-    The architecture is NOT weakened to accommodate
-    Floci's authorization behavior.
+        ListAllMyBuckets
+        CreateBucket
+        DeleteBucket
+
+    despite these not being included in the application
+    policy.
+
+
+Conclusion:
+
+    The IAM policy design remains intentionally least
+    privilege.
+
+    The architecture was not weakened to accommodate
+    Floci's incomplete IAM enforcement.
 
 
 ================================================================================
@@ -917,19 +919,14 @@ Logical structure:
     +-- failed/
 
 
-Verified operations:
+Verified:
 
-    [x] ListBucket
-    [x] PutObject
-    [x] GetObject
-
-
-Event integration:
-
-    [x] ObjectCreated event
-        |
-        v
-        SQS document-processing
+    [x] Bucket creation
+    [x] Object upload
+    [x] Object download
+    [x] Object listing
+    [x] ObjectCreated events
+    [x] S3 → SQS integration
 
 
 Important distinction:
@@ -948,6 +945,9 @@ Important distinction:
 Current relationship:
 
 
+    Application
+        |
+        v
     S3
         |
         | ObjectCreated
@@ -972,8 +972,8 @@ Queue:
 
 Purpose:
 
-    Provide asynchronous decoupling between
-    document storage and document processing.
+    Provide asynchronous decoupling between document
+    storage and document processing.
 
 
 Queue ARN:
@@ -1001,7 +1001,7 @@ Current relationship:
             v
     document-processing
             |
-            | Lambda event source mapping
+            | Event Source Mapping
             v
     document-processor
             |
@@ -1084,7 +1084,7 @@ Current Lambda behavior:
     [x] Extract object key
     [x] Extract event type
     [x] Log event
-    [x] Retrieve database credentials from Secrets Manager
+    [x] Retrieve database credentials
     [x] Connect to PostgreSQL
     [x] Store document metadata in RDS
     [x] Return successful execution
@@ -1120,24 +1120,10 @@ Current implementation:
     SQS message deleted
 
 
-Important:
+Result:
 
-    The Lambda now performs the first real persistence
-    operation in the document-processing workflow.
-
-    It is no longer only demonstrating event extraction.
-
-    The current workflow includes:
-
-        S3
-        SQS
-        Lambda
-        Secrets Manager
-        RDS PostgreSQL
-
-
-Full employee-facing document processing is not yet
-implemented.
+    Lambda performs the first real processing and
+    persistence operation in the document workflow.
 
 
 ================================================================================
@@ -1152,7 +1138,7 @@ Database:
 Purpose:
 
     Store structured metadata about documents processed
-    by the Lambda workflow.
+    by the cloud workflow.
 
 
 Implemented:
@@ -1169,7 +1155,7 @@ Logical responsibility:
 
     S3
         =
-    actual document object
+    document object
 
 
     RDS
@@ -1201,15 +1187,6 @@ Current workflow:
     RDS documents table
 
 
-Important:
-
-    RDS is currently used for document metadata.
-
-    The actual document object remains stored in S3.
-
-    RDS is not being used as document-object storage.
-
-
 Verification:
 
     [x] PostgreSQL available
@@ -1232,8 +1209,8 @@ Implemented:
 
     [x] Database secret
     [x] Secret configuration
-    [x] Lambda access to secret
-    [x] Database credential retrieval
+    [x] Lambda access
+    [x] Secret retrieval
     [x] Secret-based PostgreSQL connection
 
 
@@ -1256,14 +1233,98 @@ Security principle:
     Database credentials are not hard-coded into
     the Lambda function.
 
-    Lambda retrieves the required credentials from
-    Secrets Manager during execution.
+
+================================================================================
+APPLICATION STATE
+================================================================================
+
+Status:
+
+    IMPLEMENTED
 
 
-IAM requirement:
+Purpose:
 
-    Lambda execution role requires permission to
-    retrieve the database secret.
+    Provide the employee-facing entry point for the
+    engineering document workflow.
+
+
+Cloud integration:
+
+    Application
+        |
+        v
+    Floci
+        |
+        +--> S3
+        +--> SQS
+        +--> Lambda
+        +--> RDS
+        +--> Secrets
+
+
+Current architectural purpose:
+
+    The application represents the company-side interface
+    through which documents enter the cloud workflow.
+
+
+Phase 2 result:
+
+    The application is integrated with the Floci-hosted
+    AWS-compatible cloud environment.
+
+
+Implementation milestone:
+
+    feat: Cloud App integration to Floci AWS
+
+
+Pull Request:
+
+    Cloud App integration to Floci AWS
+
+
+Repository state:
+
+    [x] Implementation completed
+    [x] Changes committed
+    [x] Pull Request created
+    [x] Pull Request reviewed
+    [x] Pull Request merged
+
+
+================================================================================
+LOGGING STATE
+================================================================================
+
+Status:
+
+    IMPLEMENTED FOR PHASE 2
+
+
+Current logging capabilities:
+
+    [x] Lambda execution logging
+    [x] Workflow event visibility
+    [x] S3 event visibility
+    [x] Document-processing visibility
+    [x] Database-related Lambda execution visibility
+    [x] Error investigation support
+    [x] Floci runtime troubleshooting
+
+
+Logging principle:
+
+    Logs provide enough operational visibility to
+    understand the cloud workflow and troubleshoot
+    failures encountered during implementation.
+
+
+Future expansion:
+
+    Dedicated observability improvements will be handled
+    later as part of the Monitoring / Observability phase.
 
 
 ================================================================================
@@ -1282,7 +1343,7 @@ Summary:
 
     Floci resources were expected to persist across
     container recreation, but application state was not
-    present in the configured /app/data volume.
+    present in the initially expected /app/data location.
 
 
 Investigation:
@@ -1298,8 +1359,8 @@ Investigation:
 
     The volume itself remained present.
 
-    However, the tested AWS resources were not stored
-    in that directory.
+    However, the expected cloud resource state was not
+    available in the configured application data path.
 
 
 Conclusion:
@@ -1307,16 +1368,15 @@ Conclusion:
     Docker named-volume persistence and application-level
     state persistence are separate concerns.
 
-    The Floci resource state was not persisted in the
-    expected application data directory.
+    A named volume only persists the data that the
+    application actually writes into that volume.
 
 
 Operational lesson:
 
     Do not assume that a named Docker volume guarantees
-    persistence of application state.
-
-    Verify where the application actually stores its state.
+    application-state persistence without verifying where
+    the application stores its state.
 
 
 Document:
@@ -1345,7 +1405,7 @@ Root cause:
     Floci Lambda execution requires Docker access.
 
     The Floci container did not have the Docker socket
-    mounted / accessible during the failed configuration.
+    mounted and accessible during the failed configuration.
 
 
 Observed error:
@@ -1356,12 +1416,9 @@ Observed error:
 
 Investigation:
 
-    Floci logs showed attempts to access:
+    Floci attempted to access:
 
         unix:///var/run/docker.sock
-
-    and failure while launching the Lambda execution
-    container.
 
 
 Resolution:
@@ -1382,9 +1439,133 @@ Verification:
     [x] SQS event source successfully invoked Lambda
 
 
+Operational lesson:
+
+    A local cloud emulator that launches workload
+    containers requires access to the container runtime.
+
+
 Document:
 
     docs/incidents/INC-002-floci-lambda-exec-failure
+
+
+--------------------------------------------------------------------------------
+INC-003
+-------
+
+Title:
+
+    Floci State Lost After Compose Integration
+
+
+Summary:
+
+    Previously created Floci AWS resources appeared to
+    disappear after combining / restructuring the Docker
+    Compose configuration.
+
+
+Initial symptom:
+
+    Floci started successfully, but previously created
+    cloud resources were no longer visible.
+
+
+Investigation:
+
+    The investigation initially focused on Docker Compose
+    configuration and persistent storage behavior.
+
+    The previous Floci state was then compared with the
+    volumes available to the new Compose configuration.
+
+
+Root cause:
+
+    The new Compose configuration was using / binding a
+    NEW Docker volume instead of reusing the EXISTING
+    volume that contained the previous Floci state.
+
+
+Important distinction:
+
+    The original volume containing the previous state
+    had NOT been deleted.
+
+    The new Floci deployment was simply attached to a
+    different volume.
+
+
+Actual situation:
+
+
+    OLD DEPLOYMENT
+        |
+        v
+    existing volume
+        |
+        +--> previous Floci state
+
+
+    NEW COMPOSE CONFIGURATION
+        |
+        v
+    new volume
+        |
+        +--> empty / new Floci state
+
+
+Resolution:
+
+    Identify the original volume containing the previous
+    Floci state.
+
+    Reconfigure the Compose deployment to bind/reuse the
+    existing volume instead of creating a new one.
+
+
+Result:
+
+    Previous Floci state became available again after
+    the correct volume was reused.
+
+
+Operational lesson:
+
+    Docker Compose project changes can unintentionally
+    result in a different named volume being used.
+
+    Before concluding that persistent data was deleted,
+    verify:
+
+        docker volume ls
+
+        docker volume inspect <volume>
+
+        Compose volume configuration
+
+        Actual mount source
+
+
+    Persistent storage must be verified by both:
+
+        volume identity
+
+    and:
+
+        mount configuration.
+
+
+Key lesson:
+
+    "The volume exists" does not necessarily mean
+    "the current container is using that volume."
+
+
+Document:
+
+    docs/incidents/INC-003-floci-compose-volume-mismatch.md
 
 
 ================================================================================
@@ -1402,6 +1583,7 @@ Cloud incidents:
 
     [x] INC-001
     [x] INC-002
+    [x] INC-003
 
 
 Troubleshooting principle:
@@ -1411,6 +1593,17 @@ Troubleshooting principle:
 
     Investigation and root-cause analysis are documented
     rather than hidden or worked around without explanation.
+
+
+Cloud troubleshooting lessons now include:
+
+    [x] Verify application-level persistence
+    [x] Verify Docker volume identity
+    [x] Verify actual container mounts
+    [x] Understand Compose volume lifecycle
+    [x] Understand Docker socket requirements
+    [x] Investigate emulator-specific behavior
+    [x] Distinguish platform limitations from configuration errors
 
 
 ================================================================================
@@ -1504,22 +1697,33 @@ Cloud:
     [x] cloud/flow.md
     [x] IAM documentation
     [x] S3 documentation
-    [ ] SQS service README
-    [ ] Lambda service README
+    [x] SQS implementation
+    [x] Lambda implementation
     [x] RDS implementation
     [x] RDS documentation
     [x] Secrets Manager implementation
     [x] Secrets Manager documentation
+    [x] Cloud application integration
+    [x] Cloud workflow documentation
+
+
+Incidents / Troubleshooting:
+
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+    [x] INC-001
+    [x] INC-002
+    [x] INC-003
 
 
 Important:
 
-    Service-specific READMEs for the active cloud services
-    are finalized after the relevant implementation has
-    been completed and verified.
+    Phase 2 documentation has been reviewed against the
+    completed cloud implementation.
 
-    Documentation reflects the actual implementation rather
-    than isolated intermediate states.
+    Remaining documentation work belongs to later project
+    phases or future documentation refinement.
 
 
 Procedures:
@@ -1530,15 +1734,6 @@ Procedures:
     [ ] troubleshoot-dns.md
     [ ] reset-password.md
     [ ] software-installation.md
-
-
-Incidents / Troubleshooting:
-
-    [x] TRB-001
-    [x] TRB-002
-    [x] TRB-003
-    [x] INC-001
-    [x] INC-002
 
 
 Software:
@@ -1569,7 +1764,7 @@ Repository:
     engineering-company-it-lab
 
 
-Main repository structure currently includes:
+Main repository structure:
 
 
     ad/
@@ -1608,49 +1803,28 @@ Cloud implementation:
     +-- secrets/
 
 
-Current cloud implementation is being developed on:
-
+Cloud implementation branch:
 
     floci-aws-integration
 
 
-The cloud implementation branch is maintained separately
-from main while Phase 2 infrastructure is being developed.
+Branch status:
+
+    [x] Cloud implementation completed
+    [x] Changes committed
+    [x] Pull Request created
+    [x] Pull Request merged
 
 
-Documentation changes may be committed on main and later
-merged with the cloud implementation branch as appropriate.
+Completed feature:
+
+    feat: Cloud App integration to Floci AWS
 
 
-Important cloud files:
+Repository state:
 
-
-    cloud/floci/compose.yaml
-
-    cloud/iam/engineering-app-s3-policy.json
-
-    cloud/s3/s3-to-sqs-notification.json
-
-    cloud/lambda/document-processor/index.py
-
-    cloud/lambda/document-processor/function.zip
-
-    cloud/rds/
-
-    cloud/secrets/
-
-
-Important documentation:
-
-
-    docs/architecture/overview.md
-    docs/architecture/virtualization.md
-    docs/architecture/network.md
-    docs/cloud/aws-architecture.md
-    docs/cloud/cloud-lab.md
-    docs/cloud/flow.md
-    docs/incidents/
-    docs/incidents/troubleshooting/
+    Phase 2 cloud implementation has been integrated
+    into the main project through Pull Request workflow.
 
 
 Git principle:
@@ -1658,8 +1832,11 @@ Git principle:
     Meaningful implementation changes should produce
     meaningful commits.
 
-    Documentation should accurately describe the
-    implementation represented by the repository state.
+    Feature branches are used for substantial isolated
+    implementation work.
+
+    Completed infrastructure is merged only after the
+    implementation has been tested and reviewed.
 
 
 ================================================================================
@@ -1737,7 +1914,7 @@ PHASE 2 — CLOUD
 
 STATUS:
 
-    IN PROGRESS
+    COMPLETE
 
 
 Objective:
@@ -1767,6 +1944,7 @@ Implemented:
     [x] Floci connectivity
     [x] Health verification
     [x] direnv environment management
+    [x] Docker socket integration
 
 
 --------------------------------------------------------------------------------
@@ -1863,31 +2041,6 @@ Implemented:
     [x] Lambda → Secrets Manager integration
 
 
-Current Lambda purpose:
-
-    Process S3-originated document events delivered through
-    SQS and persist structured document metadata in RDS.
-
-
-Current Lambda workflow:
-
-    Receive event
-        ↓
-    Extract S3 information
-        ↓
-    Retrieve database secret
-        ↓
-    Connect to PostgreSQL
-        ↓
-    Store document metadata
-        ↓
-    Log execution
-        ↓
-    Successful execution
-        ↓
-    SQS message deletion
-
-
 --------------------------------------------------------------------------------
 STAGE 6 — RDS
 --------------------------------------------------------------------------------
@@ -1910,21 +2063,8 @@ Implemented:
 
 Result:
 
-    The document-processing workflow now has persistent
+    The document-processing workflow has persistent
     structured metadata storage.
-
-
-Relationship:
-
-
-    S3
-        =
-    document object
-
-
-    RDS
-        =
-    document metadata
 
 
 --------------------------------------------------------------------------------
@@ -1952,42 +2092,35 @@ Result:
     layer.
 
 
-Relationship:
-
-
-    Secrets Manager
-          |
-          v
-       Lambda
-          |
-          v
-       RDS
-
-
 --------------------------------------------------------------------------------
 STAGE 8 — LOGGING
 --------------------------------------------------------------------------------
 
 STATUS:
 
-    PARTIALLY PRESENT / NOT YET A DEDICATED STAGE
+    COMPLETE
 
 
-Current:
+Implemented:
 
-    [x] Lambda execution logs
-    [x] Floci Lambda runtime logs
-    [x] Workflow visibility during troubleshooting
-    [x] Database-related Lambda execution visibility
+    [x] Lambda execution logging
+    [x] Workflow visibility
+    [x] S3 event visibility
+    [x] Database execution visibility
+    [x] Error visibility
+    [x] Troubleshooting visibility
+
+
+Result:
+
+    The Phase 2 workflow has sufficient logging to support
+    implementation verification and operational troubleshooting.
 
 
 Future:
 
-    [ ] Define final logging architecture
-    [ ] Application logging
-    [ ] Structured workflow logging
-    [ ] Error visibility
-    [ ] Operational review
+    More advanced observability belongs to the later
+    Monitoring phase.
 
 
 --------------------------------------------------------------------------------
@@ -1996,16 +2129,29 @@ STAGE 9 — APPLICATION
 
 STATUS:
 
-    PLANNED
+    COMPLETE
 
 
-Planned:
+Implemented:
 
-    [ ] Employee-facing application
-    [ ] Document upload
-    [ ] S3 integration
-    [ ] Document status
-    [ ] End-to-end workflow integration
+    [x] Cloud application
+    [x] Application integration with Floci
+    [x] Cloud API integration
+    [x] Document submission workflow
+    [x] S3 integration
+    [x] Integration with document-processing workflow
+
+
+Feature:
+
+    feat: Cloud App integration to Floci AWS
+
+
+Result:
+
+    The employee-facing application layer is now connected
+    to the AWS-compatible cloud workflow implemented inside
+    Floci.
 
 
 --------------------------------------------------------------------------------
@@ -2014,10 +2160,11 @@ STAGE 10 — END-TO-END VERIFICATION
 
 STATUS:
 
-    NOT STARTED
+    COMPLETE
 
 
-Planned final workflow:
+Verified architecture:
+
 
     Employee
         ↓
@@ -2029,15 +2176,37 @@ Planned final workflow:
         ↓
     Lambda
         ↓
-    RDS
-        +
-    Secrets
-        +
+    Secrets Manager
+        ↓
+    RDS PostgreSQL
+
+
+Supporting:
+
+    IAM
     Logging
+    Floci
+
+
+Verification state:
+
+    [x] Cloud environment operational
+    [x] Application integrated
+    [x] Document enters cloud workflow
+    [x] S3 storage
+    [x] S3 event generation
+    [x] SQS event delivery
+    [x] Lambda invocation
+    [x] Secret retrieval
+    [x] PostgreSQL connection
+    [x] Metadata persistence
+    [x] Workflow logging
+    [x] Error investigation
+    [x] Final implementation reviewed
 
 
 ================================================================================
-PHASE 2 CURRENT PROGRESS
+PHASE 2 — FINAL PROGRESS
 ================================================================================
 
 
@@ -2048,92 +2217,124 @@ PHASE 2 CURRENT PROGRESS
     [x] STAGE 5 — Lambda
     [x] STAGE 6 — RDS
     [x] STAGE 7 — Secrets
-
-    [~] STAGE 8 — Logging
-    [ ] STAGE 9 — Application
-    [ ] STAGE 10 — End-to-End Verification
-
-
-Current position:
+    [x] STAGE 8 — Logging
+    [x] STAGE 9 — Application
+    [x] STAGE 10 — End-to-End Verification
 
 
-    >>> STAGE 8 — LOGGING <<<
+                    PHASE 2
+                       |
+                       v
+                  [x] COMPLETE
 
 
-Immediate objective:
+Phase 2 result:
+
+    A complete AWS-style document-processing workflow
+    has been implemented inside Floci.
 
 
-    Define and implement the final logging architecture
-    required by the document-processing workflow.
+Core workflow:
 
 
-Current implemented cloud workflow:
-
-
+    APPLICATION
+        |
+        v
     S3
-      |
-      v
+        |
+        v
     SQS
-      |
-      v
-    Lambda
-      |
-      +------> Secrets Manager
-      |
-      +------> RDS PostgreSQL
-      |
-      v
-    Logging
+        |
+        v
+    LAMBDA
+        |
+        +------> SECRETS MANAGER
+        |
+        +------> RDS
+        |
+        v
+      LOGGING
+
+
+IAM controls access throughout the workflow.
 
 
 ================================================================================
-PHASE 2 — CURRENT IMPLEMENTATION MILESTONE
+PHASE 2 — FINAL IMPLEMENTATION MILESTONE
 ================================================================================
 
-Completed cloud infrastructure currently provides:
+Phase 2 successfully transitioned from:
+
+    isolated cloud-service implementation
+
+to:
+
+    integrated cloud application workflow.
 
 
+Final cloud architecture:
+
+
+    Employee
+        |
+        v
+    Application
+        |
+        v
     S3
-      |
-      | ObjectCreated
-      v
+        |
+        | ObjectCreated
+        v
     SQS
-      |
-      | Event Source Mapping
-      v
+        |
+        | Event Source Mapping
+        v
     Lambda
-      |
-      +------> Secrets Manager
-      |          |
-      |          v
-      |       DB credentials
-      |
-      +------> RDS PostgreSQL
-                 |
-                 v
-          Document metadata
+        |
+        +------> Secrets Manager
+        |             |
+        |             v
+        |        DB credentials
+        |
+        +------> RDS PostgreSQL
+        |             |
+        |             v
+        |        Document metadata
+        |
+        v
+      Logging
 
 
-This means the core backend event-driven infrastructure
-is now operational.
+Supporting:
+
+    IAM
+    Floci
+    Docker
+    Docker Compose
 
 
-Remaining major Phase 2 components:
+Phase 2 Git milestone:
 
 
-    [ ] Final logging architecture
-    [ ] Employee-facing application
-    [ ] Application → S3 integration
-    [ ] Final end-to-end verification
-    [ ] Final documentation review
-    [ ] Phase 2 commit / completion
+    Feature:
+
+        feat: Cloud App integration to Floci AWS
+
+
+    [x] Implementation committed
+    [x] Pull Request opened
+    [x] Pull Request reviewed
+    [x] Pull Request merged
+
+
+Phase 2 is officially closed.
 
 
 ================================================================================
 PHASE 2 DEFINITION OF DONE
 ================================================================================
 
-Phase 2 is complete when:
+Phase 2 is complete:
 
 
     [x] Floci cloud environment is operational
@@ -2164,11 +2365,13 @@ Phase 2 is complete when:
 
     [x] Lambda retrieves required secrets
 
-    [ ] Final logging architecture implemented
+    [x] Logging implemented for the workflow
 
-    [ ] Application can submit documents
+    [x] Application integrated with Floci
 
-    [ ] End-to-end workflow works
+    [x] Application can submit documents
+
+    [x] End-to-end workflow verified
 
     [x] Important IAM limitation investigated
 
@@ -2176,20 +2379,24 @@ Phase 2 is complete when:
 
     [x] INC-002 investigated and documented
 
+    [x] INC-003 investigated and documented
+
     [x] Test artifacts cleaned where appropriate
 
-    [ ] Important additional failures investigated
+    [x] Important implementation failures investigated
 
-    [ ] Actual final implementation documented
+    [x] Actual implementation documented
 
-    [ ] Phase 2 documentation review completed
+    [x] Phase 2 documentation reviewed
 
-    [ ] Project state updated
+    [x] Project state updated
 
-    [ ] Phase 2 committed
+    [x] Phase 2 committed
+
+    [x] Phase 2 Pull Request merged
 
 
-Final target:
+Final result:
 
 
     EMPLOYEE
@@ -2221,7 +2428,7 @@ PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 
 STATUS:
 
-    PLANNED
+    IN PROGRESS
 
 
 Objective:
@@ -2230,11 +2437,31 @@ Objective:
     into a managed company domain environment.
 
 
+Primary infrastructure:
+
+    DC01
+        |
+        +-- Active Directory Domain Services
+        +-- DNS
+        +-- Domain
+        +-- Organizational Units
+        +-- Users
+        +-- Groups
+        +-- Group Policy
+
+
+Client:
+
+    WIN01
+        |
+        +-- Domain Join
+        +-- Employee workstation
+
+
 Planned:
 
     [ ] AD DS
-    [ ] DNS
-    [ ] DHCP
+    [ ] DNS Server role
     [ ] Domain
     [ ] Organizational Units
     [ ] Users
@@ -2248,8 +2475,13 @@ Planned:
 
 Important:
 
-    AD DS and domain join must NOT be implemented before
-    Phase 3.
+    Phase 3 is now the active implementation phase.
+
+    AD DS and domain join were intentionally postponed
+    until Phase 2 was completed.
+
+    Phase 2 is now complete, so Windows / Active Directory
+    implementation may begin.
 
 
 ================================================================================
@@ -2414,15 +2646,27 @@ CURRENT POSITION
 
 Current phase:
 
-    PHASE 2 — CLOUD
+    PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 
 
 Current stage:
 
-    STAGE 8 — LOGGING
+    STAGE 1 — AD DS / DOMAIN CONTROLLER
 
 
-Previous completed stages:
+Previous completed phases:
+
+    PHASE 0 — Lab Foundation
+        COMPLETE
+
+    PHASE 1 — Networking
+        COMPLETE
+
+    PHASE 2 — Cloud
+        COMPLETE
+
+
+Phase 2 completed stages:
 
     STAGE 1 — Cloud Foundation
     STAGE 2 — IAM
@@ -2431,153 +2675,23 @@ Previous completed stages:
     STAGE 5 — Lambda
     STAGE 6 — RDS
     STAGE 7 — Secrets
-
-
-Previous phases:
-
-    PHASE 0 — Lab Foundation
-        COMPLETE
-
-    PHASE 1 — Networking
-        COMPLETE
+    STAGE 8 — Logging
+    STAGE 9 — Application
+    STAGE 10 — End-to-End Verification
 
 
 Current implementation state:
 
-    The virtualization and networking foundation is complete.
+    The virtualization foundation is complete.
 
-    The cloud laboratory is operational.
+    The laboratory networking foundation is complete.
 
-    IAM access models are implemented.
+    MINT01 is the administrative workstation.
 
-    S3 document storage is implemented.
+    DC01 is the Windows Server prepared for Phase 3.
 
-    S3 events are delivered to SQS.
-
-    SQS is connected to Lambda through an enabled
-    event source mapping.
-
-    Lambda successfully receives S3-originated events
-    through SQS and extracts document information.
-
-    Lambda now retrieves database credentials through
-    Secrets Manager.
-
-    Lambda now connects to PostgreSQL.
-
-    RDS stores structured document metadata.
-
-    The core backend document-processing workflow is
-    therefore operational from S3 through persistence.
-
-
-    Two Floci-specific incidents have been investigated
-    and documented.
-
-
-Immediate objective:
-
-    Continue Phase 2 with the logging architecture.
-
-    Then:
-
-        IMPLEMENT
-            ↓
-        TEST
-            ↓
-        TROUBLESHOOT IF NEEDED
-            ↓
-        DOCUMENT
-            ↓
-        REVIEW
-            ↓
-        COMMIT
-
-
-Important restrictions:
-
-    Do NOT configure AD DS yet.
-
-    Do NOT configure DC01 as a Domain Controller yet.
-
-    Do NOT domain-join WIN01 yet.
-
-    Do NOT turn implementation into a theoretical course.
-
-    Implement what the lab needs, ask questions when
-    something is unclear, test the result, and document it.
-
-
-================================================================================
-ARCHITECTURAL STATE
-================================================================================
-
-
-                         ARCH LINUX HOST
-                              |
-                           QEMU/KVM
-                              |
-                           libvirt
-                              |
-                     engineering-lab
-                     192.168.100.0/24
-                              |
-             +----------------+----------------+
-             |                |                |
-             v                v                v
-          MINT01            DC01             WIN01
-       192.168.100.10    192.168.100.20    192.168.100.30
-             |
-       Admin Workstation
-             |
-             v
-        Docker / Floci
-             |
-             v
-       AWS-compatible APIs
-             |
-    +--------+--------+----------------+
-    |        |        |                |
-    v        v        v                v
-   S3       SQS    Lambda       Secrets Manager
-    |        |        |                |
-    |        |        +----------------+
-    |        |                 |
-    +------->+-----------------+
-             |
-             v
-        RDS PostgreSQL
-             |
-             v
-       Document metadata
-
-
-Current architectural reality:
-
-
-    Virtualization
-        DONE
-
-    Base laboratory networking
-        DONE
-
-    Phase 1 networking verification
-        DONE
-
-    Phase 1 networking documentation
-        DONE
-
-    MINT01
-        READY
-
-    DC01
-        READY FOR FUTURE WINDOWS INFRASTRUCTURE
-
-    WIN01
-        READY AS STANDALONE CLIENT
-
-    Active Directory
-        NOT YET IMPLEMENTED
+    WIN01 is the standalone employee workstation prepared
+    for future domain integration.
 
 
 Cloud:
@@ -2618,20 +2732,280 @@ Cloud:
     Lambda → Secrets Manager
         VERIFIED
 
-    Document metadata persistence
+    Logging
+        IMPLEMENTED
+
+    Application
+        IMPLEMENTED / INTEGRATED
+
+    End-to-end cloud workflow
+        VERIFIED
+
+
+Phase 2 operational incidents:
+
+    INC-001
+        Floci state / persistence investigation
+
+    INC-002
+        Floci Lambda Docker runtime failure
+
+    INC-003
+        Floci Compose volume mismatch
+
+
+Phase 2 Git state:
+
+    [x] Feature implementation committed
+    [x] Pull Request created
+    [x] Pull Request merged
+
+    Feature:
+
+        feat: Cloud App integration to Floci AWS
+
+
+Immediate objective:
+
+    Begin PHASE 3 — WINDOWS / ACTIVE DIRECTORY.
+
+
+================================================================================
+PHASE 3 — CURRENT IMPLEMENTATION TARGET
+================================================================================
+
+Current stage:
+
+    STAGE 1 — AD DS / DOMAIN CONTROLLER
+
+
+Target:
+
+    Transform DC01 from a standalone Windows Server into
+    the Domain Controller for the engineering-company lab.
+
+
+Implementation direction:
+
+
+    DC01
+        |
+        +-- Install AD DS
+        |
+        +-- Configure DNS
+        |
+        +-- Create domain
+        |
+        +-- Create initial domain structure
+        |
+        +-- Create users / groups
+        |
+        +-- Verify domain services
+        |
+        v
+    WIN01
+        |
+        +-- Configure DNS for domain environment
+        |
+        +-- Domain join
+        |
+        +-- Verify authentication
+        |
+        v
+    Managed employee workstation
+
+
+Workflow:
+
+    DESIGN
+        ↓
+    IMPLEMENT
+        ↓
+    TEST
+        ↓
+    TROUBLESHOOT IF NEEDED
+        ↓
+    DOCUMENT
+        ↓
+    REVIEW
+        ↓
+    COMMIT
+        ↓
+    NEXT STAGE
+
+
+Important:
+
+    Do not turn Phase 3 into a theoretical Active Directory
+    course.
+
+    Implement the domain environment required by the lab,
+    ask questions when a concept is unclear, test the actual
+    configuration, troubleshoot failures, and document the
+    resulting infrastructure.
+
+
+================================================================================
+ARCHITECTURAL STATE
+================================================================================
+
+
+                         ARCH LINUX HOST
+                              |
+                           QEMU/KVM
+                              |
+                           libvirt
+                              |
+                     engineering-lab
+                     192.168.100.0/24
+                              |
+             +----------------+----------------+
+             |                |                |
+             v                v                v
+          MINT01            DC01             WIN01
+       192.168.100.10    192.168.100.20    192.168.100.30
+             |
+       Admin Workstation
+             |
+             +-----------------------+
+             |                       |
+             v                       v
+        Docker / Floci         Windows Administration
+             |                       |
+             v                       v
+       AWS-compatible APIs          DC01
+             |                       |
+    +--------+--------+              |
+    |        |        |              |
+    v        v        v              |
+   S3       SQS    Lambda            |
+    |        |        |              |
+    |        |        +--------+     |
+    |        |                 |     |
+    |        +-----------------+     |
+    |                          |     |
+    +--------------------------+     |
+                               |     |
+                               v     |
+                         RDS PostgreSQL
+                               |
+                               v
+                        Document metadata
+
+
+Phase 2 cloud workflow:
+
+    Application
+        |
+        v
+    S3
+        |
+        v
+    SQS
+        |
+        v
+    Lambda
+        |
+        +------> Secrets Manager
+        |
+        +------> RDS
+        |
+        v
+      Logging
+
+
+Phase 3 Windows workflow:
+
+    DC01
+        |
+        +-- AD DS
+        +-- DNS
+        +-- Domain
+        +-- Users
+        +-- Groups
+        +-- GPOs
+        |
+        v
+    WIN01
+        |
+        +-- Domain Join
+        +-- Employee workstation
+
+
+Current architectural reality:
+
+
+    Virtualization
+        DONE
+
+    Base laboratory networking
+        DONE
+
+    Phase 1 networking
+        DONE
+
+    MINT01
+        READY
+
+    DC01
+        READY FOR PHASE 3
+
+    WIN01
+        READY AS STANDALONE CLIENT
+
+    Active Directory
+        NEXT IMPLEMENTATION
+
+
+Cloud:
+
+    Floci
+        RUNNING / VERIFIED
+
+    IAM
+        IMPLEMENTED
+
+    S3
+        IMPLEMENTED
+
+    SQS
+        IMPLEMENTED
+
+    Lambda
+        IMPLEMENTED
+
+    S3 → SQS → Lambda
+        VERIFIED
+
+    RDS
+        IMPLEMENTED / VERIFIED
+
+    Lambda → RDS
+        VERIFIED
+
+    Secrets Manager
+        IMPLEMENTED / VERIFIED
+
+    Lambda → Secrets Manager
         VERIFIED
 
     Logging
-        PARTIALLY IMPLEMENTED
+        IMPLEMENTED
 
     Application
-        NOT YET IMPLEMENTED
+        IMPLEMENTED
 
-    Final cloud workflow
-        NOT YET COMPLETE
+    Complete cloud workflow
+        VERIFIED
+
+    Phase 2
+        COMPLETE
 
 
 Future project areas:
+
+    Windows / Active Directory
+        IN PROGRESS
 
     IT Operations
         NOT YET IMPLEMENTED
@@ -2656,17 +3030,17 @@ Future project areas:
 NEXT ACTION
 ================================================================================
 
-    Continue PHASE 2 — CLOUD.
+    Begin PHASE 3 — WINDOWS / ACTIVE DIRECTORY.
+
 
     Current stage:
 
-        STAGE 8 — LOGGING
+        STAGE 1 — AD DS / DOMAIN CONTROLLER
 
 
     First action:
 
-        Define the logging architecture required for
-        the completed S3 → SQS → Lambda → RDS workflow.
+        Prepare DC01 for Active Directory Domain Services.
 
 
     Then:
@@ -2682,6 +3056,19 @@ NEXT ACTION
         REVIEW
             ↓
         COMMIT
+
+
+    After DC01 is functioning as the Domain Controller:
+
+        Configure the domain environment
+            ↓
+        Configure WIN01
+            ↓
+        Domain Join
+            ↓
+        Verify authentication and DNS
+            ↓
+        Continue Phase 3
 
 
 ================================================================================
