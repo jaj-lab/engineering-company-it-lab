@@ -268,3 +268,284 @@ aws sqs get-queue-attributes \
 aws sqs delete-message \
   --queue-url http://localhost:4566/000000000000/document-processing \
   --receipt-handle "<RECEIPT_HANDLE>"
+
+
+# LAMBDA
+Lambda uses Role istead of IAM user + access key.
+
+```
+nano lambda-document-processor-trust-policy.json
+{
+  "Version": "2026-08-27",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaToAssumeRole",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+
+
+lambda.amazonaws.com
+        |
+        | sts:AssumeRole
+        v
+document-processor-role
+```
+
+## Back to IAM
+
+### Create the role
+aws iam create-role \
+  --role-name document-processor-role \
+  --assume-role-policy-document file://lambda-document-processor-trust-policy.json
+
+### Get/Verify the role
+aws iam get-role \
+  --role-name document-processor-role
+
+### List roles
+aws iam list-roles \
+  --query 'Roles[].{Name:RoleName,Arn:Arn}' \
+  --output table
+
+
+## Permissions
+
+### Policy for lambda role to do things
+nano lambda-document-processor-policy.json
+
+```
+{
+  "Version": "2026-08-27",
+  "Statement": [
+    {
+      "Sid": "ReadDocumentObjects",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::engineering-documents/*"
+    },
+    {
+      "Sid": "ConsumeDocumentQueue",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": "arn:aws:sqs:eu-east-1:000000000000:document-processing"
+    },
+    {
+      "Sid": "WriteLambdaLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+### Create that policy
+aws iam create-policy \
+  --policy-name document-processor \
+  --policy-document file://lambda-document-processor-policy.json
+
+### List policy
+aws iam list-policies \
+  --scope Local \
+  --query 'Policies[].{Name:PolicyName,Arn:Arn}' \
+  --output table
+
+### Attach policy to the role
+aws iam attach-role-policy \
+  --role-name document-processor-role \
+  --policy-arn arn:aws:iam::000000000000:policy/document-processor
+
+### List attached policies to role
+aws iam list-attached-role-policies \
+  --role-name document-processor-role
+
+
+## LAMBDA Functions
+
+```
+S3
+ │
+ │ ObjectCreated
+ ▼
+SQS
+ │
+ │ message
+ ▼
+Lambda
+ │
+ ├── read S3 object
+ ├── process document
+ └── log result
+ ```
+
+### Write lambda function
+
+```
+nano index.py
+
+def handler(event, context):
+    print("document-processor invoked")
+    print(f"event: {event}")
+
+    return {
+        "statusCode": 200,
+        "body": "document-processor executed successfully"
+    }
+```
+
+Package it
+zip function.zip index.py
+
+
+### Create lambda function
+aws lambda create-function \
+  --function-name document-processor \
+  --runtime python3.12 \
+  --role arn:aws:iam::000000000000:role/document-processor-role \
+  --handler index.handler \
+  --zip-file fileb://function.zip
+
+### Update lambda funciton
+aws lambda update-function-code \
+  --function-name document-processor \
+  --zip-file fileb://function.zip
+
+### List functions
+aws lambda list-functions \
+  --query 'Functions[].{Name:FunctionName,Runtime:Runtime,Role:Role}' \
+  --output table
+
+### Get function
+aws lambda get-function \
+  --function-name document-processor
+
+### Get function configuration
+aws lambda get-function-configuration \
+  --function-name document-processor
+
+### Manuall function invoke
+
+```
+cat > test-event.json <<'EOF'
+{
+  "test": true,
+  "source": "manual"
+}
+EOF
+```
+
+aws lambda invoke \
+  --function-name document-processor \
+  --payload fileb://test-event.json \
+  response.json
+
+
+## EVENT SOURCE MAPPING
+### Create source mapping
+aws lambda create-event-source-mapping \
+  --function-name document-processor \
+  --event-source-arn "$QUEUE_ARN" \
+  --batch-size 1 \
+  --enabled
+
+### List source mapping
+aws lambda list-event-source-mappings \
+  --function-name document-processor
+
+aws lambda list-event-source-mappings \
+  --function-name document-processor \
+  --query 'EventSourceMappings[].{State:State,Queue:EventSourceArn,BatchSize:BatchSize,UUID:UUID}' \
+  --output table
+
+### TEST LAMBDA
+
+```
+index.py
+
+import json
+
+
+def handler(event, context):
+    print("document-processor invoked")
+    print(f"received SQS event: {event}")
+
+    for record in event.get("Records", []):
+        message_body = json.loads(record["body"])
+
+        for s3_record in message_body.get("Records", []):
+            event_name = s3_record["eventName"]
+            bucket = s3_record["s3"]["bucket"]["name"]
+            object_key = s3_record["s3"]["object"]["key"]
+
+            print(f"event: {event_name}")
+            print(f"bucket: {bucket}")
+            print(f"object: {object_key}")
+
+    return {
+        "statusCode": 200,
+        "body": "document processed successfully"
+    }
+
+
+rm -f function.zip
+
+zip function.zip index.py
+```
+
+### Update the Lambda
+aws lambda update-function-code \
+  --function-name document-processor \
+  --zip-file fileb://function.zip
+
+### Test the func
+cd ~/Projects/engineering-company-it-lab/cloud/s3
+
+echo "Lambda SQS processing test" > tmp/lambda-processing-test.txt
+
+aws s3api put-object \
+  --bucket engineering-documents \
+  --key incoming/lambda-processing-test.txt \
+  --body tmp/lambda-processing-test.txt
+
+
+```
+S3 PutObject
+    |
+    v
+engineering-documents
+    |
+    | ObjectCreated:Put
+    v
+document-processing (SQS)
+    |
+    | received 1 message
+    v
+document-processor (Lambda)
+    |
+    +--> parsed SQS event
+    +--> extracted S3 event
+    +--> extracted bucket
+    +--> extracted object key
+    |
+    v
+Lambda succeeded
+    |
+    v
+SQS message deleted
+```

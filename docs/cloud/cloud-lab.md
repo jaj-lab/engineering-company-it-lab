@@ -41,7 +41,7 @@ HIGH-LEVEL ARCHITECTURE
                          | -documents  |
                          +------+------+
                                 |
-                                | Event
+                                | Object-created event
                                 v
                          +-------------+
                          |     SQS     |
@@ -75,7 +75,7 @@ Supporting the workflow:
     IAM
         |
         +--> Application access
-        +--> Lambda permissions
+        +--> Lambda execution role
         +--> S3 access
         +--> SQS access
         +--> Secrets access
@@ -84,8 +84,8 @@ Supporting the workflow:
 
     Logging
         |
-        +--> Application activity
         +--> Lambda execution
+        +--> Workflow events
         +--> Errors
         +--> Troubleshooting
 
@@ -122,7 +122,7 @@ Persistent storage:
 
 
     Docker named volume:
-        data
+        floci_data
 
     Mounted into Floci:
         /app/data
@@ -132,6 +132,19 @@ Compose project:
 
 
     cloud/floci/
+
+
+Docker socket:
+
+
+    /var/run/docker.sock
+
+
+Purpose:
+
+
+    Floci uses the Docker socket to launch isolated
+    Lambda execution containers.
 
 
 Current deployment state:
@@ -147,6 +160,12 @@ Current deployment state:
         CONFIGURED
 
     S3 connectivity
+        VERIFIED
+
+    SQS connectivity
+        VERIFIED
+
+    Lambda execution
         VERIFIED
 
 
@@ -165,7 +184,7 @@ AWS CLI CONFIGURATION
 
 AWS CLI is configured on MINT01.
 
-Configured local credentials are used for the Floci environment.
+Local credentials are used for the Floci environment.
 
 Endpoint:
 
@@ -179,16 +198,27 @@ Region:
     eu-east-1
 
 
-The AWS CLI is explicitly pointed at Floci using:
+AWS environment variables are loaded through direnv
+from the project-level .envrc.
 
 
-    --endpoint-url=http://localhost:4566
+Configured variables include:
+
+
+    AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION
+    AWS_ENDPOINT_URL
+
+
+The endpoint no longer needs to be explicitly supplied
+to every AWS CLI command.
 
 
 Verification:
 
 
-    aws --endpoint-url=http://localhost:4566 sts get-caller-identity
+    aws sts get-caller-identity
 
 
 The AWS CLI communicates with Floci instead of AWS itself.
@@ -225,7 +255,72 @@ Floci health endpoint:
     GET /health
 
 
-Verified that the local cloud services are running.
+Important incident:
+
+
+    INC-001 — Floci State Loss
+
+
+    Root cause:
+
+
+        Docker Compose configuration mounted
+        /app/data as a named volume, but the volume
+        did not contain the previously created cloud
+        state.
+
+
+    Investigation established that Floci's persisted
+    application state was not located in the expected
+    mounted directory for the previous deployment.
+
+
+    Operational lesson:
+
+
+        docker compose down removes containers and the
+        Compose network, but does NOT remove named volumes
+        unless explicitly requested.
+
+
+    Current operational practice:
+
+
+        Use:
+
+            docker compose stop
+
+        when temporarily stopping the cloud lab.
+
+
+        Use:
+
+            docker compose start
+
+        or:
+
+            docker compose up
+
+        to resume it.
+
+
+    Named volume:
+
+
+        floci_data
+
+
+    The volume itself is preserved by:
+
+        docker compose down
+
+
+    unless:
+
+        docker compose down -v
+
+
+    is explicitly used.
 
 
 ================================================================================
@@ -251,7 +346,7 @@ Initial IAM state:
         0
 
 
-Implemented identity:
+Implemented application identity:
 
 
     engineering-app
@@ -302,47 +397,81 @@ Access key:
 Caller identity verification:
 
 
-    Arn:
-        arn:aws:iam::000000000000:user/engineering-app
+    arn:aws:iam::000000000000:user/engineering-app
+
+
+Lambda identity:
+
+
+    document-processor-role
+
+
+Trust relationship:
+
+
+    lambda.amazonaws.com
+        |
+        v
+    sts:AssumeRole
+
+
+Lambda policy:
+
+
+    document-processor
+
+
+Current Lambda policy permissions:
+
+
+    S3:
+        s3:GetObject
+
+
+    SQS:
+        sqs:ReceiveMessage
+        sqs:DeleteMessage
+        sqs:GetQueueAttributes
+
+
+    Logging:
+        logs:CreateLogGroup
+        logs:CreateLogStream
+        logs:PutLogEvents
+
+
+Resource scope:
+
+
+    S3:
+
+        arn:aws:s3:::engineering-documents/*
+
+
+    SQS:
+
+        arn:aws:sqs:eu-east-1:000000000000:document-processing
 
 
 Expected access model:
 
 
-                    engineering-app
+                    document-processor
                            |
                            v
-                  engineering-app-s3
+                 document-processor-role
+                           |
+                           v
+                    document-processor
                        policy
                            |
-              +------------+------------+
-              |                         |
-              v                         v
-       engineering-documents       Other resources
-              |                         |
-       +------+------+                  X
-       |             |
-       v             v
-   ListBucket    Object access
-                 /        \
-                v          v
-            PutObject   GetObject
-
-
-Intended restrictions:
-
-
-    CreateBucket
-        DENIED
-
-    DeleteBucket
-        DENIED
-
-    IAM management
-        DENIED
-
-    Access to unrelated resources
-        DENIED
+          +----------------+----------------+
+          |                |                |
+          v                v                v
+         S3               SQS             Logs
+          |                |                |
+          v                v                v
+    Read objects      Consume messages   Write logs
 
 
 IMPORTANT FLOCΙ BEHAVIOR
@@ -352,7 +481,7 @@ During authorization testing, Floci did not fully enforce
 the expected AWS IAM boundaries for the S3 operations tested.
 
 The following operations were possible despite not being
-present in the attached policy:
+present in the attached application policy:
 
 
     ListAllMyBuckets
@@ -360,7 +489,7 @@ present in the attached policy:
     DeleteBucket
 
 
-Testing:
+Testing established that:
 
 
     engineering-app was able to:
@@ -414,19 +543,6 @@ Bucket:
 Created and verified.
 
 
-Initial state:
-
-
-    Bucket existed
-    No objects
-
-
-Test object:
-
-
-    test/test-document.txt
-
-
 Operations verified:
 
 
@@ -435,25 +551,20 @@ Operations verified:
     [x] GetObject
 
 
-Upload:
+Test artifacts:
 
 
     test/test-document.txt
-
-
-Download:
-
-
     tmp/downloaded-document.txt
+    incoming/s3-sqs-test.txt
+    incoming/lambda-processing-test.txt
 
 
-Object listing confirmed the uploaded object.
+Object upload and retrieval were verified.
 
 
-The object was then removed as a test artifact.
-
-
-The bucket itself remains part of the project infrastructure.
+S3 event generation was also verified as part of the
+S3 → SQS integration.
 
 
 Expected logical structure:
@@ -468,11 +579,7 @@ Expected logical structure:
     +-- failed/
 
 
-The prefixes will become meaningful when the document
-processing workflow is implemented.
-
-
-IMPORTANT:
+Important:
 
 
     S3 stores the actual document objects.
@@ -482,11 +589,391 @@ IMPORTANT:
 
 
 ================================================================================
+STAGE 4 — SQS
+================================================================================
+
+STATUS:
+
+
+    COMPLETE
+
+
+Purpose:
+
+
+    Decouple document upload from document processing.
+
+
+Queue:
+
+
+    document-processing
+
+
+Queue ARN:
+
+
+    arn:aws:sqs:eu-east-1:000000000000:document-processing
+
+
+Queue URL:
+
+
+    http://localhost:4566/000000000000/document-processing
+
+
+Implemented and verified:
+
+
+    [x] Queue created
+    [x] Queue attributes inspected
+    [x] Message retrieval verified
+    [x] Message deletion behavior verified
+    [x] S3 event notification configured
+    [x] S3 → SQS event flow verified
+
+
+Basic queue workflow:
+
+
+    send message
+        ↓
+    receive message
+        ↓
+    inspect message
+        ↓
+    delete message
+
+
+S3 integration:
+
+
+    S3
+      |
+      | ObjectCreated:Put
+      v
+    SQS
+      |
+      | S3 event notification
+      v
+    document-processing
+
+
+Verification:
+
+
+    Uploading an object to:
+
+        engineering-documents/incoming/
+
+
+    resulted in an SQS message containing the
+    corresponding S3 event.
+
+
+Verified example:
+
+
+    incoming/s3-sqs-test.txt
+
+
+The received message contained:
+
+
+    eventSource:
+        aws:s3
+
+
+    eventName:
+        ObjectCreated:Put
+
+
+    bucket:
+        engineering-documents
+
+
+    object:
+        incoming/s3-sqs-test.txt
+
+
+Conclusion:
+
+
+    S3 is successfully producing asynchronous
+    processing events through SQS.
+
+
+================================================================================
+STAGE 5 — LAMBDA
+================================================================================
+
+STATUS:
+
+
+    COMPLETE
+
+
+Purpose:
+
+
+    Consume SQS messages and act as the document
+    processing component of the workflow.
+
+
+Function:
+
+
+    document-processor
+
+
+Runtime:
+
+
+    Python 3.12
+
+
+Handler:
+
+
+    index.handler
+
+
+Architecture:
+
+
+    SQS
+      |
+      | Event Source Mapping
+      v
+    Lambda
+      |
+      v
+    document-processor
+
+
+Lambda execution role:
+
+
+    document-processor-role
+
+
+Event Source Mapping:
+
+
+    SQS:
+        document-processing
+
+
+    Batch size:
+        1
+
+
+    State:
+        Enabled
+
+
+The Lambda function was initially implemented as a
+minimal execution test.
+
+
+Current processing logic:
+
+
+    Receive event
+        ↓
+    Extract S3 event
+        ↓
+    Extract bucket name
+        ↓
+    Extract object key
+        ↓
+    Log extracted information
+        ↓
+    Return successful execution
+
+
+Current function behavior:
+
+
+    document-processor invoked
+
+    event:
+        ...
+
+    event:
+        ObjectCreated:Put
+
+    bucket:
+        engineering-documents
+
+    object:
+        incoming/lambda-processing-test.txt
+
+
+The function currently DOES NOT:
+
+
+    [ ] Read the object contents
+    [ ] Move objects between S3 prefixes
+    [ ] Create RDS records
+    [ ] Update document processing status
+    [ ] Retrieve secrets
+    [ ] Perform real document processing
+
+
+This is intentional at the current stage.
+
+The Lambda implementation first proves that the
+event-driven infrastructure works before adding
+database and application logic.
+
+
+Event-driven verification:
+
+
+    Employee / test upload
+            |
+            v
+          S3
+            |
+            | ObjectCreated
+            v
+          SQS
+            |
+            | Event Source Mapping
+            v
+        Lambda
+            |
+            v
+      document-processor
+            |
+            v
+        log output
+
+
+Verified successfully.
+
+
+Important incident:
+
+
+    INC-002 — Floci Lambda Execution Failure
+
+
+    Symptom:
+
+
+        Lambda invocation returned:
+
+            FunctionError:
+                Unhandled
+
+
+        with:
+
+            Failed to start Lambda container:
+            java.net.SocketException:
+            No such file or directory
+
+
+    Root cause:
+
+
+        Floci runs inside Docker and requires access
+        to the host Docker socket to launch Lambda
+        execution containers.
+
+
+    Resolution:
+
+
+        Added the Docker socket bind mount:
+
+
+            /var/run/docker.sock:
+                /var/run/docker.sock
+
+
+        to the Floci Compose service.
+
+
+    Verification:
+
+
+        Floci container contains:
+
+            /var/run/docker.sock
+
+
+        Lambda execution container was successfully
+        created and started.
+
+
+    Result:
+
+
+        Lambda invocation returned:
+
+            StatusCode: 200
+
+
+        and the SQS-triggered Lambda execution
+        successfully processed and deleted the message.
+
+
+Operational lesson:
+
+
+    A local cloud emulator that launches workload
+    containers requires access to the container runtime.
+
+
+================================================================================
+CURRENT EVENT-DRIVEN WORKFLOW
+================================================================================
+
+
+    S3 OBJECT UPLOAD
+           |
+           v
+    engineering-documents
+           |
+           | ObjectCreated:Put
+           v
+    SQS
+    document-processing
+           |
+           | Event Source Mapping
+           v
+    Lambda
+    document-processor
+           |
+           +--> extract bucket
+           |
+           +--> extract object key
+           |
+           +--> log event
+           |
+           v
+       SUCCESS
+
+
+This is the first complete asynchronous workflow
+implemented in Phase 2.
+
+
+================================================================================
 SERVICES
 ================================================================================
 
 1. S3
 -------
+
+STATUS:
+
+
+    COMPLETE
+
 
 Purpose:
 
@@ -516,37 +1003,29 @@ Responsibilities:
 STATUS:
 
 
-    NOT IMPLEMENTED
+    COMPLETE
 
 
 Purpose:
 
 
-    Decouple document upload from document processing.
+    Provide an asynchronous boundary between
+    document storage and processing.
 
 
-Planned queue:
+Resource:
 
 
     document-processing
 
 
-Workflow:
+Responsibilities:
 
 
-    S3
-      |
-      | Object-created event
-      v
-    SQS
-      |
-      | Message
-      v
-    Lambda
-
-
-The queue provides an asynchronous boundary between
-storage and processing.
+    Receive S3 object-created events
+    Buffer processing messages
+    Decouple S3 from Lambda
+    Provide reliable message consumption
 
 
 --------------------------------------------------------------------------------
@@ -556,13 +1035,14 @@ storage and processing.
 STATUS:
 
 
-    NOT IMPLEMENTED
+    COMPLETE — INITIAL IMPLEMENTATION
 
 
 Purpose:
 
 
-    Process uploaded document events.
+    Consume SQS messages and extract information
+    about uploaded documents.
 
 
 Function:
@@ -571,29 +1051,34 @@ Function:
     document-processor
 
 
-Planned responsibilities:
+Current responsibilities:
 
 
-    Receive SQS message
+    Receive SQS event
         ↓
-    Determine uploaded object
+    Extract S3 event
         ↓
-    Read required metadata
+    Extract bucket
         ↓
-    Retrieve required secret
+    Extract object key
         ↓
-    Perform document-processing logic
+    Log information
         ↓
-    Store processing metadata in RDS
-        ↓
-    Log result
+    Complete successfully
 
 
-Initial processing should remain intentionally simple.
+Future responsibilities:
 
 
-The objective is to demonstrate service interaction,
-not to build a production document-processing engine.
+    Read document from S3
+        ↓
+    Perform processing
+        ↓
+    Store metadata in RDS
+        ↓
+    Update processing state
+        ↓
+    Handle processing failures
 
 
 --------------------------------------------------------------------------------
@@ -691,29 +1176,48 @@ Credentials must not be hardcoded into Lambda code.
 STATUS:
 
 
-    PARTIALLY IMPLEMENTED
+    IMPLEMENTED
 
 
-Implemented:
+Application identity:
 
 
     engineering-app
-        |
-        +-- engineering-app-s3
-                |
-                +-- ListBucket
-                +-- GetObject
-                +-- PutObject
 
 
-Future IAM work:
+Application policy:
 
 
-    Lambda execution role
-    SQS permissions
-    Secrets Manager permissions
-    Logging permissions
-    More narrowly scoped application permissions
+    engineering-app-s3
+
+
+Lambda identity:
+
+
+    document-processor-role
+
+
+Lambda policy:
+
+
+    document-processor
+
+
+Current Lambda permissions:
+
+
+    S3:
+        s3:GetObject
+
+    SQS:
+        sqs:ReceiveMessage
+        sqs:DeleteMessage
+        sqs:GetQueueAttributes
+
+    Logging:
+        logs:CreateLogGroup
+        logs:CreateLogStream
+        logs:PutLogEvents
 
 
 Principle:
@@ -725,8 +1229,8 @@ Principle:
 IMPORTANT:
 
 
-    Floci's tested S3 authorization behavior currently
-    does not fully reproduce the expected AWS IAM boundaries.
+    Floci's tested S3 authorization behavior does not
+    fully reproduce the expected AWS IAM boundaries.
 
 
 The intended architecture remains least privilege.
@@ -739,16 +1243,31 @@ The intended architecture remains least privilege.
 STATUS:
 
 
-    NOT IMPLEMENTED
+    PARTIALLY IMPLEMENTED
 
 
-Purpose:
+Current behavior:
 
 
-    Provide visibility into application and Lambda execution.
+    Lambda execution logs are generated.
 
 
-Planned information:
+Verified information includes:
+
+
+    document-processor invoked
+    S3 event type
+    bucket
+    object key
+
+
+Floci creates Lambda log streams under:
+
+
+    /aws/lambda/document-processor/
+
+
+Future logging work:
 
 
     document received
@@ -756,9 +1275,11 @@ Planned information:
     processing completed
     database operation
     processing errors
+    operational troubleshooting
 
 
-Logging will also become useful during troubleshooting.
+The dedicated logging work will be completed later
+as part of the observability portion of the workflow.
 
 
 ================================================================================
@@ -792,6 +1313,48 @@ into the cloud workflow.
 
 
 ================================================================================
+CURRENT REPOSITORY STRUCTURE
+================================================================================
+
+
+    cloud/
+    |
+    +-- floci/
+    |   |
+    |   +-- compose.yaml
+    |   +-- tmp/
+    |
+    +-- iam/
+    |   |
+    |   +-- engineering-app-s3-policy.json
+    |
+    +-- s3/
+    |   |
+    |   +-- s3-to-sqs-notification.json
+    |   +-- tmp/
+    |
+    +-- sqs/
+    |
+    +-- lambda/
+    |   |
+    |   +-- document-processor/
+    |       |
+    |       +-- index.py
+    |       +-- function.zip
+    |       +-- test-event.json
+    |       +-- response.json
+    |
+    +-- rds/
+
+
+Service-specific READMEs are intentionally deferred.
+
+They will be written after the complete workflow has
+been implemented so that the documentation reflects
+the final architecture rather than intermediate states.
+
+
+================================================================================
 CURRENT RESOURCE SET
 ================================================================================
 
@@ -801,26 +1364,44 @@ Currently implemented:
     Floci
         |
         +-- AWS-compatible APIs
+        +-- Docker-backed Lambda execution
+
 
     S3
         |
         +-- engineering-documents
 
+
+    SQS
+        |
+        +-- document-processing
+
+
+    Lambda
+        |
+        +-- document-processor
+
+
     IAM
         |
         +-- engineering-app
         +-- engineering-app-s3
+        +-- document-processor-role
+        +-- document-processor
+
+
+    S3 → SQS → Lambda
+        |
+        +-- VERIFIED
 
 
 Not yet implemented:
 
 
-    SQS
-    Lambda
     RDS
     Secrets Manager
-    Logging
-    Application
+    Full application
+    Complete observability workflow
 
 
 ================================================================================
@@ -879,7 +1460,7 @@ ACCESS CONTROL
     IAM
         |
         +-- application identity
-        +-- Lambda role
+        +-- Lambda execution role
         +-- policies
 
 
@@ -915,9 +1496,10 @@ The implementation proceeds incrementally.
         +-- Docker Compose
         +-- persistent storage
         +-- AWS CLI
-        +-- endpoint
+        +-- endpoint configuration
         +-- connectivity
         +-- health verification
+        +-- Lambda Docker runtime support
 
             |
             v
@@ -927,8 +1509,9 @@ The implementation proceeds incrementally.
 
         +-- engineering-app
         +-- engineering-app-s3
+        +-- Lambda execution role
+        +-- Lambda policy
         +-- policy attachment
-        +-- access key
         +-- authorization testing
         +-- Floci limitation documented
 
@@ -941,26 +1524,34 @@ The implementation proceeds incrementally.
         +-- engineering-documents
         +-- object operations
         +-- upload / download verification
+        +-- event notification configuration
 
             |
             v
 
-    [ ] STAGE 4
+    [x] STAGE 4
         SQS
 
         +-- document-processing
         +-- queue verification
         +-- message operations
+        +-- S3 event integration
+        +-- S3 → SQS verification
 
             |
             v
 
-    [ ] STAGE 5
+    [x] STAGE 5
         Lambda
 
         +-- document-processor
-        +-- SQS integration
-        +-- S3 interaction
+        +-- Python 3.12 runtime
+        +-- Lambda execution role
+        +-- SQS Event Source Mapping
+        +-- SQS event consumption
+        +-- S3 event extraction
+        +-- workflow logging
+        +-- successful message deletion
 
             |
             v
@@ -971,6 +1562,7 @@ The implementation proceeds incrementally.
         +-- PostgreSQL
         +-- documents metadata
         +-- Lambda integration
+        +-- processing state
 
             |
             v
@@ -980,6 +1572,7 @@ The implementation proceeds incrementally.
 
         +-- database credentials
         +-- Lambda retrieval
+        +-- secure configuration
 
             |
             v
@@ -987,9 +1580,10 @@ The implementation proceeds incrementally.
     [ ] STAGE 8
         Logging
 
-        +-- Lambda logs
-        +-- workflow visibility
+        +-- workflow logging
+        +-- structured events
         +-- error investigation
+        +-- operational visibility
 
             |
             v
@@ -1000,6 +1594,7 @@ The implementation proceeds incrementally.
         +-- document upload
         +-- S3
         +-- workflow integration
+        +-- document status
 
             |
             v
@@ -1102,15 +1697,17 @@ CURRENT IMPLEMENTATION STATE
 
 
     STAGE 4 — SQS
-        [ ] Next
+        [x] Complete
 
 
     STAGE 5 — Lambda
-        [ ]
+        [x] Complete
+        |
+        +-- Initial event-processing implementation
 
 
     STAGE 6 — RDS
-        [ ]
+        [ ] Next
 
 
     STAGE 7 — Secrets
@@ -1132,7 +1729,7 @@ CURRENT IMPLEMENTATION STATE
 Current position:
 
 
-    >>> STAGE 4 — SQS <<<
+    >>> STAGE 6 — RDS <<<
 
 
 ================================================================================
@@ -1152,11 +1749,17 @@ Phase 2 is complete when:
 
     [x] S3 object operations verified
 
-    [ ] SQS document-processing queue exists
+    [x] SQS document-processing queue exists
 
-    [ ] Lambda document-processor exists
+    [x] S3 → SQS event flow works
 
-    [ ] S3 -> SQS -> Lambda flow works
+    [x] Lambda document-processor exists
+
+    [x] SQS → Lambda Event Source Mapping works
+
+    [x] Lambda extracts S3 event information
+
+    [x] Lambda execution is logged
 
     [ ] RDS PostgreSQL stores document metadata
 
@@ -1166,7 +1769,7 @@ Phase 2 is complete when:
 
     [ ] Lambda retrieves required secrets
 
-    [ ] Logging captures workflow execution
+    [ ] Complete workflow logging implemented
 
     [ ] Application can submit documents
 
@@ -1174,11 +1777,15 @@ Phase 2 is complete when:
 
     [x] Important IAM limitation investigated
 
-    [x] Test artifacts cleaned
+    [x] INC-001 investigated
+
+    [x] INC-002 investigated
 
     [ ] Important additional failures investigated
 
     [ ] Actual implementation is documented
+
+    [ ] Service READMEs completed
 
     [ ] Phase 2 documentation review completed
 
@@ -1220,47 +1827,79 @@ NEXT IMPLEMENTATION
 NEXT:
 
 
-    STAGE 4 — SQS
+    STAGE 6 — RDS
 
 
 Objective:
 
 
-    Introduce asynchronous messaging into the
-    Engineering Document Workflow.
+    Introduce structured persistence for document
+    processing metadata.
 
 
-First implementation target:
+Initial target:
 
 
-    Queue:
+    PostgreSQL database
 
 
-        document-processing
+Conceptual entity:
 
 
-Then verify:
+    documents
 
 
-    queue exists
-        ↓
-    send message
-        ↓
-    receive message
-        ↓
-    inspect message
-        ↓
-    delete message
+Expected relationship:
 
 
-After that:
+    S3
+        |
+        | document object
+        v
+    Lambda
+        |
+        | document metadata
+        v
+    RDS
+        |
+        v
+    documents
 
 
-    connect S3 events
-        ↓
-    SQS
-        ↓
-    prepare for Lambda
+Initial database information:
+
+
+    id
+    object_key
+    filename
+    status
+    uploaded_at
+    processed_at
+    error_message
+
+
+The Lambda implementation will be extended only after
+the database foundation is verified.
+
+
+After RDS:
+
+
+    Lambda
+        |
+        +--> S3
+        |
+        +--> RDS
+
+
+Then:
+
+
+    Secrets Manager
+
+
+will be introduced to remove sensitive database
+configuration from the Lambda implementation.
 
 
 ================================================================================
