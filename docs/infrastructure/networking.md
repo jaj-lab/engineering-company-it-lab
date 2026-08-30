@@ -2,508 +2,842 @@
 
 ================================================================================
 PURPOSE
-================================================================================
+=======
 
 This document describes the currently implemented and verified operational
 state of the Engineering Company IT Lab network.
 
-Unlike the network architecture document, this document focuses on the
-actual configuration, observed state, verification commands, and operational
+Unlike the network architecture document, this document focuses on the actual
+configuration, observed state, verification commands, and operational
 behavior of the laboratory network.
 
-The implementation described here reflects the verified Phase 1 state.
-
+The current state includes the original libvirt-based network transport and
+NAT architecture, with DHCP and DNS responsibilities migrated to DC01 during
+the Windows / Active Directory phase.
 
 ================================================================================
 LIBVIRT NETWORK
-================================================================================
+===============
 
 Network name:
 
-    engineering-lab
+```
+engineering-lab
+```
 
 Status:
 
-    Active:       yes
-    Persistent:   yes
-    Autostart:    no
+```
+Active:       yes
+Persistent:   yes
+Autostart:    no
+```
 
 Bridge:
 
-    engineering-lab
+```
+engineering-lab
+```
 
 Forward mode:
 
-    NAT
+```
+NAT
+```
 
 Network address:
 
-    192.168.100.0/24
+```
+192.168.100.0/24
+```
 
 Netmask:
 
-    255.255.255.0
+```
+255.255.255.0
+```
 
 Gateway:
 
-    192.168.100.1
-
+```
+192.168.100.1
+```
 
 Verified with:
 
-    sudo virsh net-info engineering-lab
+```
+sudo virsh net-info engineering-lab
 
-    sudo virsh net-dumpxml engineering-lab
+sudo virsh net-dumpxml engineering-lab
+```
 
+The libvirt network remains responsible for:
+
+```
+- Virtual Layer 2 connectivity
+- Default gateway
+- NAT
+- Outbound Internet connectivity
+```
+
+The libvirt network is no longer responsible for DHCP.
 
 ================================================================================
 NETWORK CONFIGURATION
-================================================================================
+=====================
 
 The libvirt network provides:
 
-    IPv4 subnet:
-        192.168.100.0/24
+```
+IPv4 subnet:
+    192.168.100.0/24
 
-    Gateway:
-        192.168.100.1
+Gateway:
+    192.168.100.1
 
-    DHCP:
-        Enabled
+DHCP:
+    Disabled in libvirt
 
-    NAT:
-        Enabled
+NAT:
+    Enabled
+```
 
-    DHCP dynamic range:
-        192.168.100.50 - 192.168.100.100
+The libvirt network no longer contains a DHCP range or static DHCP host
+reservations.
 
-The current network configuration is defined by the libvirt network XML.
+DHCP responsibility has been migrated to DC01.
 
+Verified with:
 
-Verified configuration:
+```
+sudo virsh net-dumpxml engineering-lab
+```
 
-    sudo virsh net-dumpxml engineering-lab
+The resulting responsibility model is:
 
+```
+libvirt
+    |
+    +-- Virtual network
+    +-- Gateway
+    +-- NAT
+
+DC01
+    |
+    +-- DHCP
+    +-- DNS
+    +-- Active Directory
+```
 
 ================================================================================
 DHCP CONFIGURATION
-================================================================================
+==================
 
-The network uses libvirt's built-in DHCP service.
+DHCP is provided by the Windows DHCP Server service running on DC01.
 
-Dynamic DHCP range:
+DHCP server:
 
+```
+DC01.engineering.local
+192.168.100.20
+```
+
+DHCP authorization:
+
+```
+Authorized in Active Directory
+```
+
+DHCP scope:
+
+```
+Scope name:
+    Engineering Lab
+
+Network:
+    192.168.100.0/24
+
+Dynamic range:
     192.168.100.50 - 192.168.100.100
 
-The following DHCP reservations are configured:
+Scope state:
+    Active
 
-    MINT01
-        MAC: 52:54:00:c1:bb:a8
-        IP:  192.168.100.10
+Lease duration:
+    8 days
+```
 
-    DC01
-        MAC: 52:54:00:17:7d:e5
-        IP:  192.168.100.20
+DHCP options:
 
+```
+Default gateway:
+    192.168.100.1
+
+DNS server:
+    192.168.100.20
+
+DNS domain:
+    engineering.local
+```
+
+DHCP reservation:
+
+```
+Host:
     WIN01
-        MAC: 52:54:00:cd:78:97
-        IP:  192.168.100.30
 
-The reserved addresses are outside the dynamic DHCP range.
+MAC:
+    52:54:00:cd:78:97
 
+IP:
+    192.168.100.30
 
-Verified with:
+Reservation type:
+    Both
+```
 
-    sudo virsh net-dhcp-leases engineering-lab
+The reserved WIN01 address is outside the dynamic DHCP pool.
 
-Example verified leases:
+The dynamic pool remains available for future DHCP clients:
 
-    dc01   -> 192.168.100.20/24
-    mint01 -> 192.168.100.10/24
-    win01  -> 192.168.100.30/24
-
+```
+192.168.100.50 - 192.168.100.100
+```
 
 ================================================================================
-DHCP VERIFICATION
+DHCP RESPONSIBILITY MIGRATION
+=============================
+
+DHCP responsibility was migrated from libvirt to DC01.
+
+Previous state:
+
+```
+libvirt
+   |
+   +-- DHCP
+   +-- DHCP reservations
+   +-- Gateway
+   +-- NAT
+```
+
+Current state:
+
+```
+libvirt
+   |
+   +-- Gateway
+   +-- NAT
+
+DC01
+   |
+   +-- DHCP
+   +-- DHCP reservation for WIN01
+   +-- DNS
+   +-- Active Directory
+```
+
+The migration included:
+
+```
+[x] DHCP server configured on DC01
+[x] DHCP server authorized in Active Directory
+[x] Engineering Lab scope created
+[x] Dynamic range configured
+[x] DHCP options configured
+[x] WIN01 reservation configured
+[x] libvirt DHCP service removed
+[x] libvirt DHCP range removed
+[x] libvirt DHCP reservations removed
+[x] WIN01 DHCP operation verified
+[x] No competing DHCP servers remain
+```
+
 ================================================================================
+DHCP VERIFICATION — WIN01
+=========================
 
-DHCP behavior was verified directly from MINT01.
+WIN01 was configured to use DHCP.
 
-Initial state:
+The following state was verified:
 
-    enp1s0
-        192.168.100.10/24
-        default gateway: 192.168.100.1
+```
+IPv4 address:
+    192.168.100.30
 
-NetworkManager was confirmed to be active:
+Subnet mask:
+    255.255.255.0
 
-    systemctl is-active NetworkManager
+Default gateway:
+    192.168.100.1
 
-Result:
+DHCP server:
+    192.168.100.20
 
-    active
+DNS server:
+    192.168.100.20
 
-The interface was then disconnected:
+DNS suffix:
+    engineering.local
+```
 
-    sudo nmcli device disconnect enp1s0
+The reserved address is supplied by DC01 DHCP based on the WIN01 MAC
+address:
 
-The IPv4 address disappeared from the interface.
+```
+52:54:00:cd:78:97
+    |
+    v
+DC01 DHCP
+    |
+    v
+192.168.100.30
+```
 
-The interface was reconnected:
+The DHCP lease was successfully obtained by WIN01.
 
-    sudo nmcli device connect enp1s0
+The libvirt DHCP service is not involved in this assignment.
 
-The interface subsequently received:
+================================================================================
+IP ADDRESSING
+=============
 
-    192.168.100.10/24
+The current laboratory addressing model is:
 
-The DHCP lease was also visible from the libvirt host:
+```
+192.168.100.0/24
+```
 
-    sudo virsh net-dhcp-leases engineering-lab
+Static infrastructure:
 
-The MINT01 reservation therefore behaves as expected.
+```
+192.168.100.1
+    libvirt gateway
 
+192.168.100.10
+    MINT01
+
+192.168.100.20
+    DC01
+```
+
+DHCP reservation:
+
+```
+192.168.100.30
+    WIN01
+```
+
+Dynamic DHCP pool:
+
+```
+192.168.100.50 - 192.168.100.100
+```
+
+Future / infrastructure address space:
+
+```
+192.168.100.101 - 192.168.100.254
+```
+
+This addressing model keeps infrastructure and reserved client addresses
+outside the dynamic DHCP pool.
 
 ================================================================================
 VM NETWORK INTERFACES
-================================================================================
+=====================
 
 MINT01
 
-    Interface:
-        enp1s0
+```
+Interface:
+    enp1s0
 
-    MAC:
-        52:54:00:c1:bb:a8
+MAC:
+    52:54:00:c1:bb:a8
 
-    IPv4:
-        192.168.100.10/24
+IPv4:
+    192.168.100.10/24
 
-    Gateway:
-        192.168.100.1
+Addressing:
+    Static
 
-    NetworkManager:
-        Active
+Gateway:
+    192.168.100.1
 
+NetworkManager:
+    Active
+```
 
 DC01
 
-    Interface:
-        Ethernet 2
+```
+Interface:
+    Ethernet 2
 
-    MAC:
-        52:54:00:17:7d:e5
+MAC:
+    52:54:00:17:7d:e5
 
-    IPv4:
-        192.168.100.20/24
+IPv4:
+    192.168.100.20/24
 
+Addressing:
+    Static
+```
 
 WIN01
 
-    Interface:
-        Ethernet 2
+```
+Interface:
+    Ethernet 2
 
-    MAC:
-        52:54:00:cd:78:97
+MAC:
+    52:54:00:cd:78:97
 
-    IPv4:
-        192.168.100.30/24
+IPv4:
+    192.168.100.30/24
 
+Addressing:
+    DHCP reservation
+```
 
-VM addresses were additionally verified from the libvirt host using:
+VM addresses can be inspected from the libvirt host using:
 
-    sudo virsh domifaddr IT-LAB_MINT01
-    sudo virsh domifaddr IT-LAB_DC01
-    sudo virsh domifaddr IT-LAB_WIN01
-
+```
+sudo virsh domifaddr IT-LAB_MINT01
+sudo virsh domifaddr IT-LAB_DC01
+sudo virsh domifaddr IT-LAB_WIN01
+```
 
 ================================================================================
 MINT01 ROUTING
-================================================================================
+==============
 
 MINT01 uses the libvirt gateway as its default route.
 
-Verified routing table:
+Expected routing model:
 
-    default via 192.168.100.1 dev enp1s0 proto dhcp
-        src 192.168.100.10
-        metric 100
+```
+default via 192.168.100.1 dev enp1s0
+```
 
 The directly connected laboratory network is:
 
-    192.168.100.0/24
-        dev enp1s0
-        src 192.168.100.10
-
+```
+192.168.100.0/24
+    dev enp1s0
+```
 
 Verified with:
 
-    ip route
+```
+ip route
+```
 
+The gateway remains provided by libvirt rather than DC01.
+
+DC01 DHCP distributes the gateway address to DHCP clients.
 
 ================================================================================
 DNS
+===
+
+DNS is provided by DC01.
+
+DC01 hosts the DNS service used by the Active Directory domain:
+
+```
+engineering.local
+```
+
+DNS server:
+
+```
+192.168.100.20
+```
+
+DHCP clients receive:
+
+```
+DNS server:
+    192.168.100.20
+
+DNS domain:
+    engineering.local
+```
+
+The current DNS architecture is:
+
+```
+Client
+   |
+   v
+DC01
+192.168.100.20
+   |
+   +-- Active Directory-integrated DNS
+   |
+   +-- engineering.local
+   |
+   +-- External DNS resolution
+```
+
+DC01 therefore provides the internal DNS service required by Active
+Directory.
+
 ================================================================================
+ACTIVE DIRECTORY DNS VERIFICATION
+=================================
 
-DNS configuration on MINT01 is provided through the libvirt gateway.
+DNS resolution required for Active Directory was verified.
 
-Current DNS server:
+The following records were tested:
 
-    192.168.100.1
+```
+DC01.engineering.local
 
-Verified with:
+engineering.local
 
-    resolvectl status
+_ldap._tcp.dc._msdcs.engineering.local
+```
 
-Relevant result:
+The LDAP SRV record is particularly important because Active Directory
+clients use DNS service records to locate domain controllers.
 
-    Link 2 (enp1s0)
-        Current Scopes: DNS
-        Current DNS Server: 192.168.100.1
-        DNS Servers: 192.168.100.1
+The expected lookup is:
 
+```
+Resolve-DnsName `
+    _ldap._tcp.dc._msdcs.engineering.local `
+    -Type SRV
+```
 
-DNS resolution was verified using:
+Domain controller discovery was also verified with:
 
-    resolvectl query google.com
+```
+nltest /dsgetdc:engineering.local
+```
 
-The query successfully returned IPv4 and IPv6 addresses for google.com.
-
-The gateway itself is also resolvable:
-
-    resolvectl query 192.168.100.1
-
-Current DNS behavior is therefore:
-
-    MINT01
-       |
-       v
-    192.168.100.1
-       |
-       v
-    External DNS resolution
-
-
-A dedicated internal DNS server is not currently implemented.
-
-DC01 is not yet configured as an Active Directory Domain Controller and is
-therefore not currently providing internal Active Directory DNS.
-
-This will change during the Windows Infrastructure / Active Directory phase.
-
+This confirms that DNS is functioning as part of the Active Directory
+infrastructure rather than merely providing external Internet resolution.
 
 ================================================================================
 NETWORKMANAGER
-================================================================================
+==============
 
 MINT01 uses NetworkManager for network configuration.
 
 Verified with:
 
-    systemctl is-active NetworkManager
+```
+systemctl is-active NetworkManager
+```
 
 Result:
 
-    active
+```
+active
+```
 
 The interface can be administratively disconnected and reconnected using:
 
-    sudo nmcli device disconnect enp1s0
-    sudo nmcli device connect enp1s0
+```
+sudo nmcli device disconnect enp1s0
+sudo nmcli device connect enp1s0
+```
 
-After reconnection, NetworkManager successfully restores the DHCP
-configuration and MINT01 receives its reserved address:
-
-    192.168.100.10/24
-
-
-Note:
-
-    systemd-networkd is not running on MINT01.
+systemd-networkd is not running on MINT01.
 
 The interface is therefore managed by NetworkManager rather than
 systemd-networkd.
 
-
 ================================================================================
-EXTERNAL CONNECTIVITY VERIFICATION
-================================================================================
+EXTERNAL CONNECTIVITY
+=====================
 
-External IP connectivity was verified from MINT01.
+The laboratory uses libvirt NAT for outbound connectivity.
 
-Test:
+The traffic path is:
 
-    ping -c 3 1.1.1.1
+```
+VM
+   |
+   v
+192.168.100.1
+   |
+   v
+libvirt NAT
+   |
+   v
+Host external network
+   |
+   v
+Internet
+```
 
-Result:
+External IP connectivity was verified from MINT01 using:
 
-    3 packets transmitted
-    3 packets received
-    0% packet loss
+```
+ping -c 3 1.1.1.1
+```
 
-External DNS and connectivity were also verified with:
+External DNS resolution and connectivity were also previously verified
+using:
 
-    ping -c 3 google.com
+```
+ping -c 3 google.com
+```
 
-Result:
+The migration of DHCP and DNS responsibility to DC01 does not change the
+libvirt NAT boundary.
 
-    3 packets transmitted
-    3 packets received
-    0% packet loss
-
-
-Therefore the complete outbound path is operational:
-
-    MINT01
-       |
-       v
-    192.168.100.1
-       |
-       v
-    libvirt NAT
-       |
-       v
-    External Network
-       |
-       v
-    Internet
-
+DC01 provides DNS service, while libvirt continues to provide outbound NAT.
 
 ================================================================================
 VM-TO-VM CONNECTIVITY
-================================================================================
+=====================
 
-Connectivity between all three laboratory VMs was verified.
+All three laboratory VMs remain connected to the same:
+
+```
+192.168.100.0/24
+```
+
+laboratory network.
+
+Previously verified connectivity includes:
+
+```
+MINT01 -> DC01
+MINT01 -> WIN01
+
+DC01 -> MINT01
+DC01 -> WIN01
+
+WIN01 -> MINT01
+WIN01 -> DC01
+```
+
+Example verification commands:
 
 MINT01:
 
-    ping -c 3 192.168.100.20
-    ping -c 3 192.168.100.30
-
-Both tests:
-
-    3 packets transmitted
-    3 packets received
-    0% packet loss
-
+```
+ping -c 3 192.168.100.20
+ping -c 3 192.168.100.30
+```
 
 DC01:
 
-    Test-Connection 192.168.100.10 -Count 3
-    Test-Connection 192.168.100.30 -Count 3
-
-Both tests completed successfully.
-
+```
+Test-Connection 192.168.100.10 -Count 3
+Test-Connection 192.168.100.30 -Count 3
+```
 
 WIN01:
 
-    Test-Connection 192.168.100.10 -Count 3
-    Test-Connection 192.168.100.20 -Count 3
+```
+Test-Connection 192.168.100.10 -Count 3
+Test-Connection 192.168.100.20 -Count 3
+```
 
-Both tests completed successfully.
+The network remains a single flat IPv4 network with direct connectivity
+between the laboratory hosts.
 
+================================================================================
+NO COMPETING DHCP SERVICES
+==========================
 
-Verified connectivity matrix:
+The libvirt DHCP service has been removed from the engineering-lab network.
 
-                    MINT01      DC01       WIN01
-    MINT01             -         OK          OK
-    DC01              OK          -          OK
-    WIN01             OK         OK           -
+The current DHCP responsibility is exclusively:
 
+```
+DC01
+    |
+    +-- DHCP
+```
 
-All three VMs can currently communicate with each other over the
-192.168.100.0/24 laboratory network.
+libvirt provides:
 
+```
+Gateway
+NAT
+```
+
+but does not provide:
+
+```
+DHCP
+```
+
+This prevents multiple DHCP servers from competing to provide network
+configuration to laboratory clients.
 
 ================================================================================
 CURRENT NETWORK STATE
-================================================================================
+=====================
 
-    Network:
-        engineering-lab
+```
+Network:
+    engineering-lab
 
-    Status:
-        Active / Persistent
+Status:
+    Active / Persistent
 
-    Bridge:
-        engineering-lab
+Bridge:
+    engineering-lab
 
-    Forward mode:
-        NAT
+Forward mode:
+    NAT
 
-    Subnet:
-        192.168.100.0/24
+Subnet:
+    192.168.100.0/24
 
-    Gateway:
-        192.168.100.1
+Gateway:
+    192.168.100.1
 
-    DHCP:
-        Enabled
+NAT:
+    Enabled through libvirt
 
-    DHCP pool:
-        192.168.100.50 - 192.168.100.100
+libvirt DHCP:
+    Disabled / Removed
 
-    DNS:
-        192.168.100.1
+DHCP server:
+    DC01
+    192.168.100.20
 
-    MINT01:
-        192.168.100.10/24
-        enp1s0
-        DHCP reservation
+DHCP scope:
+    Engineering Lab
 
-    DC01:
-        192.168.100.20/24
-        Ethernet 2
-        DHCP reservation
+DHCP pool:
+    192.168.100.50 - 192.168.100.100
 
-    WIN01:
-        192.168.100.30/24
-        Ethernet 2
-        DHCP reservation
+DHCP reservation:
+    WIN01 -> 192.168.100.30
 
+DNS server:
+    DC01
+    192.168.100.20
+
+DNS domain:
+    engineering.local
+```
+
+VMs:
+
+```
+MINT01
+    192.168.100.10/24
+    Static
+    enp1s0
+
+DC01
+    192.168.100.20/24
+    Static
+    Ethernet 2
+
+WIN01
+    192.168.100.30/24
+    DHCP reservation
+    Ethernet 2
+```
 
 ================================================================================
 VERIFICATION SUMMARY
-================================================================================
+====================
 
-The following areas have been verified:
+LIBVIRT / NETWORK
 
-    [x] Libvirt network is active
-    [x] Libvirt network is persistent
-    [x] Correct bridge is configured
-    [x] Correct subnet is configured
-    [x] DHCP pool is configured
-    [x] DHCP reservations are configured
-    [x] MINT01 receives its reserved DHCP address
-    [x] DHCP renewal/reconnection verified
-    [x] Default gateway is correct
-    [x] NAT is operational
-    [x] MINT01 external IP connectivity verified
-    [x] MINT01 external DNS resolution verified
-    [x] MINT01 -> DC01 connectivity verified
-    [x] MINT01 -> WIN01 connectivity verified
-    [x] DC01 -> MINT01 connectivity verified
-    [x] DC01 -> WIN01 connectivity verified
-    [x] WIN01 -> MINT01 connectivity verified
-    [x] WIN01 -> DC01 connectivity verified
+```
+[x] Libvirt network is active
+[x] Libvirt network is persistent
+[x] Correct bridge is configured
+[x] Correct subnet is configured
+[x] NAT is operational
+[x] Default gateway is 192.168.100.1
+```
 
+DHCP
+
+```
+[x] DC01 DHCP server configured
+[x] DHCP server authorized in Active Directory
+[x] Engineering Lab DHCP scope configured
+[x] Dynamic pool configured
+[x] DHCP options configured
+[x] WIN01 reservation configured
+[x] WIN01 receives 192.168.100.30
+[x] libvirt DHCP service removed
+[x] libvirt DHCP reservations removed
+[x] No competing DHCP servers remain
+```
+
+DNS / ACTIVE DIRECTORY
+
+```
+[x] DC01 provides internal DNS
+[x] engineering.local resolves
+[x] DC01.engineering.local resolves
+[x] Active Directory LDAP SRV record resolves
+[x] Domain Controller discovery succeeds
+[x] DHCP distributes DC01 as DNS server
+```
+
+CONNECTIVITY
+
+```
+[x] MINT01 -> DC01 connectivity verified
+[x] MINT01 -> WIN01 connectivity verified
+[x] DC01 -> MINT01 connectivity verified
+[x] DC01 -> WIN01 connectivity verified
+[x] WIN01 -> MINT01 connectivity verified
+[x] WIN01 -> DC01 connectivity verified
+[x] External IP connectivity verified
+[x] External DNS resolution verified
+```
 
 ================================================================================
 OPERATIONAL STATUS
-================================================================================
+==================
 
-Phase 1 networking is implemented and verified.
+The Phase 1 network transport remains implemented and verified.
 
-The current laboratory network provides stable VM addressing, DHCP, routing,
-NAT, DNS resolution, external connectivity, and VM-to-VM connectivity.
+During the Windows / Active Directory phase, DHCP and DNS responsibilities
+were migrated from libvirt to DC01.
 
-No dedicated internal DNS service, Active Directory DNS, VLAN segmentation,
-or additional network segments are currently implemented.
+The current operational architecture is therefore:
 
-These are outside the current Phase 1 operational state and will be addressed
-only when introduced by later phases.
+```
+libvirt
+    |
+    +-- Virtual network
+    +-- Gateway
+    +-- NAT
 
+DC01
+    |
+    +-- Active Directory
+    +-- DNS
+    +-- DHCP
+```
+
+The laboratory network currently provides:
+
+```
+- Stable infrastructure addressing
+- DC01-based DHCP
+- WIN01 DHCP reservation
+- Active Directory-integrated DNS
+- Default routing
+- NAT
+- External connectivity
+- VM-to-VM connectivity
+- Active Directory DNS service discovery
+```
+
+The network remains a single flat IPv4 subnet with no VLAN segmentation.
 
 ================================================================================
 END
-================================================================================
+===

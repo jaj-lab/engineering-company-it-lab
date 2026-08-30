@@ -1,0 +1,97 @@
+PHASE 3.1 — PREPARE DC01
+
+================================================================================
+PHASE 3.1 — PREPARE DC01
+================================================================================
+
+HOSTNAME
+    [x] DC01
+
+OS
+    [x] Windows Server 2025 Standard
+    [x] Build 26100
+
+DOMAIN STATE
+    [x] WORKGROUP
+    [x] Not currently domain-joined
+
+NETWORK
+    [x] 192.168.100.20/24
+    [x] Gateway 192.168.100.1
+    [x] DHCP reservation
+    [x] VM connectivity verified
+
+DNS — CURRENT
+    [x] 192.168.100.1
+    [x] External DNS resolution verified
+    [x] DC01 name resolves to 192.168.100.20
+
+TIME
+    [x] Windows Time synchronized
+    [x] Source: time.windows.com
+    [x] No synchronization warning
+
+WINDOWS ROLES
+    [x] AD DS not installed
+    [x] DNS Server not installed
+    [x] DHCP Server not installed
+
+REMOTE ADMINISTRATION
+    [x] WinRM running
+    [x] Test-WSMan successful
+
+RESULT
+    READY FOR AD DS INSTALLATION
+
+
+
+================================================================================
+
+================================================================================
+
+### Prep Checks
+hostname
+Get-ComputerInfo | Select-Object `
+    WindowsProductName,
+    WindowsVersion,
+    OsBuildNumber
+Get-NetIPConfiguration
+Get-NetIPAddress -AddressFamily IPv4
+Get-DnsClientServerAddress -AddressFamily IPv4
+Get-NetConnectionProfile
+Get-WindowsFeature | Where-Object Installed
+
+And check the clock:
+
+Get-Date
+
+Then verify basic connectivity:
+
+Test-Connection 192.168.100.1 -Count 2
+Test-Connection 192.168.100.10 -Count 2
+Test-Connection 192.168.100.30 -Count 2
+
+Resolve-DnsName google.com
+
+### Check computer name and domain/workgroup state
+Get-CimInstance Win32_ComputerSystem |
+    Select-Object Name, Domain, PartOfDomain
+
+
+### Check time synchronization
+w32tm /query /status
+
+And:
+
+w32tm /query /source
+
+
+### Check whether any AD/DNS/DHCP-related roles are already installed
+Get-WindowsFeature AD-Domain-Services, DNS, DHCP
+
+### Check WinRM
+Get-Service WinRM
+
+and:
+
+Test-WSMan localhost

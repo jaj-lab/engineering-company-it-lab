@@ -1,0 +1,167 @@
+PHASE 3.19 — TROUBLESHOOT ANYTHING THAT FAILS
+
+================================================================================
+PHASE 3.19 — TROUBLESHOOT ANYTHING THAT FAILS
+================================================================================
+
+    Troubleshooting Review
+    |
+    +-- Phase 3 Verification Review
+    |     [x] Domain authentication verified
+    |     [x] DNS / DHCP functionality verified
+    |     [x] GPO application verified
+    |     [x] User / group membership verified
+    |     [x] SMB access verified
+    |
+    +-- Previously Identified Failure
+    |     [x] SMB write access failure identified
+    |     [x] INC-004 created
+    |     [x] NTFS permissions investigated
+    |     [x] SMB share permissions investigated
+    |     [x] Root cause identified
+    |     [x] SMB permissions corrected
+    |
+    +-- Final Identity Verification
+    |     [x] engineering\john.smith confirmed
+    |     [x] ENGINEERING\GG-IT membership confirmed
+    |
+    +-- Final SMB Verification
+    |     [x] \\DC01\IT accessible
+    |     [x] \\DC01\Engineering accessible
+    |     [x] \\DC01\Management accessible
+    |
+    +-- Final Write Verification
+    |     [x] IT write operation successful
+    |     [x] Engineering write operation successful
+    |     [x] Management write operation successful
+    |     [x] Test files confirmed
+    |     [x] Test files removed successfully
+    |
+    +-- Outstanding Issues
+          [x] No unresolved Phase 3 verification failures
+
+
+TROUBLESHOOTING INCIDENT
+
+    INC-004 — SMB Share Permissions Prevented Expected Write Access
+
+    Initial state:
+
+        SMB Share Permissions
+            Everyone -> Read
+
+        NTFS Permissions
+            ENGINEERING\GG-IT -> Full Control
+
+        Result:
+            Read       -> SUCCESS
+            Write      -> DENIED
+
+    Investigation:
+        [x] Share ACL inspected
+        [x] NTFS ACL inspected
+        [x] Difference identified
+
+    Resolution:
+        [x] SMB share permissions corrected
+        [x] Write access restored
+
+    Final result:
+        [x] IT -> WRITE SUCCESS
+        [x] Engineering -> WRITE SUCCESS
+        [x] Management -> WRITE SUCCESS
+
+
+FINAL FUNCTIONAL TEST
+
+    Domain User:
+        engineering\john.smith
+
+    Group:
+        ENGINEERING\GG-IT
+
+    Shares:
+        \\DC01\IT
+        \\DC01\Engineering
+        \\DC01\Management
+
+    Accessibility:
+        [x] IT                  SUCCESS
+        [x] Engineering         SUCCESS
+        [x] Management          SUCCESS
+
+    Write:
+        [x] IT                  SUCCESS
+        [x] Engineering         SUCCESS
+        [x] Management          SUCCESS
+
+    Cleanup:
+        [x] Test files removed
+
+
+TROUBLESHOOTING BASELINE
+    [x] Failures identified             YES
+    [x] Root causes identified          YES
+    [x] Configuration corrected         YES
+    [x] Functionality re-tested         YES
+    [x] Test results successful         YES
+    [x] Temporary test data removed     YES
+    [x] Unresolved failures             NONE
+
+
+RESULT
+    TROUBLESHOOTING VERIFIED
+
+    All failures discovered during Phase 3 verification
+    were investigated, resolved, and successfully re-tested.
+
+    No known unresolved issues remain in the verified
+    Phase 3 functionality.
+
+
+================================================================================
+
+### Verify identity
+
+whoami
+
+
+### Verify group membership
+
+whoami /groups
+
+
+### Verify SMB shares
+
+Test-Path "\\DC01\IT"
+
+Test-Path "\\DC01\Engineering"
+
+Test-Path "\\DC01\Management"
+
+
+### Test write access
+
+"Phase 3.19 verification" | Out-File "\\DC01\IT\phase3-19-test.txt"
+
+"Phase 3.19 verification" | Out-File "\\DC01\Engineering\phase3-19-test.txt"
+
+"Phase 3.19 verification" | Out-File "\\DC01\Management\phase3-19-test.txt"
+
+
+### Verify created files
+
+Test-Path "\\DC01\IT\phase3-19-test.txt"
+
+Test-Path "\\DC01\Engineering\phase3-19-test.txt"
+
+Test-Path "\\DC01\Management\phase3-19-test.txt"
+
+
+### Clean up test files
+
+Remove-Item "\\DC01\IT\phase3-19-test.txt"
+
+Remove-Item "\\DC01\Engineering\phase3-19-test.txt"
+
+Remove-Item "\\DC01\Management\phase3-19-test.txt"

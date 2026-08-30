@@ -1,0 +1,172 @@
+PHASE 3.12 — CONFIGURE PERMISSIONS / RESOURCE ACCESS
+
+================================================================================
+PHASE 3.12 — CONFIGURE PERMISSIONS / RESOURCE ACCESS
+================================================================================
+
+    ACTIVE DIRECTORY
+    |
+    +-- Organizational Units
+    |     [x] Users OU verified
+    |     [x] Workstations OU verified
+    |     [x] Servers OU verified
+    |     [x] Groups OU verified
+    |     [x] Service Accounts OU verified
+    |
+    +-- Security Groups
+    |     [x] GG-Engineering created
+    |     [x] GG-IT created
+    |     [x] GG-Management created
+    |     [x] All groups configured as Global Security groups
+    |
+    +-- Group Membership
+    |     [x] Alice Miller -> GG-Engineering
+    |     [x] John Smith   -> GG-IT
+    |     [x] Sarah Wilson -> GG-Management
+    |
+    +-- Access Control Model
+    |     [x] Access assigned through security groups
+    |     [x] No direct user-to-resource permissions used
+    |     [x] Role-based access model implemented
+    |     [x] Least-privilege principle applied
+    |
+    +-- Company Resources
+    |     [x] C:\CompanyData created
+    |     |
+    |     +-- [x] Engineering
+    |     +-- [x] IT
+    |     +-- [x] Management
+    |
+    +-- NTFS Permissions
+    |     |
+    |     +-- Engineering
+    |     |     [x] GG-Engineering -> Modify
+    |     |     [x] GG-IT -> Full Control
+    |     |
+    |     +-- IT
+    |     |     [x] GG-IT -> Full Control
+    |     |
+    |     +-- Management
+    |           [x] GG-Management -> Modify
+    |           [x] GG-IT -> Full Control
+    |
+    +-- Standard System Permissions
+    |     [x] NT AUTHORITY\SYSTEM -> Full Control
+    |     [x] BUILTIN\Administrators -> Full Control
+    |     [x] CREATOR OWNER -> Full Control on created objects
+    |
+    +-- Permission Cleanup
+          [x] Broad BUILTIN\Users permissions removed
+          [x] Default user write permissions removed
+          [x] Resource access restricted to security groups
+          [x] ACL inheritance structure inspected
+
+
+AD ACCESS MODEL
+    [x] Users assigned to role-based security groups
+    [x] Security groups assigned to resources
+    [x] Permissions are managed through group membership
+    [x] Individual users are not directly referenced by resource ACLs
+
+
+RESOURCE ACCESS MATRIX
+
+    Resource                  GG-Engineering    GG-IT          GG-Management
+    -------------------------------------------------------------------------
+    Engineering               Modify            Full Control   No Access
+    IT                        No Access         Full Control   No Access
+    Management                No Access         Full Control   Modify
+
+
+NTFS ACL BASELINE
+    [x] Engineering ACL verified with Get-Acl
+    [x] IT ACL verified with Get-Acl
+    [x] Management ACL verified with Get-Acl
+    [x] Engineering ACL verified with icacls
+    [x] IT ACL verified with icacls
+    [x] Management ACL verified with icacls
+    [x] ACL entries match intended access model
+    [x] No unintended BUILTIN\Users access remains
+
+
+RESULT
+    ROLE-BASED ACCESS CONTROL IMPLEMENTED
+
+    Active Directory groups     [OK]
+    Group membership            [OK]
+    Resource structure          [OK]
+    NTFS permissions            [OK]
+    Least privilege             [OK]
+    ACL verification            [OK]
+
+    RESOURCE ACCESS IS CONTROLLED THROUGH AD SECURITY GROUPS
+
+
+================================================================================
+
+================================================================================
+
+### Verify organizational units
+
+Get-ADOrganizationalUnit -Filter * |
+    Select-Object Name, DistinguishedName
+
+
+### Verify role-based security groups
+
+Get-ADGroup `
+    -Filter 'Name -like "GG-*"' |
+    Select-Object Name, GroupScope, GroupCategory
+
+
+### Verify Engineering group membership
+
+Get-ADGroupMember GG-Engineering
+
+
+### Verify IT group membership
+
+Get-ADGroupMember GG-IT
+
+
+### Verify Management group membership
+
+Get-ADGroupMember GG-Management
+
+
+### Verify CompanyData structure
+
+Get-ChildItem C:\CompanyData
+
+
+### Verify Engineering NTFS permissions
+
+Get-Acl "C:\CompanyData\Engineering" |
+    Select-Object -ExpandProperty Access
+
+
+### Verify IT NTFS permissions
+
+Get-Acl "C:\CompanyData\IT" |
+    Select-Object -ExpandProperty Access
+
+
+### Verify Management NTFS permissions
+
+Get-Acl "C:\CompanyData\Management" |
+    Select-Object -ExpandProperty Access
+
+
+### Verify Engineering ACL with icacls
+
+icacls "C:\CompanyData\Engineering"
+
+
+### Verify IT ACL with icacls
+
+icacls "C:\CompanyData\IT"
+
+
+### Verify Management ACL with icacls
+
+icacls "C:\CompanyData\Management"

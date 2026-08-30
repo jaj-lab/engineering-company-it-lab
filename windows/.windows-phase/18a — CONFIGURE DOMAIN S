@@ -1,0 +1,90 @@
+PHASE 3.18a — CONFIGURE DOMAIN SMB SHARES
+
+================================================================================
+PHASE 3.18a — CONFIGURE DOMAIN SMB SHARES
+================================================================================
+
+    DC01
+    |
+    +-- Engineering Share
+    |     [x] SMB share created
+    |     [x] Share name: Engineering
+    |     [x] Local path: C:\CompanyData\Engineering
+    |     [x] UNC path: \\DC01\Engineering
+    |
+    +-- IT Share
+    |     [x] SMB share created
+    |     [x] Share name: IT
+    |     [x] Local path: C:\CompanyData\IT
+    |     [x] UNC path: \\DC01\IT
+    |
+    +-- Management Share
+    |     [x] SMB share created
+    |     [x] Share name: Management
+    |     [x] Local path: C:\CompanyData\Management
+    |     [x] UNC path: \\DC01\Management
+    |
+    +-- Existing Domain Shares
+          [x] SYSVOL present
+          [x] NETLOGON present
+
+
+SMB SHARE CONFIGURATION
+    [x] Engineering  → C:\CompanyData\Engineering
+    [x] IT           → C:\CompanyData\IT
+    [x] Management   → C:\CompanyData\Management
+
+
+UNC PATHS
+    [x] \\DC01\Engineering
+    [x] \\DC01\IT
+    [x] \\DC01\Management
+
+
+NTFS PERMISSION MODEL
+    [x] Engineering → GG-Engineering: Modify
+    [x] Engineering → GG-IT: Full Control
+    [x] IT          → GG-IT: Full Control
+    [x] Management  → GG-IT: Full Control
+    [x] Management  → GG-Management: Modify
+
+
+RESULT
+    DOMAIN SMB SHARES CONFIGURED
+
+    Engineering Share       [OK]
+    IT Share                [OK]
+    Management Share        [OK]
+
+    SMB SHARES ARE READY FOR USER ACCESS TESTING
+
+
+================================================================================
+
+### Create Engineering SMB share
+
+New-SmbShare `
+    -Name "Engineering" `
+    -Path "C:\CompanyData\Engineering"
+
+
+### Create Management SMB share
+
+New-SmbShare `
+    -Name "Management" `
+    -Path "C:\CompanyData\Management"
+
+
+### Create IT SMB share
+
+New-SmbShare `
+    -Name "IT" `
+    -Path "C:\CompanyData\IT"
+
+
+### Verify SMB shares
+
+Get-SmbShare
+
+
+================================================================================

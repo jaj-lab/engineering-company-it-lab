@@ -1,0 +1,125 @@
+PHASE 3.8 — CREATE USERS
+
+================================================================================
+PHASE 3.8 — CREATE USERS
+================================================================================
+
+    OU=Users,OU=Engineering Company
+    |
+    +-- alice.miller      Engineering
+    +-- john.smith        IT
+    └-- sarah.wilson      Management
+
+USER OU
+    [x] OU=Users
+    [x] Located under OU=Engineering Company
+    [x] Distinguished Name:
+        OU=Users,OU=Engineering Company,DC=engineering,DC=local
+
+
+USER ACCOUNTS
+
+    [x] Alice Miller
+        SamAccountName:
+            alice.miller
+        UPN:
+            alice.miller@engineering.local
+        Enabled:
+            True
+
+    [x] John Smith
+        SamAccountName:
+            john.smith
+        UPN:
+            john.smith@engineering.local
+        Enabled:
+            True
+
+    [x] Sarah Wilson
+        SamAccountName:
+            sarah.wilson
+        UPN:
+            sarah.wilson@engineering.local
+        Enabled:
+            True
+
+
+VERIFICATION
+    [x] All three accounts exist
+    [x] Correct OU placement verified
+    [x] SamAccountName verified
+    [x] UserPrincipalName verified
+    [x] Accounts enabled
+
+
+RESULT
+    USERS CREATED AND VERIFIED
+
+
+================================================================================
+COMMANDS USED
+================================================================================
+
+### Create Alice Miller
+New-ADUser `
+    -Name "Alice Miller" `
+    -GivenName "Alice" `
+    -Surname "Miller" `
+    -SamAccountName "alice.miller" `
+    -UserPrincipalName "alice.miller@engineering.local" `
+    -Path "OU=Users,OU=Engineering Company,DC=engineering,DC=local" `
+    -AccountPassword (Read-Host "Enter password" -AsSecureString) `
+    -Enabled $true
+
+
+### Create John Smith
+New-ADUser `
+    -Name "John Smith" `
+    -GivenName "John" `
+    -Surname "Smith" `
+    -SamAccountName "john.smith" `
+    -UserPrincipalName "john.smith@engineering.local" `
+    -Path "OU=Users,OU=Engineering Company,DC=engineering,DC=local" `
+    -AccountPassword (Read-Host "Enter password" -AsSecureString) `
+    -Enabled $true
+
+
+### Create Sarah Wilson
+New-ADUser `
+    -Name "Sarah Wilson" `
+    -GivenName "Sarah" `
+    -Surname "Wilson" `
+    -SamAccountName "sarah.wilson" `
+    -UserPrincipalName "sarah.wilson@engineering.local" `
+    -Path "OU=Users,OU=Engineering Company,DC=engineering,DC=local" `
+    -AccountPassword (Read-Host "Enter password" -AsSecureString) `
+    -Enabled $true
+
+
+### Verify users
+Get-ADUser `
+    -SearchBase "OU=Users,OU=Engineering Company,DC=engineering,DC=local" `
+    -Filter * `
+    -Properties UserPrincipalName, Enabled |
+    Select-Object Name, SamAccountName, UserPrincipalName, Enabled
+
+
+================================================================================
+NEXT STAGE
+================================================================================
+
+PHASE 3.8 — CREATE SECURITY GROUPS
+
+We will now model company access through security groups rather than
+assigning permissions directly to individual users.
+
+Planned initial groups:
+
+    Engineering
+    IT
+    Management
+
+Then we can place the appropriate users into those groups and verify
+group membership.
+
+================================================================================

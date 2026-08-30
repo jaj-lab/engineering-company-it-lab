@@ -1,0 +1,186 @@
+PHASE 3.13 — CONFIGURE WIN01 FOR DOMAIN JOIN
+
+================================================================================
+PHASE 3.13 — CONFIGURE WIN01 FOR DOMAIN JOIN
+================================================================================
+
+    WIN01
+    |
+    +-- Identity
+    |     [x] Hostname verified
+    |     [x] Hostname: WIN01
+    |     [x] Currently in WORKGROUP
+    |     [x] Standalone workstation confirmed
+    |     [x] Ready for domain join
+    |
+    +-- Network
+    |     [x] Network adapter operational
+    |     [x] Adapter: Red Hat VirtIO Ethernet Adapter
+    |     [x] IPv4 address: 192.168.100.30
+    |     [x] Prefix: /24
+    |     [x] Gateway: 192.168.100.1
+    |     [x] DNS server: 192.168.100.20
+    |
+    +-- Connectivity
+    |     [x] Libvirt gateway reachable
+    |     [x] DC01 reachable
+    |     [x] DNS server reachable
+    |     [x] TCP/53 reachable
+    |     [x] TCP/389 reachable
+    |
+    +-- DNS
+    |     [x] engineering.local resolves
+    |     [x] DC01.engineering.local resolves
+    |     [x] LDAP SRV record resolves
+    |     [x] _ldap._tcp.dc._msdcs.engineering.local verified
+    |     [x] SRV record points to DC01
+    |
+    +-- Active Directory Discovery
+          [x] Domain controller discovered
+          [x] DC: DC01.engineering.local
+          [x] DC address: 192.168.100.20
+          [x] Domain: engineering.local
+          [x] Forest: engineering.local
+          [x] LDAP available
+          [x] DNS available
+          [x] KDC available
+          [x] Global Catalog available
+          [x] PDC available
+
+
+WIN01 NETWORK BASELINE
+    [x] IPv4              192.168.100.30/24
+    [x] Gateway            192.168.100.1
+    [x] DNS                192.168.100.20
+    [x] Interface          Ethernet 2
+    [x] Link               Up
+
+
+DOMAIN DISCOVERY
+    [x] engineering.local resolves
+    [x] DC01.engineering.local resolves
+    [x] LDAP SRV record resolves
+    [x] Domain controller discovery successful
+    [x] DC01 identified as domain controller
+    [x] LDAP reachable on TCP/389
+    [x] DNS reachable on TCP/53
+
+
+CURRENT STATE
+    [x] WIN01 hostname correct
+    [x] WIN01 network configuration correct
+    [x] WIN01 DNS configuration correct
+    [x] WIN01 can locate engineering.local
+    [x] WIN01 can locate DC01
+    [x] WIN01 remains in WORKGROUP
+
+
+RESULT
+    WIN01 DOMAIN-JOIN PREREQUISITES VERIFIED
+
+    Hostname       [OK]
+    Network        [OK]
+    DNS            [OK]
+    AD Discovery   [OK]
+    DC Connectivity[OK]
+
+    WIN01 IS READY TO JOIN engineering.local
+
+
+================================================================================
+
+================================================================================
+
+### Verify hostname
+
+hostname
+
+
+### Verify OS and current domain state
+
+Get-ComputerInfo |
+    Select-Object `
+        CsName,
+        WindowsProductName,
+        WindowsVersion,
+        OsBuildNumber,
+        CsDomain,
+        CsDomainRole
+
+
+### Verify current domain membership
+
+Get-CimInstance Win32_ComputerSystem |
+    Select-Object `
+        Name,
+        Domain,
+        PartOfDomain,
+        DomainRole
+
+
+### Verify network adapter
+
+Get-NetAdapter |
+    Select-Object `
+        Name,
+        InterfaceDescription,
+        Status,
+        MacAddress
+
+
+### Verify IP configuration
+
+Get-NetIPConfiguration
+
+
+### Verify configured DNS servers
+
+Get-DnsClientServerAddress |
+    Where-Object AddressFamily -eq 2
+
+
+### Verify gateway connectivity
+
+Test-Connection 192.168.100.1 -Count 2
+
+
+### Verify DC connectivity
+
+Test-Connection 192.168.100.20 -Count 2
+
+
+### Verify domain DNS resolution
+
+Resolve-DnsName engineering.local
+
+
+### Verify DC DNS resolution
+
+Resolve-DnsName DC01.engineering.local
+
+
+### Verify Active Directory LDAP SRV record
+
+Resolve-DnsName `
+    _ldap._tcp.dc._msdcs.engineering.local `
+    -Type SRV
+
+
+### Discover domain controller
+
+nltest /dsgetdc:engineering.local
+
+
+### Verify DNS connectivity
+
+Test-NetConnection 192.168.100.20 -Port 53
+
+
+### Verify LDAP connectivity
+
+Test-NetConnection 192.168.100.20 -Port 389
+
+
+### Final domain discovery check
+
+nltest /dsgetdc:engineering.local

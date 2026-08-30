@@ -1,0 +1,130 @@
+PHASE 3.6 — CONFIGURE DHCP ON DC01
+
+================================================================================
+PHASE 3.6 — CONFIGURE DHCP ON DC01
+================================================================================
+
+    engineering-lab
+    192.168.100.0/24
+    |
+    +-- .1
+    |     libvirt gateway / NAT
+    |
+    +-- .10
+    |     MINT01    static
+    |
+    +-- .20
+    |     DC01      static
+    |     AD DS + DNS + DHCP
+    |
+    +-- .30-.49
+    |     DHCP reservations
+    |     WIN01, WIN02, ...
+    |
+    +-- .50-.100
+    |     Dynamic DHCP pool
+    |
+    +-- .101-.254
+          Reserved for future
+
+DHCP SERVER
+    [x] DHCP Server role installed
+    [x] DHCP Server management tools installed
+    [x] DHCPServer service running
+
+DC01 NETWORK
+    [x] Static IPv4 address configured
+    [x] Address: 192.168.100.20/24
+    [x] Gateway: 192.168.100.1
+    [x] DHCP is no longer used for DC01 addressing
+
+DNS
+    [x] DC01 uses itself as DNS resolver
+    [x] DNS server: 192.168.100.20
+    [x] engineering.local resolves locally
+    [x] External DNS resolution remains operational
+
+CONNECTIVITY
+    [x] Gateway reachable
+    [x] 192.168.100.1 reachable
+    [x] Internal AD DNS resolution verified
+    [x] External DNS resolution verified
+
+DHCP ARCHITECTURE
+    [x] DC01 will become the authoritative DHCP server
+    [x] Libvirt DHCP will no longer provide client leases
+    [x] MINT01 remains statically configured
+    [x] DC01 remains statically configured
+    [x] Domain clients will obtain addresses from DC01 DHCP
+
+RESULT
+    DHCP SERVER INSTALLED
+    DC01 STATIC NETWORK CONFIGURATION COMPLETE
+    READY FOR DHCP SCOPE / OPTIONS CONFIGURATION
+
+
+================================================================================
+
+================================================================================
+
+### Install DHCP Server
+
+Install-WindowsFeature DHCP -IncludeManagementTools
+
+
+### Verify DHCP installation
+
+Get-WindowsFeature DHCP
+
+
+### Verify DHCP service
+
+Get-Service DHCPServer
+
+
+### Verify Net Configuration
+Get-NetIPConfiguration
+
+
+### Remove DHCP Assign
+Set-NetIPInterface `
+    -InterfaceAlias "Ethernet 2" `
+    -Dhcp Disabled
+
+
+### Configure static IPv4 address
+
+New-NetIPAddress `
+    -InterfaceAlias "Ethernet 2" `
+    -IPAddress "192.168.100.20" `
+    -PrefixLength 24 `
+    -DefaultGateway "192.168.100.1"
+
+
+### Configure DC01 to use itself for DNS
+
+Set-DnsClientServerAddress `
+    -InterfaceAlias "Ethernet 2" `
+    -ServerAddresses "192.168.100.20"
+
+
+### Verify network configuration
+
+Get-NetIPConfiguration
+
+Get-NetIPAddress `
+    -InterfaceAlias "Ethernet 2" `
+    -AddressFamily IPv4
+
+Get-DnsClientServerAddress `
+    -InterfaceAlias "Ethernet 2" `
+    -AddressFamily IPv4
+
+
+### Verify connectivity
+
+Test-Connection 192.168.100.1 -Count 2
+
+Resolve-DnsName engineering.local
+
+Resolve-DnsName google.com

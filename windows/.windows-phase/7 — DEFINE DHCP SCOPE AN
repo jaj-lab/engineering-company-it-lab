@@ -1,0 +1,172 @@
+PHASE 3.7 — DEFINE DHCP SCOPE AND OPTIONS
+
+================================================================================
+PHASE 3.7 — DEFINE DHCP SCOPE AND OPTIONS
+================================================================================
+
+DHCP AUTHORIZATION
+    [x] DHCP server authorized in Active Directory
+    [x] Authorized server: DC01.engineering.local
+    [x] DHCP server IP: 192.168.100.20
+
+DHCP SCOPE
+    [x] Scope name: Engineering Lab
+    [x] Network: 192.168.100.0/24
+    [x] Dynamic range: 192.168.100.50 - 192.168.100.100
+    [x] Scope state: Active
+    [x] Lease duration: 8 days
+
+DHCP OPTIONS
+    [x] Default gateway: 192.168.100.1
+    [x] DNS server: 192.168.100.20
+    [x] DNS domain: engineering.local
+
+DHCP RESERVATIONS
+    [x] WIN01 reservation configured
+    [x] WIN01 MAC: 52-54-00-CD-78-97
+    [x] WIN01 IP: 192.168.100.30
+    [x] Reservation type: Both
+    [x] WIN01 receives the reserved address from DC01 DHCP
+
+NETWORK ARCHITECTURE
+    [x] 192.168.100.0/24 retained
+    [x] 192.168.100.1 remains the libvirt NAT gateway
+    [x] DC01 uses static 192.168.100.20
+    [x] MINT01 uses static addressing
+    [x] WIN01 uses DHCP
+    [x] WIN01 receives 192.168.100.30 through DHCP reservation
+    [x] Dynamic client pool reserved for 192.168.100.50-100
+
+LIBVIRT DHCP MIGRATION
+    [x] libvirt DHCP service removed from engineering-lab network
+    [x] libvirt network no longer contains a DHCP range
+    [x] libvirt static host reservations removed
+    [x] DHCP responsibility migrated to DC01
+    [x] libvirt continues providing NAT / gateway functionality
+    [x] No competing DHCP servers remain on the laboratory network
+
+WIN01 DHCP VERIFICATION
+    [x] DHCP Enabled
+    [x] IPv4 address: 192.168.100.30
+    [x] Subnet mask: 255.255.255.0
+    [x] Default gateway: 192.168.100.1
+    [x] DHCP server: 192.168.100.20
+    [x] DNS server: 192.168.100.20
+    [x] DNS suffix: engineering.local
+    [x] DHCP lease successfully obtained
+    [x] engineering.local resolves to 192.168.100.20
+
+NETWORK ARCHITECTURE — CURRENT
+
+                         Internet
+                            |
+                    libvirt NAT gateway
+                     192.168.100.1
+                            |
+                 engineering-lab network
+                    192.168.100.0/24
+                            |
+             +--------------+--------------+
+             |              |              |
+            MINT01         DC01           WIN01
+           static         static           DHCP
+                           .20             .30
+                            |
+                       DHCP + DNS
+                            |
+                    engineering.local
+
+DHCP ADDRESSING MODEL
+
+    Static infrastructure
+        .1      libvirt gateway
+        .10     MINT01  static
+        .20     DC01    static
+
+    DC01 DHCP reservations
+        .30     WIN01
+        .31+    future domain clients
+
+    DC01 DHCP pool
+        .50-.100
+
+    Future / infrastructure
+        .101-.254
+
+
+RESULT
+
+    DHCP CONFIGURATION COMPLETE
+
+    DHCP IS NOW PROVIDED BY DC01
+
+    WIN01 DHCP RESERVATION VERIFIED
+
+    LIBVIRT DHCP SUCCESSFULLY REMOVED
+
+    NETWORK MIGRATION COMPLETE
+
+    READY FOR ACTIVE DIRECTORY DOMAIN MANAGEMENT
+
+================================================================================
+
+================================================================================
+
+### Authorize DHCP server in Active Directory
+
+Add-DhcpServerInDC `
+    -DnsName "DC01.engineering.local" `
+    -IPAddress 192.168.100.20
+
+
+### Verify DHCP authorization
+
+Get-DhcpServerInDC
+
+
+### Create DHCP scope
+
+Add-DhcpServerv4Scope `
+    -Name "Engineering Lab" `
+    -StartRange 192.168.100.50 `
+    -EndRange 192.168.100.100 `
+    -SubnetMask 255.255.255.0 `
+    -State Active
+
+
+### Configure DHCP scope options
+
+Set-DhcpServerv4OptionValue `
+    -ScopeId 192.168.100.0 `
+    -Router 192.168.100.1 `
+    -DnsServer 192.168.100.20 `
+    -DnsDomain "engineering.local"
+
+
+### Verify scope
+
+Get-DhcpServerv4Scope
+
+
+### Verify DHCP options
+
+Get-DhcpServerv4OptionValue `
+    -ScopeId 192.168.100.0
+
+
+### Configure WIN01 DHCP reservation
+
+Add-DhcpServerv4Reservation `
+    -ScopeId 192.168.100.0 `
+    -IPAddress 192.168.100.30 `
+    -ClientId "52-54-00-CD-78-97" `
+    -Name "WIN01" `
+    -Description "WIN01 domain workstation"
+
+
+### Verify reservation
+
+Get-DhcpServerv4Reservation `
+    -ScopeId 192.168.100.0
+
+

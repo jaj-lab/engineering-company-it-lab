@@ -1,0 +1,117 @@
+PHASE 3.5 — DEFINE + IMPLEMENT DOMAIN STRUCTURE
+
+================================================================================
+PHASE 3.5 — DEFINE + IMPLEMENT DOMAIN STRUCTURE
+================================================================================
+
+DOMAIN
+    [x] engineering.local
+
+DOMAIN CONTROLLERS
+    [x] OU=Domain Controllers
+    [x] DC01 remains in the default Domain Controllers OU
+
+COMPANY STRUCTURE
+    [x] OU=Engineering Company
+
+    [x] OU=Users
+        Path:
+            OU=Users,OU=Engineering Company,DC=engineering,DC=local
+
+    [x] OU=Workstations
+        Path:
+            OU=Workstations,OU=Engineering Company,DC=engineering,DC=local
+
+    [x] OU=Servers
+        Path:
+            OU=Servers,OU=Engineering Company,DC=engineering,DC=local
+
+    [x] OU=Groups
+        Path:
+            OU=Groups,OU=Engineering Company,DC=engineering,DC=local
+
+    [x] OU=Service Accounts
+        Path:
+            OU=Service Accounts,OU=Engineering Company,DC=engineering,DC=local
+
+
+FINAL DIRECTORY STRUCTURE
+
+    engineering.local
+    |
+    +-- OU=Domain Controllers
+    |      └── DC01
+    |
+    └── OU=Engineering Company
+           |
+           +── OU=Users
+           |
+           +── OU=Workstations
+           |
+           +── OU=Servers
+           |
+           +── OU=Groups
+           |
+           └── OU=Service Accounts
+
+
+DEFAULT AD OBJECTS
+
+    [x] CN=Users
+    [x] CN=Computers
+    [x] CN=Builtin
+    [x] CN=ForeignSecurityPrincipals
+    [x] CN=Managed Service Accounts
+
+    Default AD containers were left unchanged.
+
+
+DESIGN DECISION
+
+    [x] Company-specific objects are organized under
+        OU=Engineering Company.
+
+    [x] Users are kept in a single OU because the current
+        laboratory is intentionally small.
+
+    [x] No department-specific user OUs were created.
+
+    [x] Future departments can be represented through
+        security groups where appropriate.
+
+    [x] Workstations, Servers, Groups and Service Accounts
+        have dedicated OUs for future administration and
+        GPO targeting.
+
+
+VERIFICATION
+
+    [x] OU=Domain Controllers exists
+    [x] OU=Engineering Company exists
+    [x] OU=Users exists
+    [x] OU=Workstations exists
+    [x] OU=Servers exists
+    [x] OU=Groups exists
+    [x] OU=Service Accounts exists
+    [x] OU hierarchy verified through Active Directory
+
+
+RESULT
+
+    DOMAIN STRUCTURE IMPLEMENTED AND VERIFIED
+
+    READY FOR USER CREATION
+
+
+================================================================================
+
+================================================================================
+
+### Verification
+
+Get-ADOrganizationalUnit `
+    -SearchBase "DC=engineering,DC=local" `
+    -SearchScope Subtree `
+    -Filter * |
+    Select-Object Name, DistinguishedName |
+    Sort-Object DistinguishedName

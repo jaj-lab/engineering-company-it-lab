@@ -1,0 +1,164 @@
+PHASE 3.9 — CREATE SECURITY GROUPS
+
+================================================================================
+PHASE 3.9 — CREATE SECURITY GROUPS
+================================================================================
+
+    OU=Groups
+    |
+    +-- GG-Engineering
+    +-- GG-IT
+    └-- GG-Management
+
+GROUP OU
+    [x] OU=Groups
+    [x] Located under OU=Engineering Company
+    [x] Security groups created in the correct OU
+
+
+SECURITY GROUPS
+
+    [x] GG-Engineering
+        Scope:
+            Global
+        Category:
+            Security
+        Members:
+            Alice Miller (alice.miller)
+
+    [x] GG-IT
+        Scope:
+            Global
+        Category:
+            Security
+        Members:
+            John Smith (john.smith)
+
+    [x] GG-Management
+        Scope:
+            Global
+        Category:
+            Security
+        Members:
+            Sarah Wilson (sarah.wilson)
+
+
+GROUP MEMBERSHIP MODEL
+
+    Alice Miller
+        ↓
+    GG-Engineering
+
+    John Smith
+        ↓
+    GG-IT
+
+    Sarah Wilson
+        ↓
+    GG-Management
+
+
+VERIFICATION
+    [x] All three groups exist
+    [x] Correct OU placement verified
+    [x] Global scope verified
+    [x] Security category verified
+    [x] GG-Engineering membership verified
+    [x] GG-IT membership verified
+    [x] GG-Management membership verified
+
+
+RESULT
+    SECURITY GROUPS CREATED AND VERIFIED
+
+
+================================================================================
+COMMANDS USED
+================================================================================
+
+### Define Groups OU
+$GroupsOU = "OU=Groups,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Create Engineering group
+New-ADGroup `
+    -Name "GG-Engineering" `
+    -SamAccountName "GG-Engineering" `
+    -GroupScope Global `
+    -GroupCategory Security `
+    -Path $GroupsOU
+
+
+### Create IT group
+New-ADGroup `
+    -Name "GG-IT" `
+    -SamAccountName "GG-IT" `
+    -GroupScope Global `
+    -GroupCategory Security `
+    -Path $GroupsOU
+
+
+### Create Management group
+New-ADGroup `
+    -Name "GG-Management" `
+    -SamAccountName "GG-Management" `
+    -GroupScope Global `
+    -GroupCategory Security `
+    -Path $GroupsOU
+
+
+### Verify groups
+Get-ADGroup `
+    -SearchBase "OU=Groups,OU=Engineering Company,DC=engineering,DC=local" `
+    -Filter * |
+    Select-Object Name, SamAccountName, GroupScope, GroupCategory
+
+
+### Assign users
+Add-ADGroupMember `
+    -Identity "GG-Engineering" `
+    -Members "alice.miller"
+
+Add-ADGroupMember `
+    -Identity "GG-IT" `
+    -Members "john.smith"
+
+Add-ADGroupMember `
+    -Identity "GG-Management" `
+    -Members "sarah.wilson"
+
+
+### Verify membership
+Get-ADGroupMember "GG-Engineering" |
+    Select-Object Name, SamAccountName, ObjectClass
+
+Get-ADGroupMember "GG-IT" |
+    Select-Object Name, SamAccountName, ObjectClass
+
+Get-ADGroupMember "GG-Management" |
+    Select-Object Name, SamAccountName, ObjectClass
+
+
+================================================================================
+NEXT STAGE
+================================================================================
+
+PHASE 3.10 — INITIAL GPOs
+
+We will now introduce the first Group Policy configuration.
+
+The goal is not to create a huge collection of policies. We will
+implement a small, meaningful baseline that demonstrates:
+
+    Domain-level policy
+        ↓
+    Computer/User policy processing
+        ↓
+    Policy application
+        ↓
+    Verification
+
+We should keep the initial GPO scope appropriate for our small lab
+and verify the result before moving to the WIN01 domain join.
+
+================================================================================

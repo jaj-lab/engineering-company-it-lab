@@ -1,0 +1,318 @@
+PHASE 3.10 — INITIAL GPOs
+
+================================================================================
+PHASE 3.10 — INITIAL GPOs
+================================================================================
+
+    engineering.local
+    |
+    +-- Default Domain Policy
+    |
+    +-- Engineering Domain Baseline
+    |      |
+    |      +-- Password policy
+    |      +-- Account lockout policy
+    |      └-- Linked to domain
+    |
+    +-- Engineering Company
+           |
+           +-- Users
+           |      |
+           |      └-- Engineering User Baseline
+           |             |
+           |             +-- Control Panel / PC Settings restricted
+           |             +-- Task Manager restricted
+           |             +-- Change Password removed
+           |             └-- Logoff removed
+           |
+           +-- Workstations
+           |      |
+           |      └-- Engineering Workstation Baseline
+           |             |
+           |             +-- Domain Firewall enabled
+           |             +-- Private Firewall enabled
+           |             └-- Public Firewall enabled
+           |
+           +-- Servers
+           +-- Groups
+           └-- Service Accounts
+
+
+DOMAIN BASELINE
+    [x] Engineering Domain Baseline created
+    [x] Linked to engineering.local
+    [x] GPO enabled
+    [x] Password complexity enabled
+    [x] Minimum password length: 6 characters
+    [x] Password history: 5 passwords
+    [x] Minimum password age: 0 days
+    [x] Maximum password age: 0 days
+    [x] Account lockout threshold: 5 invalid attempts
+    [x] Account lockout duration: 1 minute
+    [x] Lockout observation window: 1 minute
+    [x] Effective domain password policy verified
+
+
+WORKSTATION BASELINE
+    [x] Engineering Workstation Baseline created
+    [x] Linked to OU=Workstations
+    [x] GPO enabled
+    [x] Windows Defender Firewall enabled
+    [x] Domain profile firewall enabled
+    [x] Private profile firewall enabled
+    [x] Public profile firewall enabled
+    [x] Firewall inbound/outbound behavior configured
+    [x] GPO XML report generated
+
+
+USER BASELINE
+    [x] Engineering User Baseline created
+    [x] Linked to OU=Users
+    [x] GPO enabled
+    [x] Control Panel / PC Settings restricted
+    [x] Task Manager restricted
+    [x] Change Password removed
+    [x] Logoff removed
+    [x] GPO XML report generated
+
+
+GPO INVENTORY
+    [x] Default Domain Policy
+    [x] Default Domain Controllers Policy
+    [x] Engineering Domain Baseline
+    [x] Engineering Workstation Baseline
+    [x] Engineering User Baseline
+
+
+GPO LINKING
+    [x] Domain baseline linked to engineering.local
+    [x] Workstation baseline linked to OU=Workstations
+    [x] User baseline linked to OU=Users
+    [x] GPO inheritance is not blocked
+    [x] Default Domain Policy remains inherited
+    [x] Engineering Domain Baseline inherited by child OUs
+    [x] Workstation GPO inheritance verified
+    [x] User GPO inheritance verified
+
+
+VERIFICATION
+    [x] All five GPOs exist
+    [x] All GPOs report AllSettingsEnabled
+    [x] Domain GPO inheritance verified
+    [x] Workstations OU GPO inheritance verified
+    [x] Users OU GPO inheritance verified
+    [x] Domain password policy verified
+    [x] Workstation firewall policy exported and inspected
+    [x] User restriction policy exported and inspected
+
+
+RESULT
+    INITIAL GPO BASELINE CONFIGURED AND VERIFIED
+
+    Domain
+      |
+      +-- Password / account security
+
+    Workstations
+      |
+      +-- Windows Firewall baseline
+
+    Users
+      |
+      +-- User interface restrictions
+      +-- Task Manager restriction
+      +-- Password-change restriction
+      └-- Logoff restriction
+
+    GPO STRUCTURE READY FOR DOMAIN CLIENT TESTING
+
+
+================================================================================
+
+================================================================================
+
+### Create Domain Baseline
+
+New-GPO `
+    -Name "Engineering Domain Baseline"
+
+
+### Link Domain Baseline
+
+New-GPLink `
+    -Name "Engineering Domain Baseline" `
+    -Target "DC=engineering,DC=local"
+
+
+### Configure domain password / account policy
+
+Set-ADDefaultDomainPasswordPolicy `
+    -Identity "engineering.local" `
+    -MinPasswordLength 6 `
+    -PasswordHistoryCount 5 `
+    -ComplexityEnabled $true `
+    -MinPasswordAge (New-TimeSpan -Days 0) `
+    -MaxPasswordAge (New-TimeSpan -Days 0) `
+    -LockoutThreshold 5 `
+    -LockoutDuration (New-TimeSpan -Minutes 1) `
+    -LockoutObservationWindow (New-TimeSpan -Minutes 1)
+
+
+### Verify effective domain password policy
+
+Get-ADDefaultDomainPasswordPolicy |
+    Select-Object `
+        ComplexityEnabled,
+        MinPasswordLength,
+        PasswordHistoryCount,
+        MinPasswordAge,
+        MaxPasswordAge,
+        LockoutThreshold,
+        LockoutDuration,
+        LockoutObservationWindow
+
+
+### Verify domain GPO inheritance
+
+Get-GPInheritance `
+    -Target "DC=engineering,DC=local"
+
+
+### Export Domain Baseline report
+
+Get-GPOReport `
+    -Name "Engineering Domain Baseline" `
+    -ReportType Xml `
+    -Path "C:\Temp\Engineering-Domain-Baseline.xml"
+
+
+================================================================================
+
+### Create Workstation Baseline
+
+New-GPO `
+    -Name "Engineering Workstation Baseline"
+
+
+### Link Workstation Baseline
+
+New-GPLink `
+    -Name "Engineering Workstation Baseline" `
+    -Target "OU=Workstations,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Configure Windows Firewall
+
+Configured through:
+
+    Group Policy Management
+        Computer Configuration
+            Policies
+                Windows Settings
+                    Security Settings
+                        Windows Defender Firewall with Advanced Security
+
+
+Configured:
+
+    Domain Profile
+        Firewall: Enabled
+
+    Private Profile
+        Firewall: Enabled
+
+    Public Profile
+        Firewall: Enabled
+
+
+### Verify Workstation GPO inheritance
+
+Get-GPInheritance `
+    -Target "OU=Workstations,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Export Workstation Baseline report
+
+Get-GPOReport `
+    -Name "Engineering Workstation Baseline" `
+    -ReportType Xml `
+    -Path "C:\Temp\Engineering-Workstation-Baseline.xml"
+
+
+================================================================================
+
+### Create User Baseline
+
+New-GPO `
+    -Name "Engineering User Baseline"
+
+
+### Link User Baseline
+
+New-GPLink `
+    -Name "Engineering User Baseline" `
+    -Target "OU=Users,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Configure user restrictions
+
+Configured through:
+
+    Group Policy Management
+        User Configuration
+            Policies
+                Administrative Templates
+                    Control Panel
+                    System
+                    Ctrl+Alt+Del Options
+
+
+Configured:
+
+    [x] Prohibit access to Control Panel and PC settings
+    [x] Remove Task Manager
+    [x] Remove Change Password
+    [x] Remove Logoff
+
+
+### Verify User GPO inheritance
+
+Get-GPInheritance `
+    -Target "OU=Users,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Export User Baseline report
+
+Get-GPOReport `
+    -Name "Engineering User Baseline" `
+    -ReportType Xml `
+    -Path "C:\Temp\Engineering-User-Baseline.xml"
+
+
+================================================================================
+
+### Verify all GPOs
+
+Get-GPO -All |
+    Select-Object DisplayName, Id, GpoStatus
+
+
+### Verify Domain GPOs
+
+Get-GPInheritance `
+    -Target "DC=engineering,DC=local"
+
+
+### Verify Workstation GPOs
+
+Get-GPInheritance `
+    -Target "OU=Workstations,OU=Engineering Company,DC=engineering,DC=local"
+
+
+### Verify User GPOs
+
+Get-GPInheritance `
+    -Target "OU=Users,OU=Engineering Company,DC=engineering,DC=local"
+
+
+================================================================================

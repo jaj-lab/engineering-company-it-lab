@@ -1,0 +1,204 @@
+PHASE 3.11 — DC01 BASELINE VERIFICATION
+
+================================================================================
+PHASE 3.11 — DC01 BASELINE VERIFICATION
+================================================================================
+
+    DC01
+    |
+    +-- Identity
+    |     [x] Hostname verified
+    |     [x] Hostname: DC01
+    |     [x] Domain: engineering.local
+    |     [x] Domain role: Primary Domain Controller
+    |     [x] Domain membership verified
+    |
+    +-- AD / DNS / DHCP
+    |     [x] NTDS service running
+    |     [x] DNS service running
+    |     [x] DHCP service running
+    |     [x] All critical services set to Automatic
+    |
+    +-- Time
+    |     [x] W32Time service running
+    |     [x] W32Time set to Automatic
+    |     [x] Time configuration inspected
+    |     [x] Current system time verified
+    |     [x] NT5DS configuration present
+    |     [x] Lab time source: Local CMOS Clock
+    |
+    +-- Remote Administration
+    |     [x] WinRM service running
+    |     [x] WinRM set to Automatic
+    |     [x] WinRM already configured
+    |     [x] HTTP listener active
+    |     [x] Listener port: 5985
+    |     [x] Listener bound to 192.168.100.20
+    |     [x] Test-WSMan localhost successful
+    |
+    +-- Security
+    |     [x] Domain firewall profile enabled
+    |     [x] Private firewall profile enabled
+    |     [x] Public firewall profile enabled
+    |     [x] Firewall profiles inspected
+    |     [x] Default inbound/outbound actions controlled by policy
+    |
+    +-- Maintenance
+    |     [x] Windows Server version recorded
+    |     [x] Windows Server 2025 Standard
+    |     [x] OS build: 26100
+    |     [x] Recent Windows updates verified
+    |     [x] Latest listed security updates installed
+    |
+    +-- Administration
+          [x] Active Directory Domain Services tools available
+          [x] Active Directory PowerShell module available
+          [x] GPMC available
+          [x] RSAT AD tools available
+          [x] DHCP management tools available
+          [x] DNS management tools available
+          [x] Active Directory Administrative Center available
+
+
+DC01 SERVICE BASELINE
+    [x] NTDS       Running / Automatic
+    [x] DNS        Running / Automatic
+    [x] DHCPServer  Running / Automatic
+    [x] W32Time    Running / Automatic
+    [x] WinRM      Running / Automatic
+
+
+DC01 SOFTWARE BASELINE
+    [x] Windows Server 2025 Standard
+    [x] Build 26100
+    [x] AD DS
+    [x] DNS
+    [x] DHCP
+    [x] GPMC
+    [x] RSAT AD tools
+    [x] RSAT DHCP tools
+    [x] RSAT DNS tools
+
+
+RESULT
+    DC01 BASELINE VERIFIED
+
+    Active Directory      [OK]
+    DNS                   [OK]
+    DHCP                  [OK]
+    Time                  [OK - LAB CONFIGURATION]
+    WinRM                 [OK]
+    Firewall              [OK]
+    Administration tools  [OK]
+    OS / Updates          [OK]
+
+    DC01 IS OPERATIONAL AND READY FOR THE NEXT LAB PHASE
+
+
+================================================================================
+
+================================================================================
+
+### Verify hostname
+
+hostname
+
+
+### Verify OS, domain and domain role
+
+Get-ComputerInfo |
+    Select-Object `
+        CsName,
+        WindowsProductName,
+        WindowsVersion,
+        OsBuildNumber,
+        CsDomain,
+        CsDomainRole
+
+
+### Verify domain membership
+
+Get-CimInstance Win32_ComputerSystem |
+    Select-Object `
+        Name,
+        Domain,
+        PartOfDomain,
+        DomainRole
+
+
+### Verify critical services
+
+Get-Service `
+    NTDS,
+    DNS,
+    DHCPServer,
+    W32Time,
+    WinRM |
+    Select-Object Name, Status, StartType
+
+
+### Verify Windows Time service
+
+Get-Service W32Time
+
+
+### Verify time synchronization status
+
+w32tm /query /status
+
+
+### Verify Windows Time configuration
+
+w32tm /query /configuration
+
+
+### Verify current system time
+
+Get-Date
+
+
+### Verify WinRM
+
+Get-Service WinRM
+
+
+### Verify WinRM configuration
+
+winrm quickconfig
+
+
+### Verify WinRM listener
+
+winrm enumerate winrm/config/listener
+
+
+### Verify WS-Man
+
+Test-WSMan localhost
+
+
+### Verify firewall profiles
+
+Get-NetFirewallProfile |
+    Select-Object `
+        Name,
+        Enabled,
+        DefaultInboundAction,
+        DefaultOutboundAction
+
+
+### Verify installed Windows Server roles/features
+
+Get-WindowsFeature |
+    Where-Object Installed |
+    Select-Object Name, DisplayName
+
+
+### Verify recent Windows updates
+
+Get-HotFix |
+    Sort-Object InstalledOn -Descending |
+    Select-Object -First 10 `
+        HotFixID,
+        Description,
+        InstalledOn

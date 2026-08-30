@@ -1,0 +1,107 @@
+PHASE 3.15 — VERIFY DOMAIN AUTHENTICATION
+
+================================================================================
+PHASE 3.15 — VERIFY DOMAIN AUTHENTICATION
+=========================================
+
+```
+WIN01
+|
++-- Domain Identity
+|     [x] Logged-in user is a domain account
+|     [x] User: ENGINEERING\john.smith
+|     [x] User SID verified
+|     [x] Domain: ENGINEERING.LOCAL
+|
++-- Group Membership
+|     [x] Domain group membership verified
+|     [x] User is member of GG-IT
+|     [x] Domain group SID verified
+|
++-- Kerberos Authentication
+|     [x] Kerberos tickets present
+|     [x] TGT present
+|     [x] Client principal: john.smith@ENGINEERING.LOCAL
+|     [x] KDC: DC01.engineering.local
+|     [x] Kerberos encryption: AES-256
+|     [x] TGT renewable
+|
++-- Domain Controller Authentication
+|     [x] DC01 identified as authentication source
+|     [x] ENGINEERING.LOCAL authentication successful
+|     [x] Domain controller communication verified
+|
++-- Domain Resources
+      [x] SYSVOL accessible
+      [x] NETLOGON accessible
+      [x] Domain resources accessible using domain credentials
+```
+
+RESULT
+DOMAIN AUTHENTICATION VERIFIED
+
+```
+Domain account           [OK]
+User identity            [OK]
+Group membership         [OK]
+Kerberos authentication  [OK]
+TGT                      [OK]
+KDC / DC01              [OK]
+SYSVOL                   [OK]
+NETLOGON                 [OK]
+
+WIN01 SUCCESSFULLY AUTHENTICATES AGAINST
+THE ENGINEERING.LOCAL DOMAIN
+```
+
+EXPECTED NON-ADMIN RESULTS
+[x] Get-ADUser unavailable on WIN01
+Active Directory PowerShell module is not installed.
+AD administration is performed from DC01.
+
+```
+[x] Get-ADGroupMember unavailable on WIN01
+    Active Directory PowerShell module is not installed.
+    Group membership was already verified from DC01.
+
+[x] Security event log inaccessible
+    Standard domain user does not have permission to read
+    the local Security event log.
+
+[x] None of the above indicate an authentication failure.
+```
+
+================================================================================
+
+# VERIFICATION COMMANDS
+
+### Verify current domain identity
+
+whoami
+
+### Verify user SID
+
+whoami /user
+
+### Verify domain group membership
+
+whoami /groups
+
+### Verify Kerberos tickets
+
+klist
+
+### Verify Kerberos TGT
+
+klist tgt
+
+### Verify SYSVOL access
+
+dir \DC01\SYSVOL
+
+### Verify NETLOGON access
+
+dir \DC01\NETLOGON
+
+================================================================================
+

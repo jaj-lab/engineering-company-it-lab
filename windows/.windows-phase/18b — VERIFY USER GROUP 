@@ -1,0 +1,271 @@
+PHASE 3.18b — VERIFY USER / GROUP / PERMISSION BEHAVIOR
+
+================================================================================
+PHASE 3.18b — VERIFY USER / GROUP / PERMISSION BEHAVIOR
+================================================================================
+
+    WIN01
+    |
+    +-- Domain User Identity
+    |     [x] Domain user authentication verified
+    |     [x] Current identity: ENGINEERING\john.smith
+    |     [x] User SID verified
+    |     [x] Domain security context verified
+    |
+    +-- Security Group Membership
+    |     [x] ENGINEERING\GG-IT membership verified
+    |     [x] Domain Users membership verified
+    |     [x] Expected domain security groups present
+    |     [x] GG-IT security context available to the user
+    |
+    +-- SMB Share Access
+    |     [x] \\DC01\IT accessible
+    |     [x] \\DC01\Engineering accessible
+    |     [x] \\DC01\Management accessible
+    |     [x] Share connectivity verified from WIN01
+    |
+    +-- SMB Write Behavior
+    |     [x] IT share write operation tested
+    |     [x] Engineering share write operation tested
+    |     [x] Management share write operation tested
+    |     [x] Files successfully created from WIN01
+    |
+    +-- Permission Incident
+    |     [x] Initial write failure reproduced
+    |     [x] SMB share permissions inspected
+    |     [x] NTFS permissions inspected
+    |     [x] Permission mismatch identified
+    |     [x] NTFS allowed GG-IT Full Control
+    |     [x] SMB share initially allowed Everyone Read
+    |
+    +-- Permission Resolution
+    |     [x] SMB share access for IT corrected
+    |     [x] SMB share access for Engineering corrected
+    |     [x] SMB share access for Management corrected
+    |     [x] SMB share permissions changed to Full
+    |     [x] Write access re-tested successfully
+    |
+    +-- Functional Permission Verification
+    |     [x] IT → john-test.txt created
+    |     [x] Engineering → john-test.txt created
+    |     [x] Management → john-test.txt created
+    |     [x] Files visible from WIN01
+    |     [x] GG-IT effective access confirmed
+
+
+USER / GROUP / PERMISSION BASELINE
+    [x] Domain identity              ENGINEERING\john.smith
+    [x] User SID                     VERIFIED
+    [x] Domain Users membership      VERIFIED
+    [x] GG-IT membership             VERIFIED
+    [x] Domain security context      VERIFIED
+
+
+SMB ACCESS VERIFICATION
+    [x] \\DC01\IT                  ACCESSIBLE
+    [x] \\DC01\Engineering        ACCESSIBLE
+    [x] \\DC01\Management         ACCESSIBLE
+
+
+SMB WRITE VERIFICATION
+    [x] IT share                    WRITE SUCCESS
+    [x] Engineering share           WRITE SUCCESS
+    [x] Management share            WRITE SUCCESS
+
+
+PERMISSION INCIDENT
+
+    Initial behavior:
+
+        \\DC01\IT
+        \\DC01\Engineering
+        \\DC01\Management
+
+        Accessible       -> YES
+        Write access     -> NO
+
+    Investigation:
+
+        NTFS permissions
+            |
+            +-- ENGINEERING\GG-IT
+            |     +-- Full Control
+            |
+            +-- SYSTEM
+            |     +-- Full Control
+            |
+            +-- Administrators
+                  +-- Full Control
+
+        SMB share permissions
+            |
+            +-- Everyone
+                  +-- Read
+
+    Root cause:
+
+        NTFS permissions allowed write access,
+        but SMB share permissions restricted the effective
+        network access to Read.
+
+
+PERMISSION RESOLUTION
+
+    SMB share permissions were corrected:
+
+        IT
+            Everyone -> Full
+
+        Engineering
+            Everyone -> Full
+
+        Management
+            Everyone -> Full
+
+    After correction:
+
+        ENGINEERING\GG-IT
+                |
+                v
+        SMB Share Permissions
+                |
+                v
+        NTFS Permissions
+                |
+                v
+        Effective Write Access
+                |
+                v
+        SUCCESS
+
+
+FUNCTIONAL VERIFICATION
+    [x] john.smith can access IT share
+    [x] john.smith can access Engineering share
+    [x] john.smith can access Management share
+    [x] john.smith can create files in IT
+    [x] john.smith can create files in Engineering
+    [x] john.smith can create files in Management
+    [x] Created files can be listed from WIN01
+    [x] Effective permissions behave as expected
+
+
+IMPORTANT NOTE
+
+    SMB permissions and NTFS permissions are separate authorization
+    layers for network access.
+
+    Effective SMB access is constrained by both:
+
+        SMB Share Permissions
+                 +
+        NTFS Permissions
+
+    The incident demonstrated that correct NTFS permissions alone
+    are insufficient to guarantee the expected network access.
+
+
+INCIDENT
+
+    INC-004 — SMB Share Permissions Prevented Expected Write Access
+
+    Status:
+        RESOLVED
+
+    Root Cause:
+        SMB shares were created with:
+
+            Everyone -> Read
+
+        while the underlying NTFS ACLs granted:
+
+            ENGINEERING\GG-IT -> Full Control
+
+    Resolution:
+        SMB share permissions were updated to allow Full access.
+
+    Verification:
+        john.smith successfully created test files on all
+        three departmental shares.
+
+
+RESULT
+    USER / GROUP / PERMISSION BEHAVIOR VERIFIED
+
+    Domain Identity                 [OK]
+    Group Membership                [OK]
+    SMB Share Access                [OK]
+    NTFS Permissions                [OK]
+    SMB Permissions                 [OK]
+    Write Access                    [OK]
+    Effective Permissions           [OK]
+    Permission Incident             [RESOLVED]
+
+    WIN01 SUCCESSFULLY AUTHENTICATES AS THE EXPECTED DOMAIN USER
+    AND RECEIVES THE EXPECTED ACCESS THROUGH DOMAIN GROUP MEMBERSHIP
+    AND SMB / NTFS PERMISSIONS.
+
+
+================================================================================
+
+
+### Verify current identity
+
+whoami
+
+
+### Verify user SID
+
+whoami /user
+
+
+### Verify security groups
+
+whoami /groups
+
+
+### Verify SMB shares
+
+Get-SmbShare
+
+
+### Verify SMB share permissions
+
+Get-SmbShareAccess -Name "IT"
+
+Get-SmbShareAccess -Name "Engineering"
+
+Get-SmbShareAccess -Name "Management"
+
+
+### Verify NTFS permissions
+
+Get-Acl "C:\CompanyData\IT" |
+    Select-Object -ExpandProperty Access
+
+
+### Test share accessibility
+
+Test-Path "\\DC01\IT"
+
+Test-Path "\\DC01\Engineering"
+
+Test-Path "\\DC01\Management"
+
+
+### Test write access
+
+"IT test" | Out-File "\\DC01\IT\john-test.txt"
+
+"Engineering test" | Out-File "\\DC01\Engineering\john-test.txt"
+
+"Management test" | Out-File "\\DC01\Management\john-test.txt"
+
+
+### Verify created files
+
+dir "\\DC01\IT"
+
+dir "\\DC01\Engineering"
+
+dir "\\DC01\Management"

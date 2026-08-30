@@ -1,0 +1,86 @@
+PHASE 3.3 — PROMOTE DC01 TO DOMAIN CONTROLLER
+
+================================================================================
+PHASE 3.3 — PROMOTE DC01 TO DOMAIN CONTROLLER
+================================================================================
+
+HOSTNAME
+    [x] DC01
+
+DOMAIN
+    [x] New forest created
+    [x] Domain: engineering.local
+    [x] NetBIOS name: ENGINEERING
+    [x] DC01 joined to engineering.local
+
+DOMAIN CONTROLLER
+    [x] DC01 promoted successfully
+    [x] Hostname: DC01.engineering.local
+    [x] IPv4: 192.168.100.20
+    [x] Global Catalog: enabled
+    [x] Read-Only Domain Controller: false
+    [x] FSMO roles held by DC01
+
+ACTIVE DIRECTORY
+    [x] Active Directory Domain Services operational
+    [x] Domain partition created
+    [x] Forest created
+    [x] Default domain containers created
+    [x] Domain Controllers OU created
+    [x] Default Group Policy objects created
+
+DNS
+    [x] DNS Server installed during forest creation
+    [x] AD-integrated DNS configured
+    [x] engineering.local DNS infrastructure created
+    [x] DNS-related AD partitions created
+
+PROMOTION VERIFICATION
+    [x] ComputerSystem reports engineering.local
+    [x] PartOfDomain = True
+    [x] Get-ADDomain successful
+    [x] Get-ADDomainController successful
+    [x] DC01 recognized as writable Domain Controller
+    [x] DC01 recognized as Global Catalog
+
+DNS DELEGATION
+    [x] Delegation warning received
+    [x] No action required for isolated laboratory environment
+    [x] No external authoritative parent zone exists for engineering.local
+
+RESULT
+    DOMAIN CONTROLLER PROMOTION COMPLETE
+    READY FOR DNS CONFIGURATION / VERIFICATION
+
+
+================================================================================
+
+================================================================================
+
+### Promote DC01 and create the first AD forest/domain
+
+Install-ADDSForest `
+    -DomainName "engineering.local" `
+    -DomainNetbiosName "ENGINEERING" `
+    -InstallDNS:$true
+
+
+### Verify computer domain state
+
+Get-CimInstance Win32_ComputerSystem |
+    Select-Object Name, Domain, PartOfDomain
+
+
+### Verify Active Directory domain
+
+Get-ADDomain
+
+
+### Verify Domain Controller
+
+Get-ADDomainController
+
+
+### Verify installed AD DS / DNS roles
+
+Get-WindowsFeature AD-Domain-Services, DNS

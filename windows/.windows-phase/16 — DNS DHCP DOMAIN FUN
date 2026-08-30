@@ -1,0 +1,148 @@
+PHASE 3.16 — DNS / DHCP / DOMAIN FUNCTIONALITY VERIFICATION
+
+================================================================================
+PHASE 3.16 — DNS / DHCP / DOMAIN FUNCTIONALITY VERIFICATION
+================================================================================
+
+    WIN01
+    |
+    +-- DHCP
+    |     [x] DHCP client enabled
+    |     [x] IPv4 address obtained
+    |     [x] IPv4 address: 192.168.100.30
+    |     [x] Subnet mask: 255.255.255.0
+    |     [x] Default gateway: 192.168.100.1
+    |     [x] DHCP server: 192.168.100.20
+    |     [x] DHCP lease present
+    |     [x] DHCP configuration verified
+    |
+    +-- DNS
+    |     [x] DNS server: 192.168.100.20
+    |     [x] Primary DNS suffix: engineering.local
+    |     [x] DNS search suffix: engineering.local
+    |     [x] engineering.local resolves successfully
+    |     [x] DC01.engineering.local resolves successfully
+    |     [x] LDAP SRV record resolves successfully
+    |
+    +-- Domain Controller Discovery
+    |     [x] Domain controller discovery successful
+    |     [x] Domain: engineering.local
+    |     [x] Domain Controller: DC01.engineering.local
+    |     [x] DC IP: 192.168.100.20
+    |     [x] PDC advertised
+    |     [x] Global Catalog advertised
+    |     [x] LDAP advertised
+    |     [x] Kerberos advertised
+    |     [x] DNS DC / Domain / Forest services advertised
+    |
+    +-- Network Services
+    |     [x] DNS port 53 reachable
+    |     [x] LDAP port 389 reachable
+    |     [x] SMB port 445 reachable
+    |
+    +-- Domain Shares
+          [x] SYSVOL accessible
+          [x] NETLOGON accessible
+          [x] Domain controller SMB access verified
+
+
+WIN01 NETWORK BASELINE
+    [x] IPv4             192.168.100.30
+    [x] Gateway           192.168.100.1
+    [x] DHCP Server       192.168.100.20
+    [x] DNS Server        192.168.100.20
+    [x] DNS Suffix        engineering.local
+    [x] Domain            engineering.local
+
+
+WIN01 DOMAIN FUNCTIONALITY
+    [x] DHCP configuration       OK
+    [x] DNS resolution           OK
+    [x] DC discovery             OK
+    [x] LDAP connectivity        OK
+    [x] SMB connectivity         OK
+    [x] SYSVOL access            OK
+    [x] NETLOGON access          OK
+
+
+RESULT
+    DNS / DHCP / DOMAIN FUNCTIONALITY VERIFIED
+
+    DHCP                  [OK]
+    DNS                   [OK]
+    DC Discovery          [OK]
+    LDAP                  [OK]
+    SMB                   [OK]
+    SYSVOL                [OK]
+    NETLOGON              [OK]
+
+    WIN01 CAN LOCATE AND COMMUNICATE WITH DC01
+    AND ACCESS CORE DOMAIN SERVICES
+
+
+================================================================================
+
+### DHCP configuration
+
+Get-NetIPInterface -AddressFamily IPv4 |
+    Select-Object InterfaceAlias, Dhcp
+
+
+### IP / DHCP lease configuration
+
+Get-NetIPConfiguration
+
+ipconfig /all
+
+
+### DNS configuration
+
+Get-DnsClientServerAddress |
+    Where-Object AddressFamily -eq 2
+
+
+### Domain DNS resolution
+
+Resolve-DnsName engineering.local
+
+
+### Domain Controller resolution
+
+Resolve-DnsName DC01.engineering.local
+
+
+### LDAP SRV discovery
+
+Resolve-DnsName `
+    _ldap._tcp.dc._msdcs.engineering.local `
+    -Type SRV
+
+
+### Domain Controller discovery
+
+nltest /dsgetdc:engineering.local
+
+
+### DNS connectivity
+
+Test-NetConnection 192.168.100.20 -Port 53
+
+
+### LDAP connectivity
+
+Test-NetConnection 192.168.100.20 -Port 389
+
+
+### SMB connectivity
+
+Test-NetConnection 192.168.100.20 -Port 445
+
+
+### SYSVOL
+
+dir \\DC01\SYSVOL
+
+
+### NETLOGON
+
+dir \\DC01\NETLOGON

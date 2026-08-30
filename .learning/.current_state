@@ -305,6 +305,163 @@ Purpose:
     cloud laboratory
     troubleshooting
     documentation
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Documentation model:
+
+
+    architecture
+        =
+    what the system is and why it is designed this way
+
+
+    infrastructure
+        =
+    what is actually deployed
+
+
+    procedures
+        =
+    how to perform administrative tasks
+
+
+    incidents / troubleshooting
+        =
+    failures, investigation, root cause and resolution
+
+
+    software
+        =
+    software inventory and licensing
+
+
+    cloud
+        =
+    cloud-specific implementation
+
+
+    security
+        =
+    security controls and practices
+
+
+    disaster-recovery
+        =
+    backup and recovery
+
+
+Documentation principle:
+
+
+    Documentation follows implementation.
+
+    Planned documentation is not treated as completed
+    documentation.
+
+    Each phase is documented after the implemented state
+    has been verified.
+
+
+================================================================================
+CURRENT DOCUMENTATION STATUS
+================================================================================
+
+Architecture:
+
+
+    [x] architecture/overview.md
+    [x] architecture/virtualization.md
+    [x] architecture/network.md
+    [ ] architecture/active-directory.md
+    [x] architecture/cloud.md
+
+
+Infrastructure:
+
+
+    [x] infrastructure/vms.md
+    [x] infrastructure/networking.md
+    [ ] infrastructure/services.md
+
+
+Procedures:
+
+
+    [ ] create-user.md
+    [ ] disable-user.md
+    [ ] domain-join.md
+    [ ] troubleshoot-dns.md
+    [ ] reset-password.md
+    [ ] software-installation.md
+
+
+Incidents / Troubleshooting:
+
+
+    [x] TRB-001
+    [x] TRB-002
+    [x] TRB-003
+    [x] INC-001
+    [x] INC-002
+
+
+Cloud:
+
+
+    [x] cloud/aws-architecture.md
+    [x] cloud/cloud-lab.md
+    [x] cloud/flow.md
+    [x] IAM documentation
+    [x] S3 documentation
+    [x] SQS implementation
+    [x] Lambda implementation
+    [x] RDS implementation
+    [x] RDS documentation
+    [x] Secrets Manager implementation
+    [x] Secrets Manager documentation
+    [x] Cloud application integration documentation
+
+
+Security:
+
+
+    [ ] baseline.md
+    [ ] permissions.md
+    [ ] incident-response.md
+
+
+Software:
+
+
+    [ ] catalog.md
+    [ ] licensing.md
+
+
+Disaster Recovery:
+
+
+    [ ] backup.md
+    [ ] restore.md
+
+
+Phase 1 documentation status:
+
+
+    COMPLETE
+
+
+Phase 2 documentation status:
+
+
+    COMPLETE
+
+
+Phase 2 documentation review:
+
+
+    COMPLETE
     future Terraform / cloud tooling
 
 

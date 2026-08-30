@@ -1,0 +1,97 @@
+PHASE 3.4 — CONFIGURE / VERIFY DNS
+
+================================================================================
+PHASE 3.4 — CONFIGURE / VERIFY DNS
+================================================================================
+
+                 DC01
+          192.168.100.20
+                 |
+        AD-integrated DNS
+          /             \
+         /               \
+engineering.local     external names
+       |                    |
+       ↓                    ↓
+   answer locally       forward to
+                        192.168.100.1
+
+DNS SERVER
+    [x] DNS Server installed during AD forest creation
+    [x] DC01 provides DNS for the AD environment
+    [x] DC01 uses local DNS resolver: 127.0.0.1
+    [x] DNS forwarder configured: 192.168.100.1
+
+AD-INTEGRATED ZONES
+    [x] engineering.local
+    [x] _msdcs.engineering.local
+    [x] DomainDnsZones.engineering.local
+    [x] ForestDnsZones.engineering.local
+
+    [x] engineering.local is AD-integrated
+    [x] _msdcs.engineering.local is AD-integrated
+
+INTERNAL DNS
+    [x] DC01.engineering.local resolves
+    [x] DC01 resolves to 192.168.100.20
+    [x] engineering.local resolves to 192.168.100.20
+
+AD SERVICE DISCOVERY
+    [x] LDAP SRV record exists
+    [x] _ldap._tcp.dc._msdcs.engineering.local resolves
+    [x] SRV target: dc01.engineering.local
+    [x] DC01 target resolves to 192.168.100.20
+
+EXTERNAL DNS
+    [x] DC01 can resolve external DNS through its own DNS service
+    [x] DNS forwarding verified
+    [x] Forwarder: 192.168.100.1
+    [x] google.com resolution successful
+
+DNS ARCHITECTURE
+    [x] Internal AD DNS handled by DC01
+    [x] External DNS forwarded through 192.168.100.1
+    [x] AD DNS service discovery operational
+
+RESULT
+    DNS CONFIGURATION / VERIFICATION COMPLETE
+    READY FOR DOMAIN STRUCTURE DESIGN
+
+
+================================================================================
+
+================================================================================
+
+### Inspect DNS zones
+
+Get-DnsServerZone
+
+
+### Inspect DNS forwarders
+
+Get-DnsServerForwarder
+
+
+### Verify DC01 DNS configuration
+
+Get-DnsClientServerAddress -AddressFamily IPv4
+
+
+### Verify DC01 internal DNS record
+
+Resolve-DnsName DC01.engineering.local
+
+
+### Verify domain DNS record
+
+Resolve-DnsName engineering.local
+
+
+### Verify AD LDAP service-location record
+
+Resolve-DnsName _ldap._tcp.dc._msdcs.engineering.local -Type SRV
+
+
+### Verify external DNS resolution through DC01
+
+Resolve-DnsName google.com -Server 192.168.100.20

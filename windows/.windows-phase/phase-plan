@@ -1,0 +1,106 @@
+================================================================================
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+================================================================================
+
+    3.1  Prepare DC01
+          ↓
+    3.2  Install AD DS
+          ↓
+    3.3  Promote DC01 to Domain Controller
+          ↓
+    3.4  DNS
+          ↓
+    3.5  AD domain structure and units
+          ↓
+    3.6  Configure DHCP on DC01
+          ↓
+    3.7  Define DHCP scope and options
+          ↓
+    3.8  Create users
+          ↓
+    3.9  Create groups and user memberships to it
+          ↓
+    3.10 Configure initial Group Policies
+          ↓
+    3.11 Configure Windows administration baseline
+          ↓
+    3.12 Configure permissions / resource access
+          ↓
+    3.13 Configure WIN01 for domain join
+          ↓
+    3.14 Domain-join WIN01
+          ↓
+    3.15 Verify domain authentication
+          ↓
+    3.16 Verify DNS / DHCP / domain functionality
+          ↓
+    3.17 Verify GPO application
+          ↓
+    3.18a Create the SMB file shares
+          ↓
+    3.18b Verify user / group / permission behavior
+          ↓
+    3.19 Troubleshoot anything that fails
+          ↓
+    3.20 Document actual implementation
+          ↓
+    3.21 Review Phase 3
+          ↓
+    3.22 Mark Phase 3 COMPLETE
+```
+
+================================================================================
+CURRENT VERIFIED STATE
+================================================================================
+
+                    engineering.local
+                           |
+                       DC01 .20
+                           |
+          +----------------+----------------+
+          |                |                |
+         AD DS            DNS              DHCP
+          |                |                |
+          +----------------+----------------+
+                           |
+                    Active Directory
+                           |
+          +----------------+----------------+
+          |                |                |
+        Users            Groups            GPOs
+          |                |                |
+     Alice/John/       GG-Engineering   Domain Baseline
+     Sarah             GG-IT            Workstation Baseline
+                       GG-Management     User Baseline
+                           |
+                       WIN01 .30
+                           |
+                    Domain joined
+                           |
+                     SMB / NTFS
+                           |
+             +-------------+-------------+
+             |             |             |
+        Engineering       IT       Management
+
+================================================================================
+PHASE 3 STATUS
+================================================================================
+
+AD DS                         [OK]
+Domain / Forest               [OK]
+DNS                           [OK]
+DHCP                          [OK]
+Domain Structure              [OK]
+Users                         [OK]
+Security Groups               [OK]
+GPOs                          [OK]
+DC01 Baseline                 [OK]
+WIN01 Domain Join             [OK]
+NTFS Permissions              [OK]
+SMB Shares                    [OK]
+Authentication                [OK]
+Access Control                [OK]
+Troubleshooting               [OK]
+
+PHASE 3 = READY TO CLOSE

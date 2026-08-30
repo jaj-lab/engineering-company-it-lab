@@ -1,0 +1,30 @@
+PHASE 3.2 — INSTALL AD DS
+
+================================================================================
+PHASE 3.2 — Install AD DS
+================================================================================
+
+HOSTNAME
+    [x] DC01
+
+DOMAIN ROLES
+    [x] AD-Domain-Services      Installed
+    [x] RSAT-AD-Tools           Installed
+    [x] DNS                     Available
+    [x] DHCP                    Available
+
+RESULT
+    READY FOR DOMAIN PROMOTION
+
+
+
+================================================================================
+
+================================================================================
+
+### Install Active Directory DS (AD Domain Services)
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+### Verify
+Get-WindowsFeature AD-Domain-Services
+Get-WindowsFeature RSAT-AD-Tools

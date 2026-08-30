@@ -1,0 +1,118 @@
+PHASE 3.17 — VERIFY GPO APPLICATION
+
+================================================================================
+PHASE 3.17 — VERIFY GPO APPLICATION
+================================================================================
+
+    WIN01
+    |
+    +-- Group Policy Processing
+    |     [x] gpupdate /force completed successfully
+    |     [x] Computer policy update completed successfully
+    |     [x] User policy update completed successfully
+    |     [x] Group Policy processing completed without errors
+    |
+    +-- Applied GPOs
+    |     [x] Engineering User Baseline applied
+    |     [x] GPO applied to ENGINEERING\john.smith
+    |     [x] GPO source: DC01.engineering.local
+    |     [x] GPO application timestamp verified
+    |
+    +-- GPO Infrastructure
+    |     [x] SYSVOL accessible
+    |     [x] SYSVOL domain directory accessible
+    |     [x] Policies directory accessible
+    |     [x] Scripts directory accessible
+    |     [x] Domain policy retrieved from DC01
+    |
+    +-- Security Filtering
+    |     [x] User identity verified
+    |     [x] User belongs to ENGINEERING\GG-IT
+    |     [x] Domain Users membership verified
+    |     [x] Expected user security context present
+    |
+    +-- User Policy Behavior
+    |     [x] Control Panel / PC Settings restricted
+    |     [x] Task Manager restricted
+    |     [x] Change Password option removed
+    |     [x] Logoff option removed
+    |     [x] Configured user restrictions confirmed operational
+
+
+GPO APPLICATION BASELINE
+    [x] User policy processing       SUCCESS
+    [x] Engineering User Baseline   APPLIED
+    [x] GPO source                   DC01.engineering.local
+    [x] SYSVOL access                SUCCESS
+    [x] Security context             ENGINEERING\john.smith
+    [x] GG-IT membership             VERIFIED
+
+
+GPO FUNCTIONAL VERIFICATION
+    [x] Control Panel restriction    WORKING
+    [x] PC Settings restriction     WORKING
+    [x] Task Manager restriction    WORKING
+    [x] Change Password removal     WORKING
+    [x] Logoff removal              WORKING
+
+
+NOTE
+    [x] gpresult /scope:user /r      SUCCESS
+    [x] gpresult /scope:computer /r  ACCESS DENIED
+
+    Computer-scope RSOP inspection requires elevated privileges in this
+    context. This does NOT indicate a GPO processing failure.
+
+    The lab GPO being verified is the user-side
+    "Engineering User Baseline", which was successfully applied.
+
+
+RESULT
+    GPO APPLICATION VERIFIED
+
+    Group Policy Processing       [OK]
+    Engineering User Baseline     [OK]
+    GPO Source / DC01             [OK]
+    SYSVOL                        [OK]
+    Security Filtering            [OK]
+    User Restrictions             [OK]
+
+    WIN01 SUCCESSFULLY RECEIVES AND APPLIES
+    THE EXPECTED DOMAIN USER GROUP POLICY
+
+
+================================================================================
+
+### Force Group Policy update
+
+gpupdate /force
+
+
+### Verify applied GPOs
+
+gpresult /r
+
+
+### Verify user-scope GPOs
+
+gpresult /scope:user /r
+
+
+### Verify SYSVOL
+
+dir \\DC01\SYSVOL
+
+
+### Verify domain SYSVOL
+
+dir \\DC01\SYSVOL\engineering.local
+
+
+### Verify current identity
+
+whoami
+
+
+### Verify security groups
+
+whoami /groups
