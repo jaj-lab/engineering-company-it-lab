@@ -45,30 +45,54 @@ Initial virtual machines:
 Additional VMs will be introduced only when required by
 a specific architecture or learning scenario.
 
-## Cloud
-
-The primary cloud laboratory is:
-
-- Floci
-- AWS-compatible APIs and concepts
-
-Planned services include:
-
-- IAM
-- S3
-- SQS
-- Lambda
-- RDS
-- Secrets
-
 ## Repository Structure
 
 ```text
-docs/          Documentation
-ad/            Active Directory
-windows/       Windows administration
-networking/    Network configuration and documentation
-terraform/     Infrastructure as Code
-automation/    PowerShell / Bash / Python
-cloud/         Cloud infrastructure
-.github/       GitHub Actions
+engineering-company-it-lab/
+|
+├── README.md                 This file
+|
+├── docs/                     Documentation
+│   ├── architecture/
+│   ├── infrastructure/
+│   ├── procedures/
+│   ├── incidents/
+│   ├── software/
+│   ├── cloud/
+│   ├── security/
+│   ├── disaster-recovery/
+│   └── todo.md
+|
+├── networking/               Network configuration and documentation
+│   ├── configs/
+│   └── documentation/
+|
+├── windows/                  Windows administration
+│   ├── ad/
+│   ├── dhcp/
+│   ├── dns/
+│   ├── gpo/
+│   └── file-services/
+|
+├── cloud/                    Cloud infratructure
+│   ├── floci/
+│   ├── s3/
+│   ├── sqs/
+│   ├── lambda/
+│   ├── rds/
+│   └── iam/
+|
+├── terraform/                Infractructure as Code
+│   ├── modules/
+│   ├── environments/
+│   ├── variables/
+│   └── providers/
+|
+├── automation/               Scripts
+│   ├── powershell/
+│   ├── bash/
+│   └── python/
+|
+└── .github/
+    └── workflows/
+```
