@@ -5,9 +5,18 @@ ENGINEERING COMPANY IT LAB
 
 VERSION
 
-    Architecture Baseline: v1.4
-    Status: APPROVED
+    Architecture Baseline: v2.0
+    Status: ACTIVE
     Purpose: Master context for the entire project
+
+    Updated:
+        2026-08-31
+
+    Major milestone:
+        PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+        IMPLEMENTATION COMPLETE
+        VERIFICATION COMPLETE
+        DOCUMENTATION / CLOSEOUT IN PROGRESS
 
 
 ================================================================================
@@ -59,43 +68,6 @@ The goal is NOT to reproduce an enterprise environment perfectly.
 The goal is to build a coherent, realistic and maintainable
 engineering-company environment where infrastructure components
 actually interact with each other.
-
-
-
-================================================================================
-PROJECT ARCHITECTURE
-================================================================================
-
-                            ENGINEERING COMPANY IT LAB
-                                      |
-                  +-------------------+-------------------+
-                  |                                       |
-                  v                                       v
-          CORPORATE IT ENVIRONMENT              CLOUD APPLICATION
-                  |                                       |
-            +-----+------+                          +-----+-----+
-            |            |                          |           |
-          AD/IT       Employees              Document App    IAM
-            |            |                          |           |
-            |            +---- Employee uploads ---> S3
-            |                                       |
-            |                                       v
-            |                                      SQS
-            |                                       |
-            |                                       v
-            |                                    Lambda
-            |                                    /  |  \
-            |                                   /   |   \
-            |                                  v    v    v
-            |                                RDS Secrets Logs
-            |
-            +---- Windows workstations
-            |
-            +---- IT operations
-
-
-The cloud document workflow is implemented incrementally
-and is now operational through the backend processing path.
 
 
 ================================================================================
@@ -201,8 +173,8 @@ the current implementation.
 
 IMPORTANT:
 
-Do NOT stop project progress merely because every
-underlying concept has not been formally studied.
+    Do NOT stop project progress merely because every
+    underlying concept has not been formally studied.
 
 
 Understanding develops through implementation.
@@ -410,6 +382,10 @@ Cloud-specific incidents encountered during Phase 2
 are part of the project's operational history.
 
 
+Windows / AD troubleshooting encountered during Phase 3
+is likewise part of the project's operational history.
+
+
 ================================================================================
 PROJECT ARCHITECTURE
 ================================================================================
@@ -423,12 +399,12 @@ PROJECT ARCHITECTURE
       ON-PREMISES              ITSM                    CLOUD
           |                       |                       |
       Windows                Tickets                  Floci
-      Active Directory       Incidents                IAM
-      DNS                    Assets                   S3
-      DHCP                   Software                 SQS
-      GPO                    Licenses                 Lambda
-      File Services          Knowledge Base           RDS
-      Permissions                                      Secrets
+      Active Directory       Incidents                Papra
+      DNS                    Assets                   IAM
+      DHCP                   Software                 S3
+      GPO                    Licenses                 SQS
+      File Services          Knowledge Base           Lambda
+      Permissions                                      RDS
           |                                              |
           |                                              |
           +-----------------------+----------------------+
@@ -460,12 +436,36 @@ PROJECT ARCHITECTURE
                                     DOCUMENTATION
 
 
-This is a target architecture.
+This is a progressively implemented architecture.
 
-Components are implemented progressively.
+The following major components are now implemented:
 
-Current cloud backend architecture is already operational
-through the Phase 2 document-processing workflow.
+
+    Lab Foundation
+    Networking
+    Local AWS-style Cloud
+    Cloud Document Workflow
+    Windows Server
+    Active Directory
+    DNS
+    DHCP
+    Domain Join
+    Organizational structure
+    Users
+    Groups
+    Group Policy
+    SMB / NTFS file services
+    Access control
+
+
+Remaining phases extend the environment into:
+
+
+    IT Operations
+    Automation / IaC
+    ITSM
+    Monitoring
+    Final Integration
 
 
 ================================================================================
@@ -554,7 +554,8 @@ Gateway:
 DHCP:
 
 
-    192.168.100.50 - 192.168.100.100
+    Original lab DHCP foundation:
+        192.168.100.50 - 192.168.100.100
 
 
 NAT:
@@ -578,7 +579,7 @@ Current VMs:
         192.168.100.30/24
 
 
-Current state:
+Current high-level state:
 
 
     Virtualization
@@ -593,48 +594,20 @@ Current state:
         COMPLETE
 
 
-    VM creation
+    Phase 2 cloud
         COMPLETE
 
 
-    VM lifecycle
+    Phase 3 Windows / Active Directory
         COMPLETE
-
-
-    Snapshots
-        COMPLETE
-
-
-    MINT01
-        READY
-
-
-    DC01
-        WINDOWS SERVER BASELINE READY
-
-
-    WIN01
-        STANDALONE WINDOWS CLIENT READY
-
-
-    Active Directory
-        NOT IMPLEMENTED
-
-
-    Domain Join
-        NOT IMPLEMENTED
-
-
-    Cloud
-        PHASE 2 COMPLETE
-
-
-    Terraform
-        NOT IMPLEMENTED
 
 
     IT Operations
         NOT IMPLEMENTED
+
+
+    Terraform / IaC
+        NOT IMPLEMENTED AS DEDICATED PHASE
 
 
     ITSM
@@ -696,7 +669,7 @@ Verified:
 
     DHCP reservation works
     DHCP renewal works after interface disconnect/reconnect
-    external DNS resolution works through 192.168.100.1
+    external DNS resolution works
     external connectivity works
     connectivity to DC01 works
     connectivity to WIN01 works
@@ -706,7 +679,7 @@ MINT01 is the primary administrative workstation
 inside the simulated environment.
 
 
-Cloud tooling used during Phase 2:
+Cloud tooling:
 
 
     Docker
@@ -743,37 +716,19 @@ IP:
     192.168.100.20/24
 
 
-Gateway:
-
-
-    192.168.100.1
-
-
-Current DNS:
-
-
-    192.168.100.1
-
-
-Addressing:
-
-
-    DHCP reservation
-
-
-Current role:
-
-
-    Windows Server baseline
-
-
-Future role:
+Role:
 
 
     Domain Controller
 
 
-Planned services:
+Domain:
+
+
+    engineering.local
+
+
+Implemented services:
 
 
     Active Directory Domain Services
@@ -786,35 +741,21 @@ Current state:
 
     Windows Server installed
     network configured
-    baseline verified
-    snapshot created
-    connectivity verified
+    AD DS installed
+    Domain Controller configured
+    engineering.local domain established
+    DNS configured for Active Directory
+    DHCP configured
+    AD structure implemented
+    users implemented
+    groups implemented
+    GPOs implemented
+    file services / permissions implemented
+    verification completed
 
 
-Verified:
-
-
-    MINT01 ↔ DC01
-    WIN01 ↔ DC01
-
-
-NOT YET IMPLEMENTED:
-
-
-    AD DS
-    DNS Server
-    DHCP Server
-    domain
-    OUs
-    users
-    groups
-    GPO
-
-
-Important:
-
-
-    DC01 is currently NOT a Domain Controller.
+DC01 is now the primary Windows infrastructure
+server for the simulated company.
 
 
 ================================================================================
@@ -842,13 +783,13 @@ IP:
 Role:
 
 
-    Future domain-joined employee workstation
+    Employee workstation
 
 
-Addressing:
+Domain:
 
 
-    DHCP reservation
+    engineering.local
 
 
 Current state:
@@ -857,27 +798,563 @@ Current state:
     Windows installed
     hostname configured
     networking configured
-    connectivity verified
-    firewall troubleshooting completed
-    baseline snapshot created
+    domain joined
+    domain connectivity verified
+    GPO application verified
+    SMB / NTFS access verified
 
 
-Verified:
+WIN01 is no longer standalone.
 
 
-    MINT01 ↔ WIN01
-    DC01 ↔ WIN01
+It is now a domain-joined employee workstation
+managed through the engineering.local domain.
+
+
+================================================================================
+ACTIVE DIRECTORY
+================================================================================
+
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+
+STATUS:
+
+
+    IMPLEMENTATION COMPLETE
+    VERIFICATION COMPLETE
+    DOCUMENTATION CLOSEOUT IN PROGRESS
+
+
+Domain:
+
+
+    engineering.local
+
+
+Domain Controller:
+
+
+    DC01
+
+
+Domain Controller IP:
+
+
+    192.168.100.20
+
+
+Implemented:
+
+
+    [x] AD DS
+    [x] Domain
+    [x] DNS integration
+    [x] Organizational structure
+    [x] Users
+    [x] Groups
+    [x] Group Policy
+    [x] WIN01 domain join
+    [x] Windows administration foundation
+    [x] SMB / NTFS file services
+    [x] Access control
+    [x] Verification
+
+
+================================================================================
+ACTIVE DIRECTORY USERS
+================================================================================
+
+Implemented users:
+
+
+    Alice Miller
+        username:
+            alice.miller
+
+
+    John Smith
+        username:
+            john.smith
+
+
+    Sarah Wilson
+        username:
+            sarah.wilson
+
+
+These users are part of the implemented
+engineering.local Active Directory environment.
+
+
+================================================================================
+ACTIVE DIRECTORY GROUPS
+================================================================================
+
+Implemented groups:
+
+
+    GG-Engineering
+        Type:
+            Global Security
+
+        Member:
+            Alice Miller
+            alice.miller
+
+
+    GG-IT
+        Type:
+            Global Security
+
+        Member:
+            John Smith
+            john.smith
+
+
+    GG-Management
+        Type:
+            Global Security
+
+        Member:
+            Sarah Wilson
+            sarah.wilson
+
+
+Group membership has been implemented and verified
+as part of the Phase 3 environment.
+
+
+================================================================================
+ACTIVE DIRECTORY ORGANIZATIONAL STRUCTURE
+================================================================================
+
+The Active Directory OU structure is implemented.
+
+Current documentation work is being finalized under:
+
+
+    windows/ad/
+
+
+Current documentation artifacts include:
+
+
+    ou-structure.md
+    users.md
+    groups.md
+    setup-ad.ps1
+
+
+The OU structure documentation is the current
+documentation starting point for the Windows
+implementation closeout.
 
 
 Important:
 
 
-    WIN01 is currently standalone.
+    Documentation must describe the actual implemented
+    AD structure rather than the original plan.
 
 
-    Domain Join will occur during:
+================================================================================
+DNS
+================================================================================
 
-        PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+DNS is now part of the Windows / Active Directory
+infrastructure.
+
+
+Primary DNS server:
+
+
+    DC01
+    192.168.100.20
+
+
+Active Directory domain:
+
+
+    engineering.local
+
+
+DNS responsibility:
+
+
+    Active Directory name resolution
+    domain services
+    Windows client domain operations
+
+
+WIN01 uses the domain DNS infrastructure required
+for engineering.local.
+
+
+DNS is no longer represented only by the libvirt
+gateway DNS behavior.
+
+
+The Windows domain now has its own DNS infrastructure
+on DC01.
+
+
+================================================================================
+DHCP
+================================================================================
+
+DHCP is now implemented as part of the Windows
+infrastructure.
+
+
+DHCP server:
+
+
+    DC01
+
+
+DHCP responsibility:
+
+
+    Windows / domain environment addressing
+
+
+The original lab networking foundation established
+the engineering-lab network and address reservations.
+
+Phase 3 extends the environment by introducing
+Windows Server DHCP as part of the simulated
+company infrastructure.
+
+
+================================================================================
+GROUP POLICY
+================================================================================
+
+Implemented GPOs:
+
+
+    Domain Baseline
+
+
+    Workstation Baseline
+
+
+    User Baseline
+
+
+Purpose:
+
+
+    Establish baseline domain-wide configuration.
+
+
+    Establish workstation-specific configuration.
+
+
+    Establish user-specific configuration.
+
+
+GPO implementation has been completed and verified
+as part of Phase 3.
+
+
+GPO documentation belongs under:
+
+
+    windows/gpo/
+
+
+The exact implemented settings must be documented
+from the actual domain state.
+
+
+================================================================================
+FILE SERVICES
+================================================================================
+
+File services are now part of the Windows environment.
+
+
+Implemented:
+
+
+    [x] SMB shares
+    [x] NTFS permissions
+    [x] Share access control
+    [x] Domain group-based access
+    [x] WIN01 access verification
+
+
+The purpose is to provide a realistic engineering-company
+internal file-sharing environment.
+
+
+Access control is based on the Active Directory
+identity and group model rather than standalone
+local accounts.
+
+
+Documentation belongs under:
+
+
+    windows/file-services/
+
+
+================================================================================
+PHASE 3 VERIFICATION
+================================================================================
+
+The following major Phase 3 behavior has been verified:
+
+
+    [x] engineering.local exists
+
+
+    [x] DC01 provides AD DS
+
+
+    [x] DC01 provides DNS
+
+
+    [x] DC01 provides DHCP
+
+
+    [x] WIN01 is domain joined
+
+
+    [x] Active Directory users exist
+
+
+    [x] Active Directory groups exist
+
+
+    [x] Group membership exists
+
+
+    [x] Domain Baseline GPO exists
+
+
+    [x] Workstation Baseline GPO exists
+
+
+    [x] User Baseline GPO exists
+
+
+    [x] SMB shares exist
+
+
+    [x] NTFS permissions exist
+
+
+    [x] Share access control exists
+
+
+    [x] WIN01 file access verified
+
+
+Phase 3 is therefore considered
+FUNCTIONALLY COMPLETE.
+
+
+Remaining work is primarily:
+
+
+    documentation
+    documentation review
+    project-state update
+    phase closeout
+
+
+================================================================================
+PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+================================================================================
+
+OBJECTIVE:
+
+
+    Transform the standalone Windows environment
+    into a managed company domain environment.
+
+
+Original sequence:
+
+
+    DC01
+        ↓
+    AD DS
+        ↓
+    DNS
+        ↓
+    Domain
+        ↓
+    OUs
+        ↓
+    Users / Groups
+        ↓
+    GPO
+        ↓
+    WIN01 Domain Join
+        ↓
+    File Services
+        ↓
+    Permissions
+        ↓
+    Verification
+        ↓
+    Documentation
+
+
+Current result:
+
+
+    DC01
+        |
+        +-- AD DS
+        |
+        +-- DNS
+        |
+        +-- DHCP
+        |
+        +-- engineering.local
+        |
+        +-- OUs
+        |
+        +-- Users
+        |
+        +-- Groups
+        |
+        +-- GPOs
+        |
+        +-- SMB / NTFS
+        |
+        +-- Access Control
+        |
+        v
+    WIN01
+        |
+        +-- Domain Joined
+        +-- GPO Managed
+        +-- File Access Verified
+
+
+Phase 3 implementation:
+
+
+    COMPLETE
+
+
+Phase 3 verification:
+
+
+    COMPLETE
+
+
+Phase 3 documentation:
+
+
+    COMPLETE
+
+
+
+Phase 3 closeout:
+
+
+    COMPLETE
+
+
+================================================================================
+PHASE 3 — WINDOWS DOCUMENTATION
+================================================================================
+
+Windows implementation documentation is being
+organized under:
+
+
+    windows/
+
+
+Current structure:
+
+
+    windows/
+    |
+    +-- ad/
+    |   +-- ou-structure.md
+    |   +-- users.md
+    |   +-- groups.md
+    |   +-- setup-ad.ps1
+    |
+    +-- dhcp/
+    |
+    +-- dns/
+    |
+    +-- gpo/
+    |
+    +-- file-services/
+    |
+    +-- README.md
+
+
+Current documentation task:
+
+
+    windows/ad/ou-structure.md
+
+
+Documentation principle:
+
+
+    Record what was ACTUALLY implemented.
+
+
+Do not rewrite the original plan as if it were
+the final state.
+
+
+The Windows documentation should provide a reproducible
+description of the implementation without exposing
+secrets or unnecessary VM-specific state.
+
+
+================================================================================
+PHASE 3 — REPOSITORY ARTIFACT PRINCIPLE
+================================================================================
+
+The repository should contain reproducible implementation
+artifacts rather than VM state.
+
+
+Commit appropriate:
+
+
+    Windows documentation
+    PowerShell scripts
+    AD configuration artifacts
+    DHCP configuration artifacts
+    DNS configuration artifacts
+    GPO documentation / configuration
+    file-services documentation
+    reproducible setup procedures
+
+
+Do NOT commit:
+
+
+    passwords
+    credentials
+    secrets
+    VM disks
+    VM snapshots
+    registry dumps
+    SAM
+    NTDS.dit
+    massive command output
+    other sensitive or machine-specific state
+
+
+The repository is intended to explain and reproduce
+the infrastructure implementation, not to store
+the virtual machines themselves.
 
 
 ================================================================================
@@ -892,22 +1369,7 @@ STATUS:
     COMPLETE
 
 
-Implementation scope:
-
-
-    engineering-lab networking
-    IP configuration
-    subnet
-    DHCP
-    DNS
-    routing
-    NAT
-    firewalling
-    connectivity
-    troubleshooting
-
-
-Final verified network state:
+Final verified base network:
 
 
     Network:
@@ -918,11 +1380,6 @@ Final verified network state:
     Network status:
 
         ACTIVE
-
-
-    Bridge:
-
-        libvirt virtual network bridge
 
 
     Subnet:
@@ -940,75 +1397,54 @@ Final verified network state:
         192.168.100.1
 
 
-    DHCP range:
-
-        192.168.100.50 - 192.168.100.100
-
-
     NAT:
 
         ENABLED
 
 
-    Reservations:
+Base reservations:
 
 
-        MINT01
-            192.168.100.10
+    MINT01
+        192.168.100.10
 
 
-        DC01
-            192.168.100.20
+    DC01
+        192.168.100.20
 
 
-        WIN01
-            192.168.100.30
+    WIN01
+        192.168.100.30
 
 
-    Current DNS behavior:
-
-        MINT01 resolves external DNS through
-        192.168.100.1.
-
-        DC01 currently uses 192.168.100.1.
-
-        WIN01 currently uses the lab gateway /
-        current network-provided DNS.
+Phase 1 established the virtualization and network
+foundation used by all subsequent phases.
 
 
-Verification:
+Important evolution:
 
 
-    [x] MINT01 receives reserved address through DHCP
-    [x] DHCP renewal verified through interface reconnect
-    [x] MINT01 external DNS resolution verified
-    [x] MINT01 external connectivity verified
-    [x] MINT01 ↔ DC01 connectivity verified
-    [x] MINT01 ↔ WIN01 connectivity verified
-    [x] DC01 ↔ WIN01 connectivity verified
-    [x] Gateway connectivity verified
-    [x] VM-to-VM connectivity verified
-    [x] NAT verified
+    Phase 1:
+        libvirt network provided the base DHCP/DNS/NAT
+        environment.
 
 
-Network documentation:
+    Phase 3:
+        Windows Server DC01 now provides the simulated
+        company's AD-integrated DNS and DHCP services.
 
 
-    [x] architecture/network.md
-    [x] infrastructure/networking.md
-    [x] Phase 1 documentation review
+This distinction is important.
 
-
-Phase 1 is COMPLETE.
+The project has evolved from a basic lab network
+into a company-style Windows network.
 
 
 ================================================================================
 PHASE 1 TROUBLESHOOTING
 ================================================================================
 
-Troubleshooting remains part of implementation.
-
-Completed troubleshooting cases from the lab foundation:
+Completed troubleshooting cases:
 
 
     [x] TRB-001
@@ -1043,14 +1479,10 @@ Verification:
     [x] WIN01 -> DC01
 
 
-Troubleshooting documentation:
+Documentation:
 
 
     docs/incidents/troubleshooting/
-
-
-No new networking incident documentation was required
-during the Phase 1 review.
 
 
 ================================================================================
@@ -1070,10 +1502,16 @@ Objective:
     Workflow inside Floci.
 
 
-Primary cloud laboratory:
+Cloud laboratory:
 
 
     Floci
+
+
+Application:
+
+
+    Papra
 
 
 Deployment host:
@@ -1101,46 +1539,16 @@ Containerization:
     Docker Compose
 
 
-Compose project:
+Environment management:
 
 
-    cloud/floci/
-
-
-Persistent storage:
-
-
-    Docker named volume:
-
-        floci_data
-
-
-    Mounted into Floci:
-
-        /app/data
-
-
-Docker socket:
-
-
-    /var/run/docker.sock
-
-
-        mounted into:
-
-    /var/run/docker.sock
+    direnv
 
 
 AWS CLI:
 
 
-    Configured to communicate with Floci.
-
-
-Environment management:
-
-
-    direnv
+    Configured for Floci
 
 
 Phase 2 final status:
@@ -1157,9 +1565,7 @@ PHASE 2 — CLOUD ARCHITECTURE
                          ENGINEERING COMPANY
                                 |
                                 v
-                           Employee
-                                |
-                                v
+                              Papra
                          Document Application
                                 |
                                 | upload
@@ -1202,7 +1608,7 @@ PHASE 2 — CLOUD ARCHITECTURE
                         Document metadata
 
 
-Supporting the workflow:
+Supporting:
 
 
     IAM
@@ -1219,7 +1625,6 @@ Supporting the workflow:
         |
         +--> Lambda execution
         +--> workflow events
-        +--> database-related execution
         +--> troubleshooting
 
 
@@ -1228,7 +1633,7 @@ Implemented backend workflow:
 
     S3
       |
-      | ObjectCreated event
+      | ObjectCreated
       v
     SQS
       |
@@ -1237,31 +1642,21 @@ Implemented backend workflow:
     Lambda
       |
       +------> Secrets Manager
-      |          |
-      |          | database credentials
-      |          v
+      |
       +------> RDS PostgreSQL
-                 |
-                 v
-          Document metadata
 
 
-Phase 2 backend workflow:
+Application boundary:
 
 
-    [x] S3
-    [x] SQS
-    [x] Lambda
-    [x] RDS
-    [x] Secrets Manager
-    [x] IAM
-    [x] Lambda logging
-    [x] Cloud application integration with Floci
+    Papra
+        |
+        v
+    S3 / cloud workflow
 
 
-The employee-facing application layer is represented
-as the application integration boundary and remains
-separate from the cloud backend infrastructure.
+The application layer and backend infrastructure
+remain logically separated.
 
 
 ================================================================================
@@ -1313,7 +1708,6 @@ IAM
 
     [x] engineering-app identity
     [x] engineering-app-s3 policy
-    [x] Application access key
     [x] Lambda execution role
     [x] document-processor-role
     [x] document-processor policy
@@ -1322,7 +1716,6 @@ IAM
     [x] SQS permissions
     [x] Secrets Manager permissions
     [x] CloudWatch Logs permissions
-    [x] Required database access
 
 
 RDS
@@ -1354,11 +1747,11 @@ Logging
     [x] Workflow troubleshooting visibility
 
 
-Application Integration
------------------------
+Papra / Application Integration
+-------------------------------
 
-    [x] Cloud application integration with Floci
-    [x] Application-side cloud integration boundary
+    [x] Papra application
+    [x] Application-side cloud integration
     [x] Cloud resources available to application workflow
 
 
@@ -1398,7 +1791,7 @@ Attached policy:
     document-processor
 
 
-Lambda permissions include:
+Lambda permissions:
 
 
     S3:
@@ -1434,374 +1827,16 @@ IAM principle:
 Known platform limitation:
 
 
-    Floci did not fully enforce the expected AWS IAM
+    Floci did not fully reproduce the expected AWS IAM
     authorization boundaries during the tested S3
     operations.
 
 
-The policy design remains intentionally least privilege.
+The intended policy design remains least privilege.
 
 
-The architecture was NOT weakened to accommodate
-Floci's authorization behavior.
-
-
-================================================================================
-PHASE 2 — S3 STATE
-================================================================================
-
-Bucket:
-
-
-    engineering-documents
-
-
-Purpose:
-
-
-    Store actual engineering document objects.
-
-
-Logical structure:
-
-
-    engineering-documents/
-    |
-    +-- incoming/
-    |
-    +-- processed/
-    |
-    +-- failed/
-
-
-Verified:
-
-
-    [x] ListBucket
-    [x] PutObject
-    [x] GetObject
-    [x] ObjectCreated event
-
-
-Relationship:
-
-
-    S3
-        |
-        | ObjectCreated
-        v
-    SQS
-        |
-        v
-    Lambda
-        |
-        v
-    RDS
-
-
-Important distinction:
-
-
-    S3
-        =
-    actual document objects
-
-
-    RDS
-        =
-    structured metadata ABOUT documents
-
-
-================================================================================
-PHASE 2 — SQS STATE
-================================================================================
-
-Queue:
-
-
-    document-processing
-
-
-Purpose:
-
-
-    Provide asynchronous decoupling between
-    document storage and processing.
-
-
-Queue ARN:
-
-
-    arn:aws:sqs:eu-east-1:000000000000:document-processing
-
-
-Implemented:
-
-
-    [x] Queue created
-    [x] Queue attributes verified
-    [x] S3 notification integration
-    [x] Message delivery verified
-    [x] Message reception verified
-    [x] Lambda consumer integration
-    [x] Successful message deletion
-
-
-Current relationship:
-
-
-    engineering-documents
-            |
-            | ObjectCreated
-            v
-    document-processing
-            |
-            | Event Source Mapping
-            v
-    document-processor
-            |
-            v
-    RDS PostgreSQL
-
-
-================================================================================
-PHASE 2 — LAMBDA STATE
-================================================================================
-
-Function:
-
-
-    document-processor
-
-
-Runtime:
-
-
-    Python 3.12
-
-
-Handler:
-
-
-    index.handler
-
-
-Package type:
-
-
-    Zip
-
-
-Architecture:
-
-
-    x86_64
-
-
-Memory:
-
-
-    128 MB
-
-
-Timeout:
-
-
-    3 seconds
-
-
-Role:
-
-
-    document-processor-role
-
-
-Status:
-
-
-    ACTIVE
-
-
-Event source mapping:
-
-
-    document-processing
-        |
-        v
-    document-processor
-
-
-Mapping state:
-
-
-    ENABLED
-
-
-Batch size:
-
-
-    1
-
-
-Current Lambda behavior:
-
-
-    [x] Receive SQS event
-    [x] Extract S3 event information
-    [x] Extract bucket
-    [x] Extract object key
-    [x] Extract event type
-    [x] Log event
-    [x] Retrieve database credentials
-    [x] Connect to PostgreSQL
-    [x] Store document metadata in RDS
-    [x] Return successful execution
-    [x] Allow successful SQS message deletion
-
-
-Current workflow:
-
-
-    S3 ObjectCreated
-        ↓
-    SQS message
-        ↓
-    Lambda invocation
-        ↓
-    Parse event
-        ↓
-    Extract S3 information
-        ↓
-    Retrieve database secret
-        ↓
-    Connect to PostgreSQL
-        ↓
-    Store document metadata
-        ↓
-    Log execution
-        ↓
-    Successful Lambda execution
-        ↓
-    SQS message deleted
-
-
-Result:
-
-
-    The Lambda is now a functional document-processing
-    component rather than a simple event-extraction test.
-
-
-================================================================================
-PHASE 2 — RDS STATE
-================================================================================
-
-Database:
-
-
-    PostgreSQL
-
-
-Purpose:
-
-
-    Store structured metadata about documents processed
-    by the Lambda workflow.
-
-
-Implemented:
-
-
-    [x] PostgreSQL database
-    [x] Database connectivity
-    [x] documents metadata table
-    [x] Lambda database integration
-    [x] Metadata insertion
-
-
-Logical responsibility:
-
-
-    S3
-        =
-    actual document object
-
-
-    RDS
-        =
-    structured metadata ABOUT the document
-
-
-Current workflow:
-
-
-    S3 object
-        |
-        v
-    SQS
-        |
-        v
-    Lambda
-        |
-        +--> Retrieve DB credentials
-        |
-        +--> Connect to PostgreSQL
-        |
-        +--> Insert document metadata
-        |
-        v
-    RDS documents table
-
-
-Verification:
-
-
-    [x] PostgreSQL available
-    [x] documents table available
-    [x] Lambda can connect
-    [x] Lambda can insert metadata
-
-
-================================================================================
-PHASE 2 — SECRETS MANAGER STATE
-================================================================================
-
-Purpose:
-
-
-    Store database credentials separately from
-    Lambda application code.
-
-
-Implemented:
-
-
-    [x] Database secret
-    [x] Secret configuration
-    [x] Lambda access
-    [x] Credential retrieval
-    [x] Secret-based PostgreSQL connection
-
-
-Current relationship:
-
-
-    Secrets Manager
-          |
-          | database credentials
-          v
-       Lambda
-          |
-          | authenticated connection
-          v
-       RDS PostgreSQL
-
-
-Security principle:
-
-
-    Database credentials are not hard-coded into
-    the Lambda function.
+The architecture was NOT weakened simply to accommodate
+emulator behavior.
 
 
 ================================================================================
@@ -1821,56 +1856,28 @@ Summary:
 
 
     Floci cloud resources appeared to be lost after
-    combining / changing Docker Compose configuration.
-
-
-Investigation established that the new Compose
-configuration was using a different / newly initialized
-volume rather than binding the previously used Floci
-state.
-
-
-The existing cloud state was associated with the
-previous storage configuration and was not being
-presented to the new container.
+    changing Docker Compose configuration.
 
 
 Root cause:
 
 
-    The Compose configuration referenced new storage
-    rather than the existing Floci state volume.
+    The new Compose configuration referenced different
+    storage rather than the existing Floci application state.
 
 
 Resolution:
 
 
-    Identify the previously used persistent storage
-    and bind the Floci deployment to the existing
-    volume instead of initializing a new one.
+    Identify the existing persistent storage and explicitly
+    bind the Floci deployment to the correct volume.
 
 
 Operational lesson:
 
 
     A Docker volume being present does not automatically
-    mean that the application is using the correct volume.
-
-
-    When changing Compose configurations:
-
-
-        identify existing volumes
-            ↓
-        inspect their contents
-            ↓
-        identify which volume contains application state
-            ↓
-        explicitly bind the correct volume
-
-
-    Persistence must be verified at the application level,
-    not only at the Docker level.
+    mean the application is using the correct volume.
 
 
 Document:
@@ -1903,34 +1910,16 @@ Root cause:
     Floci Lambda execution requires Docker access.
 
 
-Observed error:
+Observed:
 
 
-    java.net.SocketException:
-    No such file or directory
-
-
-Investigation:
-
-
-    Floci attempted to access:
-
-
-        unix:///var/run/docker.sock
-
-
-    but the Docker socket was not accessible.
+    unix:///var/run/docker.sock
 
 
 Resolution:
 
 
-    Mount the host Docker socket into the Floci container:
-
-
-        /var/run/docker.sock
-            →
-        /var/run/docker.sock
+    Mount the host Docker socket into the Floci container.
 
 
 Verification:
@@ -1949,11 +1938,35 @@ Document:
     docs/incidents/INC-002-floci-lambda-exec-failure
 
 
+--------------------------------------------------------------------------------
+INC-003
+-------
+
+Status:
+
+
+    DOCUMENTED
+
+
+INC-003 is part of the Phase 2 cloud incident history.
+
+The detailed incident record in the repository is the
+source of truth for its exact investigation, root cause,
+resolution and operational lesson.
+
+
+Important:
+
+
+    Do not reconstruct incident details from memory
+    when the repository documentation is available.
+
+
 ================================================================================
 TROUBLESHOOTING
 ================================================================================
 
-Historical troubleshooting cases:
+Historical troubleshooting:
 
 
     [x] TRB-001
@@ -1966,6 +1979,14 @@ Cloud incidents:
 
     [x] INC-001
     [x] INC-002
+    [x] INC-003
+
+
+Windows / AD:
+
+
+    [x] Phase 3 implementation troubleshooting
+        incorporated into the implementation process
 
 
 Troubleshooting principle:
@@ -1975,8 +1996,8 @@ Troubleshooting principle:
     as part of the engineering process.
 
 
-    Investigation and root-cause analysis are documented
-    rather than hidden or worked around without explanation.
+Investigation and root-cause analysis are documented
+rather than hidden or worked around without explanation.
 
 
 ================================================================================
@@ -2048,7 +2069,7 @@ Architecture:
     [x] architecture/overview.md
     [x] architecture/virtualization.md
     [x] architecture/network.md
-    [ ] architecture/active-directory.md
+    [x] architecture/active-directory.md
     [x] architecture/cloud.md
 
 
@@ -2057,17 +2078,35 @@ Infrastructure:
 
     [x] infrastructure/vms.md
     [x] infrastructure/networking.md
-    [ ] infrastructure/services.md
+    [x] infrastructure/services.md
+
+
+Windows implementation:
+
+
+    [x] windows/ad/ou-structure.md
+    [x] windows/ad/users.md
+    [x] windows/ad/groups.md
+    [x] windows/ad/setup-ad.ps1
+    [x] windows/dhcp/
+    [x] windows/dns/
+    [x] windows/gpo/
+    [x] windows/file-services/
+
+
+Current Windows documentation task:
+
+
+    windows/ad/ou-structure.md
 
 
 Procedures:
 
 
-    [ ] create-user.md
-    [ ] disable-user.md
-    [ ] domain-join.md
-    [ ] troubleshoot-dns.md
-    [ ] reset-password.md
+    [x] create-user.md
+    [x] disable-user.md
+    [x] domain-join.md
+    [x] troubleshoot-dns.md
     [ ] software-installation.md
 
 
@@ -2079,6 +2118,8 @@ Incidents / Troubleshooting:
     [x] TRB-003
     [x] INC-001
     [x] INC-002
+    [x] INC-003
+    [x] INC-004
 
 
 Cloud:
@@ -2120,13 +2161,13 @@ Disaster Recovery:
     [ ] restore.md
 
 
-Phase 1 documentation status:
+Phase 1 documentation:
 
 
     COMPLETE
 
 
-Phase 2 documentation status:
+Phase 2 documentation:
 
 
     COMPLETE
@@ -2138,111 +2179,10 @@ Phase 2 documentation review:
     COMPLETE
 
 
-================================================================================
-REPOSITORY
-================================================================================
-
-Repository:
+Phase 3 documentation:
 
 
-    engineering-company-it-lab
-
-
-The repository is the source of truth for
-implementation and documentation.
-
-
-Cloud implementation:
-
-
-    cloud/
-    |
-    +-- floci/
-    |   +-- compose.yaml
-    |   +-- tmp/
-    |
-    +-- iam/
-    |   +-- engineering-app-s3-policy.json
-    |
-    +-- lambda/
-    |   +-- document-processor/
-    |
-    +-- rds/
-    |
-    +-- s3/
-    |   +-- README.md
-    |   +-- s3-to-sqs-notification.json
-    |   +-- tmp/
-    |
-    +-- sqs/
-    |
-    +-- secrets/
-
-
-Important implementation files:
-
-
-    cloud/floci/compose.yaml
-
-    cloud/iam/engineering-app-s3-policy.json
-
-    cloud/s3/s3-to-sqs-notification.json
-
-    cloud/lambda/document-processor/index.py
-
-    cloud/lambda/document-processor/function.zip
-
-    cloud/rds/
-
-    cloud/secrets/
-
-
-Important documentation:
-
-
-    docs/architecture/overview.md
-    docs/architecture/virtualization.md
-    docs/architecture/network.md
-    docs/architecture/cloud.md
-    docs/infrastructure/vms.md
-    docs/infrastructure/networking.md
-    docs/cloud/
-    docs/incidents/
-    docs/incidents/troubleshooting/
-
-
-Cloud implementation branch:
-
-
-    floci-aws-integration
-
-
-Phase 2 result:
-
-
-    CLOUD IMPLEMENTATION COMPLETE
-
-
-Git result:
-
-
-    Phase 2 implementation changes were committed
-    and merged through a pull request.
-
-
-The repository now contains the completed Phase 2
-cloud implementation as an integrated project milestone.
-
-
-Git principle:
-
-
-    Meaningful implementation changes should produce
-    meaningful commits.
-
-
-    Pull requests are used to integrate completed
-    implementation work into the main project history.
+    COMPLETE
 
 
 ================================================================================
@@ -2276,7 +2216,7 @@ Major completed areas:
     [x] NAT
     [x] 192.168.100.0/24
     [x] Gateway
-    [x] DHCP
+    [x] DHCP foundation
     [x] MINT01
     [x] DC01
     [x] WIN01
@@ -2286,10 +2226,10 @@ Major completed areas:
     [x] Phase 0 documentation
 
 
-Phase 0 commit:
+Phase 0 result:
 
 
-    feat: lab foundation complete
+    LAB FOUNDATION COMPLETE
 
 
 ================================================================================
@@ -2363,6 +2303,12 @@ Cloud platform:
     Floci
 
 
+Application:
+
+
+    Papra
+
+
 Deployment:
 
 
@@ -2375,28 +2321,6 @@ Deployment:
         |
         v
     Floci
-
-
-Completed cloud workflow:
-
-
-    S3
-      |
-      | ObjectCreated
-      v
-    SQS
-      |
-      | Event Source Mapping
-      v
-    Lambda
-      |
-      +------> Secrets Manager
-      |          |
-      |          v
-      +------> RDS PostgreSQL
-                 |
-                 v
-          Document metadata
 
 
 Completed:
@@ -2424,11 +2348,12 @@ Completed:
     [x] Lambda → Secrets Manager integration
     [x] Database credential retrieval
     [x] Lambda execution logging
-    [x] Cloud application integration with Floci
+    [x] Papra application integration
     [x] Cloud workflow verification
     [x] Important Floci limitations investigated
     [x] INC-001 investigated and documented
     [x] INC-002 investigated and documented
+    [x] INC-003 investigated and documented
     [x] Phase 2 documentation review
     [x] Phase 2 committed
     [x] Phase 2 merged through pull request
@@ -2440,58 +2365,6 @@ Phase 2 result:
     CLOUD FOUNDATION AND BACKEND DOCUMENT WORKFLOW COMPLETE
 
 
-Important:
-
-
-    The Phase 2 cloud backend is operational.
-
-
-    The workflow:
-
-
-        S3
-          ↓
-        SQS
-          ↓
-        Lambda
-          ↓
-        Secrets Manager
-          ↓
-        RDS
-
-
-    has been implemented and verified.
-
-
-    IAM controls access across the workflow.
-
-
-    Logging provides execution visibility.
-
-
-    Cloud application integration with Floci
-    has been completed.
-
-
-Important platform limitation:
-
-
-    Floci does not fully reproduce all AWS IAM
-    authorization behavior observed during testing.
-
-
-    The intended IAM policy model remains least privilege.
-
-
-Phase 2 Git result:
-
-
-    IMPLEMENTATION COMMITTED
-
-
-    PULL REQUEST MERGED
-
-
 ================================================================================
 PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 ================================================================================
@@ -2499,68 +2372,84 @@ PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 STATUS:
 
 
-    NEXT
+    IMPLEMENTATION COMPLETE
+    VERIFICATION COMPLETE
+    DOCUMENTATION CLOSEOUT IN PROGRESS
 
 
 Objective:
 
 
-    Transform the existing standalone Windows environment
+    Transform the standalone Windows environment
     into a managed company domain environment.
 
 
-Planned direction:
+Completed:
 
 
-    [ ] AD DS
-    [ ] DNS
-    [ ] DHCP
-    [ ] Domain
-    [ ] Organizational Units
-    [ ] Users
-    [ ] Groups
-    [ ] Group Policy
-    [ ] WIN01 domain join
-    [ ] Windows administration
-    [ ] Permissions
-    [ ] Documentation
+    [x] DC01 Windows Server foundation
+    [x] AD DS
+    [x] engineering.local domain
+    [x] Active Directory structure
+    [x] Users
+    [x] Groups
+    [x] DNS
+    [x] DHCP
+    [x] Group Policy
+    [x] WIN01 domain join
+    [x] SMB file services
+    [x] NTFS permissions
+    [x] Share permissions
+    [x] Access control
+    [x] End-to-end verification
 
 
-Initial target:
+Implemented identity model:
 
 
-    Configure DC01 as the first Domain Controller.
+    Domain:
+
+        engineering.local
 
 
-Expected sequence:
+    Users:
+
+        alice.miller
+        john.smith
+        sarah.wilson
+
+
+    Groups:
+
+        GG-Engineering
+        GG-IT
+        GG-Management
+
+
+Implemented GPOs:
+
+
+    Domain Baseline
+    Workstation Baseline
+    User Baseline
+
+
+Implemented endpoints:
 
 
     DC01
-        ↓
-    AD DS
-        ↓
-    DNS
-        ↓
-    Domain
-        ↓
-    OUs
-        ↓
-    Users / Groups
-        ↓
-    GPO
-        ↓
-    WIN01 Domain Join
+        Domain Controller
 
 
-Important:
+    WIN01
+        Domain-joined workstation
 
 
-    AD DS and domain join are now permitted because
-    Phase 2 is COMPLETE.
+Phase 3 result:
 
+    WINDOWS / ACTIVE DIRECTORY ENVIRONMENT
+    FUNCTIONALLY COMPLETE
 
-    Do NOT begin IT Operations before the required
-    Windows / Active Directory foundation is established.
 
 
 ================================================================================
@@ -2570,7 +2459,7 @@ PHASE 4 — IT OPERATIONS
 STATUS:
 
 
-    PLANNED
+    NEXT
 
 
 Objective:
@@ -2592,6 +2481,38 @@ Potential areas:
     [ ] Patch management
     [ ] Administrative procedures
     [ ] Operational documentation
+
+
+Phase 4 should build directly on the now-functional
+Windows / Active Directory environment.
+
+
+Examples:
+
+
+    Active Directory users
+        ↓
+    User lifecycle
+
+
+    Domain-joined WIN01
+        ↓
+    Workstation lifecycle
+
+
+    AD groups
+        ↓
+    Access management
+
+
+    GPO
+        ↓
+    Configuration management
+
+
+    SMB / NTFS
+        ↓
+    File access administration
 
 
 ================================================================================
@@ -2765,6 +2686,19 @@ Apply throughout implementation:
     Access reviews
 
 
+Phase 2:
+
+
+    IAM least-privilege model implemented.
+
+
+Phase 3:
+
+
+    Active Directory identity and group-based access
+    control implemented.
+
+
 Advanced security infrastructure remains optional
 until justified by the architecture.
 
@@ -2854,6 +2788,10 @@ A TODO item is implemented only when:
     there is a meaningful learning objective.
 
 
+Do NOT add infrastructure merely to make the lab
+look larger.
+
+
 ================================================================================
 REPOSITORY
 ================================================================================
@@ -2868,7 +2806,7 @@ The repository is the source of truth for
 implementation and documentation.
 
 
-Structure:
+Current logical structure:
 
 
 engineering-company-it-lab/
@@ -2890,13 +2828,12 @@ engineering-company-it-lab/
 |    ├-- configs/
 |    └-- documentation/
 |
-+-- ad/
-|    ├-- powershell/
-|    └-- documentation/
-|
 +-- windows/
-|    ├-- powershell/
-|    └-- troubleshooting/
+|    ├-- ad/
+|    ├-- dhcp/
+|    ├-- dns/
+|    ├-- gpo/
+|    └-- file-services/
 |
 +-- cloud/
 |    ├-- floci/
@@ -2926,6 +2863,17 @@ engineering-company-it-lab/
 The structure may evolve with implementation.
 
 
+Important:
+
+
+    The actual repository structure is authoritative.
+
+
+    The context describes the intended logical structure,
+    but should not claim a file exists unless it has
+    actually been created.
+
+
 ================================================================================
 PROJECT ARTIFACTS
 ================================================================================
@@ -2944,6 +2892,7 @@ The project maintains four primary artifacts.
         implemented components
         VM state
         networking state
+        Windows / AD state
         cloud state
         documentation state
         outstanding tasks
@@ -3047,6 +2996,89 @@ A PHASE is complete when:
     changes are merged
 
 
+Important current distinction:
+
+
+    PHASE 3 implementation
+        COMPLETE
+
+
+    PHASE 3 verification
+        COMPLETE
+
+
+    PHASE 3 documentation
+        IN PROGRESS
+
+
+Therefore:
+
+
+    PHASE 3 is NOT yet marked fully closed
+    until documentation and closeout are complete.
+
+
+================================================================================
+ROADMAP STATUS
+================================================================================
+
+Overall phase state:
+
+
+    PHASE 0 — LAB FOUNDATION
+        [x] COMPLETE
+
+
+    PHASE 1 — NETWORKING
+        [x] COMPLETE
+
+
+    PHASE 2 — CLOUD
+        [x] COMPLETE
+
+
+    PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+        [x] COMPLETE
+
+
+    PHASE 4 — IT OPERATIONS
+        [ ] NEXT
+
+
+    PHASE 5 — AUTOMATION / IaC
+        [ ]
+
+
+    PHASE 6 — ITSM
+        [ ]
+
+
+    PHASE 7 — MONITORING
+        [ ]
+
+
+    PHASE 8 — FINAL INTEGRATION
+        [ ]
+
+
+Progress representation:
+
+
+    PHASE 0  ████████████████████ 100%
+    PHASE 1  ████████████████████ 100%
+    PHASE 2  ████████████████████ 100%
+    PHASE 3  ████████████████████ 100%
+    PHASE 4  ░░░░░░░░░░░░░░░░░░░░ NEXT
+    PHASE 5  ░░░░░░░░░░░░░░░░░░░░
+    PHASE 6  ░░░░░░░░░░░░░░░░░░░░
+    PHASE 7  ░░░░░░░░░░░░░░░░░░░░
+    PHASE 8  ░░░░░░░░░░░░░░░░░░░░
+
+
+Do not interpret the Phase 3 bar as an exact numerical
+percentage until documentation closeout has been completed.
+
+
 ================================================================================
 DEFINITION OF DONE
 ================================================================================
@@ -3067,6 +3099,7 @@ This includes:
     - troubleshoot DNS and DHCP
     - manage permissions
     - support Windows endpoints
+    - administer domain-joined workstations
     - investigate incidents
     - manage ITSM workflows
     - manage assets and software
@@ -3149,6 +3182,12 @@ Completed so far:
         COMPLETE
 
 
+    Windows / Active Directory
+        IMPLEMENTATION COMPLETE
+        VERIFICATION COMPLETE
+        DOCUMENTATION CLOSEOUT IN PROGRESS
+
+
 Cross-cutting throughout:
 
 
@@ -3222,10 +3261,28 @@ CURRENT PROJECT DIRECTION
 Previous phase:
 
 
-    PHASE 2 — CLOUD
+    PHASE 3 — WINDOWS / ACTIVE DIRECTORY
 
 
-Previous phase status:
+Previous implementation status:
+
+
+    COMPLETE
+
+
+Previous verification status:
+
+
+    COMPLETE
+
+
+Current phase:
+
+
+    PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+
+
+Current phase status:
 
 
     COMPLETE
@@ -3246,68 +3303,54 @@ Completed phases:
         COMPLETE
 
 
-Current phase:
-
-
     PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+        COMPLETE
 
 
-Current phase status:
-
-
-    READY TO BEGIN
-
-
-Current objective:
-
-
-    Transform the existing standalone Windows environment
-    into a managed company domain environment.
-
-
-Current Windows foundation:
+Current Windows environment:
 
 
     DC01
         Windows Server 2025 Standard
         192.168.100.20
-        baseline ready
+        Domain Controller
+        AD DS
+        DNS
+        DHCP
+
+
+    Domain
+        engineering.local
 
 
     WIN01
         Windows 10/11
         192.168.100.30
-        standalone client
+        domain joined
 
 
-    MINT01
-        Linux Mint
-        192.168.100.10
-        administration workstation
+    Users
+        alice.miller
+        john.smith
+        sarah.wilson
 
 
-Next implementation:
+    Groups
+        GG-Engineering
+        GG-IT
+        GG-Management
 
 
-    Configure DC01 as the first Domain Controller.
+    GPOs
+        Domain Baseline
+        Workstation Baseline
+        User Baseline
 
 
-Expected sequence:
-
-
-    AD DS
-        ↓
-    DNS
-        ↓
-    Domain
-        ↓
-    OUs
-        ↓
-    Users / Groups
-        ↓
-    GPO
-        ↓
-    WIN01 Domain Join
+    File Services
+        SMB
+        NTFS permissions
+        share access control
 
 
 Current cloud state:
@@ -3315,6 +3358,10 @@ Current cloud state:
 
     Floci
         COMPLETE
+
+
+    Papra
+        IMPLEMENTED
 
 
     IAM
@@ -3369,96 +3416,62 @@ Current cloud state:
         COMPLETE
 
 
-    Phase 2 commit
+    Phase 2 Git integration
         COMPLETE
 
 
-    Phase 2 pull request
-        MERGED
+Current Phase 3 documentation direction:
 
 
-Current Git state:
+    windows/
+        |
+        +-- ad/
+        |   +-- ou-structure.md
+        |   +-- users.md
+        |   +-- groups.md
+        |   +-- setup-ad.ps1
+        |
+        +-- dhcp/
+        +-- dns/
+        +-- gpo/
+        +-- file-services/
 
 
-    Phase 2 cloud implementation has been integrated
-    through a pull request.
+Current documentation task:
 
 
-Important Phase 2 lessons:
-
-
-    [x] Docker named-volume persistence must be verified
-        against actual application state.
-
-    [x] Changing Compose storage configuration can expose
-        a different volume and make existing application
-        state appear lost.
-
-    [x] Floci Lambda execution requires Docker socket access.
-
-    [x] Local AWS-compatible environments may not reproduce
-        AWS authorization behavior exactly.
-
-    [x] IAM policy design should remain aligned with the
-        intended AWS architecture rather than emulator
-        limitations.
+    windows/ad/ou-structure.md
 
 
 Immediate objective:
 
 
-    Begin PHASE 3 — WINDOWS / ACTIVE DIRECTORY.
-
-
-First implementation task:
-
-
-    Configure DC01 as the Domain Controller foundation.
+    Document the actual implemented Active Directory
+    organizational structure.
 
 
 Then:
 
 
-    IMPLEMENT
-        ↓
-    VERIFY
-        ↓
-    TROUBLESHOOT IF NECESSARY
-        ↓
     DOCUMENT
         ↓
     REVIEW
         ↓
-    UPDATE PROJECT STATE
+    DOCUMENT USERS / GROUPS
         ↓
-    CONTINUE PHASE 3
-
-
-Important restrictions:
-
-
-    Do NOT skip the AD DS foundation.
-
-    Do NOT domain-join WIN01 before DC01 is properly
-    configured as the Domain Controller.
-
-    Do NOT begin IT Operations before the required
-    Windows / Active Directory foundation is established.
-
-    Do NOT turn the project into a theoretical course.
-
-    Do NOT add infrastructure complexity without
-    an implementation reason.
-
-    Implement what the current phase requires.
-
-    Ask questions when a concept is unclear.
-
-    Test the result.
-
-    Document the actual state.
-
-    Review before progressing.
+    DOCUMENT DNS / DHCP
+        ↓
+    DOCUMENT GPO
+        ↓
+    DOCUMENT FILE SERVICES
+        ↓
+    REVIEW COMPLETE WINDOWS IMPLEMENTATION
+        ↓
+    CLOSE PHASE 3
+        ↓
+    COMMIT
+        ↓
+    MOVE TO PHASE 4
 
 
 ================================================================================
@@ -3479,11 +3492,11 @@ CURRENT PROJECT STATUS
 
 
     PHASE 3 — WINDOWS / ACTIVE DIRECTORY
-        [ ] NEXT
+        [x] COMPLETE
 
 
     PHASE 4 — IT OPERATIONS
-        [ ]
+        [ ] NEXT
 
 
     PHASE 5 — AUTOMATION / IaC
@@ -3505,13 +3518,72 @@ CURRENT PROJECT STATUS
 Current position:
 
 
-    >>> PHASE 3 — WINDOWS / ACTIVE DIRECTORY <<<
+    >>> PHASE 3 — WINDOWS / ACTIVE DIRECTORY
+        COMPLETE
+    <<<
 
 
 Next milestone:
 
 
-    DC01 → Active Directory Domain Services
+    COMPLETE WINDOWS / AD DOCUMENTATION
+
+
+Next phase after closeout:
+
+
+    PHASE 4 — IT OPERATIONS
+
+
+================================================================================
+IMPORTANT PROJECT RULES
+================================================================================
+
+    1. Implementation comes before theory.
+
+
+    2. Learn concepts when they become necessary.
+
+
+    3. Verify everything important.
+
+
+    4. Troubleshooting is part of engineering.
+
+
+    5. Documentation describes actual state.
+
+
+    6. Do not mark work complete merely because
+       configuration was planned.
+
+
+    7. Do not introduce unnecessary infrastructure.
+
+
+    8. Do not commit secrets or machine-sensitive state.
+
+
+    9. Prefer reproducible scripts and documentation
+       over VM-state artifacts.
+
+
+    10. Update project state after meaningful milestones.
+
+
+    11. Update roadmap after meaningful milestones.
+
+
+    12. Keep the repository as the implementation
+        source of truth.
+
+
+    13. Keep the master context as the project-state
+        and architectural source of truth.
+
+
+    14. Do not start Phase 4 until Phase 3 documentation
+        and closeout are complete.
 
 
 ================================================================================
